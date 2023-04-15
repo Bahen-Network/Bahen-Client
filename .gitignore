@@ -1,0 +1,33 @@
+# Node.js
+node_modules/
+npm-debug.log
+
+# Build artifacts
+build/
+
+# Truffle artifacts
+.truffle/
+
+# Environment variables
+.env
+
+# Compiled files
+*.log
+*.bak
+*.swp
+*.swo
+*.tmp
+*.temp
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+*.suo
+*.user
+*.sublime-workspace
+*.sublime-project
+*.komodoproject
+
+# MacOS files
+.DS_Store
