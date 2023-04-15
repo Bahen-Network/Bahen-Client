@@ -10,7 +10,7 @@ contract Marketplace {
     Task private taskContract;
     address[] private workers;
     address private admin;
-
+    uint256[] public orderIds;
     mapping(uint256 => Order) public orders;
     uint256 private nextOrderId;
 
@@ -39,11 +39,15 @@ contract Marketplace {
         }
     }
 
+    function getOrderList() public view returns (uint256[] memory) {
+        return orderIds;
+    }
+
     function createOrderPreview(
-    string memory modelUrl,
-    string memory trainDataUrl,
-    string memory validateDataUrl,
-    uint256 requiredPower
+        string memory modelUrl,
+        string memory trainDataUrl,
+        string memory validateDataUrl,
+        uint256 requiredPower
     ) public returns (uint256) {
         uint256 trainTaskId = taskContract.createTask(Task.TaskType.TRAIN, modelUrl, trainDataUrl, requiredPower);
         uint256 validateTaskId = taskContract.createTask(Task.TaskType.VALIDATE, modelUrl, validateDataUrl, requiredPower);
@@ -51,9 +55,9 @@ contract Marketplace {
         Order newOrder = new Order(trainTaskId, validateTaskId, msg.sender);
         uint256 orderId = nextOrderId++;
         orders[orderId] = newOrder;
+        orderIds.push(orderId); // 将新订单ID添加到数组中
         return orderId;
     }
-
 
     function confirmOrder(uint256 orderId, uint256 paymentAmount) public {
         Order order = orders[orderId];
@@ -65,8 +69,8 @@ contract Marketplace {
         order.confirm(paymentAmount);
 
         // Randomly assign a worker
-        address randomWorker = selectRandomWorker();
-        taskContract.assignTask(order.taskId(), randomWorker);
+        address randomWorker1 = selectRandomWorker();
+        taskContract.assignTask(order.trainTaskId(), randomWorker1);
     }
 
     function selectRandomWorker() private view returns (address) {
