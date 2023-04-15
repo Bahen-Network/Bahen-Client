@@ -5,55 +5,47 @@ import "./Payment.sol";
 import "./Task.sol";
 
 contract Marketplace {
-    // 引用其他合约
     Payment private paymentContract;
     Task private taskContract;
+    address[] private workers;
+    address private admin;
+
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "Only admin can perform this operation.");
+        _;
+    }
 
     constructor(address paymentAddress, address taskAddress) {
         paymentContract = Payment(paymentAddress);
         taskContract = Task(taskAddress);
+        admin = msg.sender;
     }
 
-    // 事件
-    event TaskCreated(uint taskId, address client);
-    event TaskAssigned(uint taskId, address worker);
-    event TaskCompleted(uint taskId);
-
-    // 创建任务
-    function createTask(
-        string memory trainFileUrl,
-        string memory validationFileUrl,
-        uint cost
-    ) public payable {
-        require(msg.value >= cost, "Insufficient payment");
-
-        // 向 Payment 合约发送付款
-        paymentContract.receivePayment{value: msg.value}(msg.sender, cost);
-
-        // 创建任务信息
-        uint taskId = taskContract.createTaskInfo(msg.sender, cost);
-
-        // 触发任务创建事件
-        emit TaskCreated(taskId, msg.sender);
+    function registerWorker(address worker) public onlyAdmin {
+        workers.push(worker);
     }
 
-    // 分配 worker
-    function assignWorker(uint taskId, address worker) public {
-        taskContract.assignWorker(taskId, worker);
-
-        // 触发任务分配事件
-        emit TaskAssigned(taskId, worker);
+    function createOrderPreview(
+        Task.TaskType taskType,
+        string memory modelUrl,
+        string memory dataUrl,
+        uint256 requiredPower
+    ) public returns (uint256) {
+        uint256 taskId = taskContract.createTask(taskType, modelUrl, dataUrl, requiredPower);
+        return taskId;
     }
 
-    // 完成任务
-    function completeTask(uint taskId, string memory resultFileUrl) public {
-        taskContract.completeTask(taskId, resultFileUrl);
+    function confirmOrder(uint256 taskId, uint256 paymentAmount) public {
+        paymentContract.transfer(address(this), paymentAmount);
 
-        // 从 Payment 合约中将款项支付给 worker
-        (address client, address worker, uint cost) = taskContract.getPaymentInfo(taskId);
-        paymentContract.sendPayment(worker, cost);
+        // Randomly assign a worker
+        address randomWorker = selectRandomWorker();
+        taskContract.assignTask(taskId, randomWorker);
+    }
 
-        // 触发任务完成事件
-        emit TaskCompleted(taskId);
+    function selectRandomWorker() private view returns (address) {
+        require(workers.length > 0, "No workers available.");
+        uint256 randomIndex = uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty))) % workers.length;
+    return workers[randomIndex];
     }
 }

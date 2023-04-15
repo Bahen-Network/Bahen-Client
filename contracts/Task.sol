@@ -2,56 +2,52 @@
 pragma solidity ^0.8.0;
 
 contract Task {
-    // 定义结构体
+    enum TaskType { Training, Validation }
+    enum TaskStatus { Created, Assigned, Completed }
+
     struct TaskInfo {
-        uint taskId;
-        address client;
+        uint256 id;
+        TaskType taskType;
+        TaskStatus status;
+        string modelUrl;
+        string dataUrl;
+        uint256 requiredPower;
+        address creator;
         address worker;
-        string trainFileUrl;
-        string validationFileUrl;
-        string resultFileUrl;
-        uint cost;
-        bool isPaid;
-        bool isAssigned;
-        bool isCompleted;
     }
 
-    // 状态变量
-    uint public taskCount;
-    mapping(uint => TaskInfo) public taskInfos;
+    uint256 private nextTaskId = 1;
+    mapping(uint256 => TaskInfo) public tasks;
 
-    // 创建任务信息
-    function createTaskInfo(address client, uint cost) public returns (uint) {
-        taskCount++;
-        TaskInfo storage newTask = taskInfos[taskCount];
-        newTask.taskId = taskCount;
-        newTask.client = client;
-        newTask.cost = cost;
-        newTask.isPaid = true;
-        newTask.isAssigned = false;
-        newTask.isCompleted = false;
-        return taskCount;
+    event TaskCreated(uint256 indexed taskId, address indexed creator);
+    event TaskAssigned(uint256 indexed taskId, address indexed worker);
+    event TaskCompleted(uint256 indexed taskId);
+
+    function createTask(
+        TaskType taskType,
+        string memory modelUrl,
+        string memory dataUrl,
+        uint256 requiredPower
+    ) public returns (uint256) {
+        uint256 taskId = nextTaskId++;
+        tasks[taskId] = TaskInfo(taskId, taskType, TaskStatus.Created, modelUrl, dataUrl, requiredPower, msg.sender, address(0));
+        emit TaskCreated(taskId, msg.sender);
+        return taskId;
     }
 
-    // 分配 worker
-    function assignWorker(uint taskId, address worker) public {
-        TaskInfo storage task = taskInfos[taskId];
-        require(!task.isAssigned, "Task is already assigned");
+    function assignTask(uint256 taskId, address worker) public {
+        TaskInfo storage task = tasks[taskId];
+        require(task.status == TaskStatus.Created, "Task is not in Created status.");
+        task.status = TaskStatus.Assigned;
         task.worker = worker;
-        task.isAssigned = true;
+        emit TaskAssigned(taskId, worker);
     }
 
-    // 完成任务
-    function completeTask(uint taskId, string memory resultFileUrl) public {
-        TaskInfo storage task = taskInfos[taskId];
-        require(!task.isCompleted, "Task is already completed");
-        task.resultFileUrl = resultFileUrl;
-        task.isCompleted = true;
-    }
-
-    // 获取支付信息
-    function getPaymentInfo(uint taskId) public view returns (address, address, uint) {
-        TaskInfo storage task = taskInfos[taskId];
-        return (task.client, task.worker, task.cost);
+    function completeTask(uint256 taskId) public {
+        TaskInfo storage task = tasks[taskId];
+        require(task.status == TaskStatus.Assigned, "Task is not in Assigned status.");
+        require(task.worker == msg.sender, "Only assigned worker can complete the task.");
+        task.status = TaskStatus.Completed;
+        emit TaskCompleted(taskId);
     }
 }
