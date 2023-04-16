@@ -19,6 +19,9 @@ contract Marketplace {
     address private admin;
     TaskInPool[] private taskPool;
     mapping(address => uint256) public workerLoad;
+
+    uint256[] public orderIds;
+
     mapping(uint256 => Order) public orders;
     uint256 private nextOrderId;
 
@@ -48,11 +51,15 @@ contract Marketplace {
         }
     }
 
+    function getOrderList() public view returns (uint256[] memory) {
+        return orderIds;
+    }
+
     function createOrderPreview(
-    string memory modelUrl,
-    string memory trainDataUrl,
-    string memory validateDataUrl,
-    uint256 requiredPower
+        string memory modelUrl,
+        string memory trainDataUrl,
+        string memory validateDataUrl,
+        uint256 requiredPower
     ) public returns (uint256) {
         uint256 trainTaskId = taskContract.createTask(Task.TaskType.TRAIN, modelUrl, trainDataUrl, requiredPower);
         uint256 validateTaskId = taskContract.createTask(Task.TaskType.VALIDATE, modelUrl, validateDataUrl, requiredPower);
@@ -60,9 +67,9 @@ contract Marketplace {
         Order newOrder = new Order(trainTaskId, validateTaskId, msg.sender);
         uint256 orderId = nextOrderId++;
         orders[orderId] = newOrder;
+        orderIds.push(orderId); // 将新订单ID添加到数组中
         return orderId;
     }
-
 
     function confirmOrder(uint256 orderId, uint256 paymentAmount) public {
     Order order = orders[orderId];
@@ -72,6 +79,7 @@ contract Marketplace {
 
     paymentContract.transfer(address(this), paymentAmount);
     order.confirm(paymentAmount);
+
 
     // Add tasks to the TaskPool
     taskPool.push(TaskInPool(order.trainTaskId(), orderId, Task.TaskType.Training));
