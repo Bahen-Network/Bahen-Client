@@ -1,7 +1,6 @@
-const Marketplace = artifacts.require("Marketplace");
-const Payment = artifacts.require("Payment");
-const Task = artifacts.require("Task");
-const Order = artifacts.require("Order");
+const Payment = artifacts.require("./Payment.sol");
+const Task = artifacts.require("./Task.sol");
+const Marketplace = artifacts.require("./Marketplace.sol");
 
 module.exports = async function (deployer) {
   // 部署Payment合约
@@ -12,15 +11,6 @@ module.exports = async function (deployer) {
   await deployer.deploy(Task);
   const taskInstance = await Task.deployed();
 
-  // 部署Order合约
-  await deployer.deploy(Order);
-
-  // 获取Payment和Task合约的地址
-  const paymentAddress = paymentInstance.address;
-  const taskAddress = taskInstance.address;
-
-  // 使用Payment和Task合约的地址部署Marketplace合约
-  await deployer.deploy(Marketplace, paymentAddress, taskAddress);
-  let instance = await deployer.deploy(Marketplace, paymentAddress, taskAddress);
-  instance
+  // 使用已部署的Payment和Task合约的地址，部署Marketplace合约
+  await deployer.deploy(Marketplace, paymentInstance.address, taskInstance.address);
 };
