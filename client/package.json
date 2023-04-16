@@ -1,20 +1,32 @@
 {
-  "name": "client",
+  "name": "client-new",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^7.1.0",
     "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-scripts": "^5.0.1",
+    "stream": "npm:stream-browserify",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.0",
+    "web-vitals": "^2.1.4",
+    "web3": "^0.20.7"
+  },
+  "devDependencies": {
+    "truffle": "^5.1.65"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
