@@ -7,7 +7,8 @@ library SharedStructs {
         TaskType taskType;
         TaskStatus status;
         string modelUrl;
-        string dataUrl;
+        string trainDataUrl;
+        string validateDataUrl;
         uint256 requiredPower;
         address creator;
         address worker;

@@ -15,11 +15,12 @@ contract Task {
     function createTask(
         SharedStructs.TaskType taskType,
         string memory modelUrl,
-        string memory dataUrl,
+        string memory trainDataUrl,
+        string memory validateDataUrl,
         uint256 requiredPower
     ) public returns (uint256) {
         uint256 taskId = nextTaskId++;
-        tasks[taskId] = SharedStructs.TaskInfo(taskId, taskType, SharedStructs.TaskStatus.Created, modelUrl, dataUrl, requiredPower, msg.sender, address(0));
+        tasks[taskId] = SharedStructs.TaskInfo(taskId, taskType, SharedStructs.TaskStatus.Created, modelUrl, trainDataUrl, validateDataUrl, requiredPower, msg.sender, address(0));
         emit TaskCreated(taskId, msg.sender);
         return taskId;
     }
