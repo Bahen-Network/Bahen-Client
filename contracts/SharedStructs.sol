@@ -14,6 +14,13 @@ library SharedStructs {
         address worker;
     }
 
-    enum TaskType { Training, Validation }
-    enum TaskStatus { Created, Assigned, Completed }
+    enum TaskType {
+        Training,
+        Validation
+    }
+    enum TaskStatus {
+        Created,
+        Assigned,
+        Completed
+    }
 }

@@ -4,7 +4,11 @@ pragma solidity ^0.8.0;
 contract Payment {
     mapping(address => uint256) public balanceOf;
     event Deposit(address indexed sender, uint256 amount);
-    event Transfer(address indexed sender, address indexed recipient, uint256 amount);
+    event Transfer(
+        address indexed sender,
+        address indexed recipient,
+        uint256 amount
+    );
     event Withdrawal(address indexed sender, uint256 amount);
 
     // Users can deposit ETH into the contract
@@ -46,7 +50,10 @@ contract Payment {
     // Internal function to transfer ETH to a specific address
     function _transferETH(address to, uint256 amount) internal {
         // Ensure the contract has a sufficient balance
-        require(address(this).balance >= amount, "Insufficient contract balance.");
+        require(
+            address(this).balance >= amount,
+            "Insufficient contract balance."
+        );
 
         // Transfer the specified amount of ETH to the recipient
         payable(to).transfer(amount);
