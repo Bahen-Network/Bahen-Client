@@ -57,10 +57,8 @@ contract Marketplace {
     string memory validateDataUrl,
     uint256 requiredPower
     ) public returns (uint256) {
-        uint256 trainTaskId = taskContract.createTask(SharedStructs.TaskType.Training, modelUrl, trainDataUrl, requiredPower);
-        uint256 validateTaskId = taskContract.createTask(SharedStructs.TaskType.Validation, modelUrl, validateDataUrl, requiredPower);
-        
-        Order newOrder = new Order(trainTaskId, validateTaskId, msg.sender);
+        uint256 taskId = taskContract.createTask(SharedStructs.TaskType.Training, modelUrl, trainDataUrl, validateDataUrl, requiredPower);
+        Order newOrder = new Order(taskId, msg.sender);
         uint256 orderId = nextOrderId++;
         orders[orderId] = newOrder;
         return orderId;
@@ -77,7 +75,7 @@ contract Marketplace {
     order.confirm(paymentAmount);
 
     // Add tasks to the TaskPool
-    taskPool.push(TaskInPool(order.trainTaskId(), orderId, SharedStructs.TaskType.Training));
+    taskPool.push(TaskInPool(order.taskId(), orderId, SharedStructs.TaskType.Training));
     }
 
     function assignTaskFromPool() public {
@@ -114,16 +112,21 @@ contract Marketplace {
     }
 
     function setMarketplaceAddress(address marketplaceAddress) external {
-    require(msg.sender == admin, "Only admin can set the marketplace address.");
-    marketplace = marketplaceAddress;
+        require(msg.sender == admin, "Only admin can set the marketplace address.");
+        marketplace = marketplaceAddress;
     }
 
     function onTaskCompleted(uint256 taskId, address worker) external {
         require(msg.sender == address(taskContract), "Only the Task contract can notify the Marketplace of a completed task.");
-
+        taskContract.completeTask(taskId);
         // Update worker's load
         workerLoad[worker]--;
-
+        SharedStructs.TaskInfo memory task = taskContract.getTask(taskId);
+        if(task.taskType == SharedStructs.TaskType.Training)
+        {
+            task.taskType = SharedStructs.TaskType.Validation;
+            task.status = SharedStructs.TaskStatus.Created;
+        }
         // Try to assign a new task from the pool
         if (taskPool.length > 0) {
             assignTaskFromPool();
@@ -133,20 +136,5 @@ contract Marketplace {
     function selectRandomWorker() private view returns (address) {
         uint256 randomIndex = uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty))) % workers.length;
         return workers[randomIndex];
-    }
-
-        function completeTask(uint256 taskId) public {
-        SharedStructs.TaskInfo memory task = taskContract.getTask(taskId);
-        require(task.status == SharedStructs.TaskStatus.Assigned, "Task is not in Assigned status.");
-        require(task.worker == msg.sender, "Only assigned worker can complete the task.");
-
-        // Call the completeTask function in Task contract
-        taskContract.completeTask(taskId);
-
-        // Emit TaskCompleted event in the Marketplace contract
-        emit TaskCompleted(taskId, msg.sender);
-
-        // Notify the Marketplace contract
-        Marketplace(marketplace).onTaskCompleted(taskId, msg.sender);
     }
 }
