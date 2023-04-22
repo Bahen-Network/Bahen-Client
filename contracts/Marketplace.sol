@@ -31,7 +31,7 @@ contract Marketplace {
         _;
     }
 
-    constructor(address paymentAddress, address taskAddress) {
+    constructor(address payable paymentAddress, address taskAddress) {
         paymentContract = Payment(paymentAddress);
         taskContract = Task(taskAddress);
         admin = msg.sender;
