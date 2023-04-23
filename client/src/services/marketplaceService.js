@@ -35,12 +35,23 @@ const getContract = async () => {
 
 export const createOrderPreview = async (modelUrl, trainDataUrl, validateDataUrl, requiredPower) => {
   const contractInstance = await getContract();
-  const web3Instance = await getWeb3(); // Add this line
+  const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
-  const orderId = await contractInstance.methods
+  const orderIdHex = await contractInstance.methods
     .createOrderPreview(modelUrl, trainDataUrl, validateDataUrl, requiredPower)
     .send({ from: accounts[0] });
+  console.log(`Order Preview Created: ${orderIdHex.parseInt}`);
 
-  return orderId;
+  return parseInt(orderIdHex);
 };
 
+export const confirmOrder = async (orderId, paymentAmount) => {
+  const contractInstance = await getContract();
+  const web3Instance = await getWeb3();
+  const accounts = await web3Instance.eth.getAccounts();
+  const result = await contractInstance.methods
+    .confirmOrder(orderId, paymentAmount)
+    .send({ from: accounts[0], value: paymentAmount });
+
+  return result;
+};

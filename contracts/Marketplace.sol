@@ -22,7 +22,9 @@ contract Marketplace {
     mapping(address => uint256) public workerLoad;
     mapping(uint256 => Order) public orders;
     uint256 private nextOrderId;
+
     event TaskCompleted(uint256 indexed taskId, address indexed worker);
+    event Log(string message, uint256 Id);
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "Only admin can perform this operation.");
@@ -65,6 +67,7 @@ contract Marketplace {
         Order newOrder = new Order(taskId, msg.sender);
         uint256 orderId = nextOrderId++;
         orders[orderId] = newOrder;
+        emit Log("Cread order success!", orderId);
         return orderId;
     }
 
@@ -77,13 +80,17 @@ contract Marketplace {
         require(!order.isConfirmed(), "Order already confirmed.");
         require(workers.length > 0, "No workers available.");
 
+        emit Log("Start transfer!", orderId);
         paymentContract.transfer(address(this), paymentAmount);
         order.confirm(paymentAmount);
+        emit Log("Transfer successful!", orderId);
 
         // Add tasks to the TaskPool
+        /*
         taskPool.push(
             TaskInPool(order.taskId(), orderId, SharedStructs.TaskType.Training)
         );
+        */
     }
 
     function assignTaskFromPool() public {

@@ -1,7 +1,10 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import { confirmOrder } from '../services/marketplaceService';
 
-const OrderPreview = ({ orderId }) => {
+const OrderPreview = () => {
+  const { orderId } = useParams();
+
   const handleConfirmOrder = async (paymentAmount) => {
     await confirmOrder(orderId, paymentAmount);
     console.log(`Order Confirmed: ${orderId}`);
