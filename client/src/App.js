@@ -1,20 +1,19 @@
 import React from 'react';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import CreateOrder from './components/CreateOrder';
+import OrderPreview from './components/OrderPreview';
 
 function App() {
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Translation Marketplace</h1>
-      </header>
-      <main>
-        <CreateOrder />
-      </main>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<CreateOrder />} />
+          <Route path="/order-preview/:orderId" element={<OrderPreview />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
 export default App;
-  
