@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { createOrderPreview } from '../services/marketplaceService';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 
 const CreateOrder = () => {
   const [modelUrl, setModelUrl] = useState('');
@@ -24,6 +26,7 @@ const CreateOrder = () => {
 
   return (
     <div className="container">
+      <Link to="/">Back to Home</Link> {/* back home */}
       <h2 className="my-4">Create Order</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">

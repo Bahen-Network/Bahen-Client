@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const downloadResult = async (orderId) => {
   // 在此处添加实际的下载结果函数，该函数应从智能合约中获取结果URL
