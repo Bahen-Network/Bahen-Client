@@ -51,6 +51,50 @@ export const createOrderPreview = async (modelUrl, trainDataUrl, validateDataUrl
   }
 };
 
+export const getUserOrders = async (userAddress) => {
+  try {
+    const marketplaceContract = getMarketplaceContractInstance();
+
+    const userOrderIds = await marketplaceContract.methods.getUserOrders(userAddress).call();
+
+    return userOrderIds;
+  } catch (error) {
+    console.error("Error fetching user orders:", error);
+    throw error;
+  }
+};
+
+export const getOrderDetails = async (orderId) => {
+  try {
+    const marketplaceContract = getMarketplaceContractInstance();
+    const order = await marketplaceContract.methods.orders(orderId).call();
+    return order;
+  } catch (error) {
+    console.error(`Error fetching order details for orderId: ${orderId}`, error);
+    throw error;
+  }
+};
+
+
+
+export const getOrderInfo = async (orderId) => {
+  try {
+    const marketplaceContract = getMarketplaceContractInstance();
+
+    const orderInfo = await marketplaceContract.methods.getOrderInfo(orderId).call();
+
+    return {
+      taskId: orderInfo._taskId,
+      validateTaskId: orderInfo._validateTaskId,
+      client: orderInfo._client,
+      paymentAmount: orderInfo._paymentAmount,
+      isConfirmed: orderInfo._isConfirmed,
+    };
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    throw error;
+  }
+};
 
 export const confirmOrder = async (orderId, paymentAmount) => {
   const contractInstance = await getContract();

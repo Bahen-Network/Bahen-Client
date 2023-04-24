@@ -21,6 +21,7 @@ contract Marketplace {
     TaskInPool[] private taskPool;
     mapping(address => uint256) public workerLoad;
     mapping(uint256 => Order) public orders;
+    mapping(address => uint256[]) public userOrders;
     uint256 private nextOrderId;
 
     event TaskCompleted(uint256 indexed taskId, address indexed worker);
@@ -73,15 +74,25 @@ contract Marketplace {
         Order newOrder = new Order(taskId, msg.sender);
         uint256 orderId = nextOrderId++;
         orders[orderId] = newOrder;
+
+        // update [userAdress, order] map
+        userOrders[msg.sender].push(orderId);
+
         emit OrderCreated("Cread order success!", orderId);
         return orderId;
+    }
+
+    // get order by user adress
+    function getUserOrders(
+        address user
+    ) public view returns (uint256[] memory) {
+        return userOrders[user];
     }
 
     function confirmOrder(
         uint256 orderId,
         uint256 paymentAmount
     ) public payable {
-        
         emit Log("confirmOrder start11111!!!");
         Order order = orders[orderId];
         emit Log("confirmOrder start!!!");
@@ -91,7 +102,7 @@ contract Marketplace {
         );
 
         emit Logad(msg.sender, order.client());
-        
+
         require(!order.isConfirmed(), "Order already confirmed.");
         // require(workers.length > 0, "No workers available.");
 
@@ -108,6 +119,32 @@ contract Marketplace {
             TaskInPool(order.taskId(), orderId, SharedStructs.TaskType.Training)
         );
         */
+    }
+
+    function getOrderInfo(
+        uint256 orderId
+    )
+        public
+        view
+        returns (
+            uint256 _taskId,
+            uint256 _validateTaskId,
+            address _client,
+            uint256 _paymentAmount,
+            bool _isConfirmed
+        )
+    {
+        Order order = orders[orderId];
+
+        _taskId = order.taskId();
+        _validateTaskId = order.validateTaskId();
+        _client = order.client();
+        _paymentAmount = order.paymentAmount();
+        _isConfirmed = order.isConfirmed();
+    }
+
+    function getOrderCount() public view returns (uint256) {
+        return nextOrderId;
     }
 
     function assignTaskFromPool() public {
