@@ -24,7 +24,12 @@ contract Marketplace {
     uint256 private nextOrderId;
 
     event TaskCompleted(uint256 indexed taskId, address indexed worker);
-    event Log(string message, uint256 Id);
+
+    // TODO: delete message to save gas
+    event OrderCreated(string message, uint256 orderId);
+    event ConfirmOrder(uint256 orderId, uint256 paymentAmount);
+    event Log(string message);
+    event Logad(address adr, address adr2);
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "Only admin can perform this operation.");
@@ -35,6 +40,7 @@ contract Marketplace {
         paymentContract = Payment(paymentAddress);
         taskContract = Task(taskAddress);
         admin = msg.sender;
+        nextOrderId = 0;
     }
 
     function addWorker(address worker) public onlyAdmin {
@@ -67,23 +73,34 @@ contract Marketplace {
         Order newOrder = new Order(taskId, msg.sender);
         uint256 orderId = nextOrderId++;
         orders[orderId] = newOrder;
-        emit Log("Cread order success!", orderId);
+        emit OrderCreated("Cread order success!", orderId);
         return orderId;
     }
 
-    function confirmOrder(uint256 orderId, uint256 paymentAmount) public {
+    function confirmOrder(
+        uint256 orderId,
+        uint256 paymentAmount
+    ) public payable {
+        
+        emit Log("confirmOrder start11111!!!");
         Order order = orders[orderId];
+        emit Log("confirmOrder start!!!");
         require(
             msg.sender == order.client(),
             "Only the client can perform this operation."
         );
-        require(!order.isConfirmed(), "Order already confirmed.");
-        require(workers.length > 0, "No workers available.");
 
-        emit Log("Start transfer!", orderId);
-        paymentContract.transfer(address(this), paymentAmount);
+        emit Logad(msg.sender, order.client());
+        
+        require(!order.isConfirmed(), "Order already confirmed.");
+        // require(workers.length > 0, "No workers available.");
+
+        require(msg.value >= paymentAmount, "Not enough funds provided.");
+
+        // Send the funds to the Marketplace contract
+        Payment(paymentContract).deposit{value: msg.value}(msg.sender);
+
         order.confirm(paymentAmount);
-        emit Log("Transfer successful!", orderId);
 
         // Add tasks to the TaskPool
         /*

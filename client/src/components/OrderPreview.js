@@ -1,20 +1,23 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { confirmOrder } from '../services/marketplaceService';
 
 const OrderPreview = () => {
   const { orderId } = useParams();
+  const location = useLocation();
+  const requiredPower = location.state?.requiredPower || 0;
 
   const handleConfirmOrder = async (paymentAmount) => {
+    console.log(`Order Confirmed start!!: ${orderId}`);
     await confirmOrder(orderId, paymentAmount);
-    console.log(`Order Confirmed: ${orderId}`);
+    console.log(`Order Confirmed success!!: ${orderId}`);
   };
 
   return (
     <div>
       <h2>Order Preview</h2>
       <p>Order ID: {orderId}</p>
-      <button onClick={() => handleConfirmOrder(100)}>Confirm Order (100 wei)</button>
+      <button onClick={() => handleConfirmOrder(requiredPower)}>Confirm Order ({requiredPower} wei)</button>
     </div>
   );
 };

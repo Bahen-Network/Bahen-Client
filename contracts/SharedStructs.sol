@@ -9,6 +9,7 @@ library SharedStructs {
         string modelUrl;
         string trainDataUrl;
         string validateDataUrl;
+        // wei
         uint256 requiredPower;
         address creator;
         address worker;

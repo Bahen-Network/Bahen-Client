@@ -13,14 +13,13 @@ const CreateOrder = () => {
     e.preventDefault();
     if (requiredPower !== null) {
       const orderId = await createOrderPreview(modelUrl, trainDataUrl, validateDataUrl, requiredPower);
-      console.log(`Order Preview Created: ${orderId}`);
-      navigate(`/order-preview/${orderId}`);
+      navigate(`/order-preview/${orderId}`, { state: { requiredPower } });
     }
   };
 
   const calculateCost = async () => {
     // Replace this with a call to the actual API when it's available
-    setRequiredPower(100000);
+    setRequiredPower(999999999999999);
   };
 
   return (
