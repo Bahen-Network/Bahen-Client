@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 contract Payment {
     mapping(address => uint256) public balanceOf;
     event Deposit(address indexed sender, uint256 amount);
+    event Balance(address indexed sender, uint256 Balance);
     event Transfer(
         address indexed sender,
         address indexed recipient,
@@ -12,11 +13,12 @@ contract Payment {
     event Withdrawal(address indexed sender, uint256 amount);
 
     // Users can deposit ETH into the contract
-    function deposit() external payable {
+    function deposit(address user) external payable {
         // Update the user's balance in the contract
-        balanceOf[msg.sender] += msg.value;
+        balanceOf[user] += msg.value;
         // Emit the Deposit event
-        emit Deposit(msg.sender, msg.value);
+        emit Deposit(user, msg.value);
+        emit Balance(user, address(this).balance);
     }
 
     // Transfer ETH between users

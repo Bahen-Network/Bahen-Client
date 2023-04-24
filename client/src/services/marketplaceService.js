@@ -37,21 +37,33 @@ export const createOrderPreview = async (modelUrl, trainDataUrl, validateDataUrl
   const contractInstance = await getContract();
   const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
-  const orderIdHex = await contractInstance.methods
-    .createOrderPreview(modelUrl, trainDataUrl, validateDataUrl, requiredPower)
-    .send({ from: accounts[0] });
-  console.log(`Order Preview Created: ${orderIdHex.parseInt}`);
+  try {
+    const result = await contractInstance.methods
+      .createOrderPreview(modelUrl, trainDataUrl, validateDataUrl, requiredPower)
+      .send({ from: accounts[0] });
 
-  return parseInt(orderIdHex);
+    const orderId = result.events.OrderCreated.returnValues.orderId;
+    console.log(`Order Preview Created: ${orderId}`);
+    return orderId;
+  } catch (error) {
+    console.error('Error creating order:', error);
+    return null;
+  }
 };
+
 
 export const confirmOrder = async (orderId, paymentAmount) => {
   const contractInstance = await getContract();
   const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
-  const result = await contractInstance.methods
-    .confirmOrder(orderId, paymentAmount)
-    .send({ from: accounts[0], value: paymentAmount });
-
+  let result;
+  try {
+    result = await contractInstance.methods
+      .confirmOrder(orderId, paymentAmount)
+      .send({ from: accounts[0], value: paymentAmount });
+  } catch (error) {
+    console.error('Error executing transaction:', error);
+  }
   return result;
 };
+
