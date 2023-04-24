@@ -33,13 +33,13 @@ const getContract = async () => {
   return contract;
 };
 
-export const createOrderPreview = async (modelUrl, trainDataUrl, validateDataUrl, requiredPower) => {
+export const createOrderPreview = async (requiredPower) => {
   const contractInstance = await getContract();
   const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
   try {
     const result = await contractInstance.methods
-      .createOrderPreview(modelUrl, trainDataUrl, validateDataUrl, requiredPower)
+      .createOrderPreview('','','',requiredPower)
       .send({ from: accounts[0] });
 
     const orderId = result.events.OrderCreated.returnValues.orderId;
