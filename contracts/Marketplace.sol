@@ -82,28 +82,20 @@ contract Marketplace {
         return orderId;
     }
 
-    // get order by user adress
-    function getUserOrders(
-        address user
-    ) public view returns (uint256[] memory) {
-        return userOrders[user];
-    }
-
     function confirmOrder(
         uint256 orderId,
         uint256 paymentAmount
     ) public payable {
-        emit Log("confirmOrder start11111!!!");
         Order order = orders[orderId];
-        emit Log("confirmOrder start!!!");
         require(
             msg.sender == order.client(),
             "Only the client can perform this operation."
         );
 
-        emit Logad(msg.sender, order.client());
-
-        require(!order.isConfirmed(), "Order already confirmed.");
+        require(
+            order.orderStatus() != SharedStructs.OrderStatus.Confirmed,
+            "Order already confirmed."
+        );
         // require(workers.length > 0, "No workers available.");
 
         require(msg.value >= paymentAmount, "Not enough funds provided.");
@@ -121,6 +113,13 @@ contract Marketplace {
         */
     }
 
+    // get order by user adress
+    function getUserOrders(
+        address user
+    ) public view returns (uint256[] memory) {
+        return userOrders[user];
+    }
+
     function getOrderInfo(
         uint256 orderId
     )
@@ -131,20 +130,15 @@ contract Marketplace {
             uint256 _validateTaskId,
             address _client,
             uint256 _paymentAmount,
-            bool _isConfirmed
+            SharedStructs.OrderStatus _orderStatus
         )
     {
         Order order = orders[orderId];
-
         _taskId = order.taskId();
         _validateTaskId = order.validateTaskId();
         _client = order.client();
         _paymentAmount = order.paymentAmount();
-        _isConfirmed = order.isConfirmed();
-    }
-
-    function getOrderCount() public view returns (uint256) {
-        return nextOrderId;
+        _orderStatus = order.orderStatus();
     }
 
     function assignTaskFromPool() public {
