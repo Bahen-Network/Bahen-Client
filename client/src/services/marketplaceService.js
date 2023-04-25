@@ -23,7 +23,14 @@ const getWeb3 = async () => {
   return web3;
 };
 
-const getContract = async () => {
+export const getUserAddress = async () => {
+  const web3Instance = await getWeb3();
+  const accounts = await web3Instance.eth.getAccounts();
+  return accounts[0];
+};
+
+
+const getMarketplaceContractInstance = async () => {
   if (!contract) {
     const web3Instance = await getWeb3();
     const networkId = await web3Instance.eth.net.getId();
@@ -34,7 +41,7 @@ const getContract = async () => {
 };
 
 export const createOrderPreview = async (modelUrl, trainDataUrl, validateDataUrl, requiredPower) => {
-  const contractInstance = await getContract();
+  const contractInstance = await getMarketplaceContractInstance();
   const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
   try {
@@ -53,9 +60,8 @@ export const createOrderPreview = async (modelUrl, trainDataUrl, validateDataUrl
 
 export const getUserOrders = async (userAddress) => {
   try {
-    const marketplaceContract = getMarketplaceContractInstance();
-
-    const userOrderIds = await marketplaceContract.methods.getUserOrders(userAddress).call();
+    const contractInstance = await getMarketplaceContractInstance();
+    const userOrderIds = await contractInstance.methods.getUserOrders(userAddress).call();
 
     return userOrderIds;
   } catch (error) {
@@ -64,25 +70,13 @@ export const getUserOrders = async (userAddress) => {
   }
 };
 
-export const getOrderDetails = async (orderId) => {
-  try {
-    const marketplaceContract = getMarketplaceContractInstance();
-    const order = await marketplaceContract.methods.orders(orderId).call();
-    return order;
-  } catch (error) {
-    console.error(`Error fetching order details for orderId: ${orderId}`, error);
-    throw error;
-  }
-};
-
-
-
 export const getOrderInfo = async (orderId) => {
   try {
-    const marketplaceContract = getMarketplaceContractInstance();
+    const contractInstance = await getMarketplaceContractInstance(); // 添加 await 关键字
 
-    const orderInfo = await marketplaceContract.methods.getOrderInfo(orderId).call();
+    const orderInfo = await contractInstance.methods.getOrderInfo(orderId).call();
 
+    console.log("get orderInfo:", orderInfo);
     return {
       taskId: orderInfo._taskId,
       validateTaskId: orderInfo._validateTaskId,
@@ -96,8 +90,9 @@ export const getOrderInfo = async (orderId) => {
   }
 };
 
+
 export const confirmOrder = async (orderId, paymentAmount) => {
-  const contractInstance = await getContract();
+  const contractInstance = await getMarketplaceContractInstance();
   const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
   let result;
