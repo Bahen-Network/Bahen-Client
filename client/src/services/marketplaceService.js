@@ -77,12 +77,24 @@ export const getOrderInfo = async (orderId) => {
     const orderInfo = await contractInstance.methods.getOrderInfo(orderId).call();
 
     console.log("get orderInfo:", orderInfo);
+
+    let orderStatus;
+    if(orderInfo._orderStatus == "0")
+    {
+      orderStatus = "Created";
+    }else if(orderInfo._orderStatus == "0"){
+      orderStatus = "Confirmed";
+    }else if(orderInfo._orderStatus == "0"){
+      orderStatus = "Completed";
+    }else{
+      orderStatus = "Failed";
+    }
     return {
       taskId: orderInfo._taskId,
       validateTaskId: orderInfo._validateTaskId,
       client: orderInfo._client,
       paymentAmount: orderInfo._paymentAmount,
-      isConfirmed: orderInfo._isConfirmed,
+      orderStatus: orderStatus,
     };
   } catch (error) {
     console.error("Error fetching order:", error);

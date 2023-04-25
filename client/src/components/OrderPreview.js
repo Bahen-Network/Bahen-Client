@@ -20,7 +20,7 @@ const OrderPreview = () => {
         validateTaskId: order.validateTaskId,
         client: order.client,
         paymentAmount: order.paymentAmount,
-        isConfirmed: order.isConfirmed,
+        orderStatus: order.orderStatus,
       });
     };
     
@@ -44,7 +44,7 @@ const OrderPreview = () => {
           <p>Task ID: {orderDetails.taskId}</p>
           <p>ValidateTask Id: {orderDetails.validateTaskId}</p>
           <p>Payment Amount: {orderDetails.paymentAmount}</p>
-          <p>IsConfirmed: {orderDetails.isConfirmed ? "Yes" : "No"}</p>
+          <p>orderStatus: {orderDetails.orderStatus}</p>
           <p>Your Client Adress: {orderDetails.client}</p>
         </>
       )}

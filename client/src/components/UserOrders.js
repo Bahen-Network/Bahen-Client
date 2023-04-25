@@ -42,7 +42,7 @@ const UserOrders = () => {
             <th>Task ID</th>
             <th>Client</th>
             <th>Payment Amount</th>
-            <th>Is Confirmed</th>
+            <th>Order Status</th>
           </tr>
         </thead>
         <tbody>
@@ -52,7 +52,7 @@ const UserOrders = () => {
               <td>{order.taskId}</td>
               <td>{order.client}</td>
               <td>{order.paymentAmount}</td>
-              <td>{order.isConfirmed ? "Yes" : "No"}</td>
+              <td>{order.orderStatus}</td>
             </tr>
           ))}
         </tbody>
