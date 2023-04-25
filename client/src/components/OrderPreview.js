@@ -1,13 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { Link, useNavigate } from 'react-router-dom';
-import { confirmOrder } from '../services/marketplaceService';
+import { confirmOrder, getOrderInfo } from '../services/marketplaceService';
 
 const OrderPreview = () => {
   const { orderId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const requiredPower = location.state?.requiredPower || 0;
+
+  const [orderDetails, setOrderDetails] = useState(null);
+
+  useEffect(() => {
+    
+    const fetchOrderDetails = async () => {
+      const order = await getOrderInfo(orderId);
+      setOrderDetails({
+        taskId: order.taskId,
+        validateTaskId: order.validateTaskId,
+        client: order.client,
+        paymentAmount: order.paymentAmount,
+        isConfirmed: order.isConfirmed,
+      });
+    };
+    
+
+    fetchOrderDetails();
+  }, [orderId]);
 
   const handleConfirmOrder = async (paymentAmount) => {
     console.log(`Order Confirmed start!!: ${orderId}`);
@@ -19,7 +38,16 @@ const OrderPreview = () => {
   return (
     <div>
       <h2>Order Preview</h2>
-      <p>Order ID: {orderId}</p>
+      {orderDetails && (
+        <>
+          <p>Order ID: {orderId}</p>
+          <p>Task ID: {orderDetails.taskId}</p>
+          <p>ValidateTask Id: {orderDetails.validateTaskId}</p>
+          <p>Payment Amount: {orderDetails.paymentAmount}</p>
+          <p>IsConfirmed: {orderDetails.isConfirmed ? "Yes" : "No"}</p>
+          <p>Your Client Adress: {orderDetails.client}</p>
+        </>
+      )}
       <button onClick={() => handleConfirmOrder(requiredPower)}>Confirm Order ({requiredPower} wei)</button>
       <div className="navigation">
         <Link to="/">
