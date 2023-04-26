@@ -18,7 +18,7 @@ contract Order {
     }
 
     function confirm(uint256 _paymentAmount) public {
-        require(orderStatus == SharedStructs.OrderStatus.Confirmed , "Order already confirmed.");
+        require(orderStatus != SharedStructs.OrderStatus.Confirmed , "Order already confirmed.");
         paymentAmount = _paymentAmount;
         orderStatus = SharedStructs.OrderStatus.Confirmed; 
     }

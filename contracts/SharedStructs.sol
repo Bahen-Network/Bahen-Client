@@ -6,9 +6,7 @@ library SharedStructs {
         uint256 id;
         TaskType taskType;
         TaskStatus status;
-        string modelUrl;
-        string trainDataUrl;
-        string validateDataUrl;
+        string folderUrl;
         // wei
         uint256 requiredPower;
         address creator;

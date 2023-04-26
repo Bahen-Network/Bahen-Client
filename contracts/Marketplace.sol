@@ -59,16 +59,12 @@ contract Marketplace {
     }
 
     function createOrderPreview(
-        string memory modelUrl,
-        string memory trainDataUrl,
-        string memory validateDataUrl,
+        string memory folderUrl,
         uint256 requiredPower
     ) public returns (uint256) {
         uint256 taskId = taskContract.createTask(
             SharedStructs.TaskType.Training,
-            modelUrl,
-            trainDataUrl,
-            validateDataUrl,
+            folderUrl,
             requiredPower
         );
         Order newOrder = new Order(taskId, msg.sender);
@@ -90,11 +86,6 @@ contract Marketplace {
         require(
             msg.sender == order.client(),
             "Only the client can perform this operation."
-        );
-
-        require(
-            order.orderStatus() != SharedStructs.OrderStatus.Confirmed,
-            "Order already confirmed."
         );
         // require(workers.length > 0, "No workers available.");
 

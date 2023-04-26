@@ -13,9 +13,7 @@ contract Task {
 
     function createTask(
         SharedStructs.TaskType taskType,
-        string memory modelUrl,
-        string memory trainDataUrl,
-        string memory validateDataUrl,
+        string memory folderUrl,
         uint256 requiredPower
     ) public returns (uint256) {
         uint256 taskId = nextTaskId++;
@@ -23,9 +21,7 @@ contract Task {
             taskId,
             taskType,
             SharedStructs.TaskStatus.Created,
-            modelUrl,
-            trainDataUrl,
-            validateDataUrl,
+            folderUrl,
             requiredPower,
             msg.sender,
             address(0)
