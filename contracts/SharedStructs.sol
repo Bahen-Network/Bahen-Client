@@ -24,4 +24,11 @@ library SharedStructs {
         Assigned,
         Completed
     }
+
+    enum OrderStatus {
+        Created,        
+        Confirmed,      
+        Completed,      
+        Failed         
+    }
 }

@@ -1,13 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/Home.css';
 
 const Home = () => {
   return (
-    <div>
+    <div className="home-container">
       <h2>Welcome to the Marketplace</h2>
-      <Link to="/create-order">Create Order</Link>
-      <br />
-      <Link to="/user-orders">My Orders</Link> 
+      <div className="buttons-container">
+        <Link to="/create-order" className="home-button">
+          Create Order
+        </Link>
+        <Link to="/user-orders" className="home-button">
+          My Orders
+        </Link>
+      </div>
     </div>
   );
 };
