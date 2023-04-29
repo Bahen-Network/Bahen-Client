@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 library SharedStructs {
     struct TaskInfo {
         uint256 id;
+        uint256 orderId;
         TaskType taskType;
         TaskStatus status;
         string modelUrl;

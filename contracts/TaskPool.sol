@@ -3,8 +3,9 @@ pragma solidity ^0.8.0;
 
 import "./SharedStructs.sol";
 
-contract Task {
+contract TaskPool {
     uint256 private nextTaskId = 1;
+    uint256 private taskNumbers = 0;
     mapping(uint256 => SharedStructs.TaskInfo) public tasks;
 
     event TaskCreated(uint256 indexed taskId, address indexed creator);
@@ -13,6 +14,7 @@ contract Task {
 
     function createTask(
         SharedStructs.TaskType taskType,
+        uint256 orderId,
         string memory modelUrl,
         string memory trainDataUrl,
         string memory validateDataUrl,
@@ -21,6 +23,7 @@ contract Task {
         uint256 taskId = nextTaskId++;
         tasks[taskId] = SharedStructs.TaskInfo(
             taskId,
+            orderId,
             taskType,
             SharedStructs.TaskStatus.Created,
             modelUrl,
@@ -30,6 +33,7 @@ contract Task {
             msg.sender,
             address(0)
         );
+        taskNumbers++;
         emit TaskCreated(taskId, msg.sender);
         return taskId;
     }
@@ -40,7 +44,13 @@ contract Task {
         return tasks[taskId];
     }
 
+    function HasTask() private view returns(bool)
+    {
+        return taskNumbers >= 0;
+    }
+
     function assignTask(uint256 taskId, address worker) public {
+        require(HasTask(), "No tasks in the pool.");
         SharedStructs.TaskInfo storage task = tasks[taskId];
         require(
             task.status == SharedStructs.TaskStatus.Created,
@@ -75,6 +85,7 @@ contract Task {
             "Only assigned worker can complete the task."
         );
         task.status = SharedStructs.TaskStatus.Completed;
+        taskNumbers--;
         emit TaskCompleted(taskId);
     }
 }
