@@ -4,13 +4,14 @@ pragma solidity ^0.8.0;
 library SharedStructs {
     struct TaskInfo {
         uint256 id;
+        uint256 orderId;
         TaskType taskType;
         TaskStatus status;
         string folderUrl;
         // wei
         uint256 requiredPower;
         address creator;
-        address worker;
+        uint256 workerId;
     }
 
     enum TaskType {

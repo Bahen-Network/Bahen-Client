@@ -2,23 +2,17 @@
 pragma solidity ^0.8.0;
 
 import "./Payment.sol";
-import "./Task.sol";
+import "./TaskPool.sol";
 import "./Order.sol";
 import "./SharedStructs.sol";
+import "./WorkerPool.sol";
 
 contract Marketplace {
-    struct TaskInPool {
-        uint256 taskId;
-        uint256 orderId;
-        SharedStructs.TaskType taskType;
-    }
-
     Payment private paymentContract;
-    Task private taskContract;
-    address[] private workers;
+    TaskPool private taskPoolContract;
+    WorkerPool private workerPoolContract;
     address private admin;
     address private marketplace;
-    TaskInPool[] private taskPool;
     mapping(address => uint256) public workerLoad;
     mapping(uint256 => Order) public orders;
     mapping(address => uint256[]) public userOrders;
@@ -37,38 +31,30 @@ contract Marketplace {
         _;
     }
 
-    constructor(address payable paymentAddress, address taskAddress) {
+    constructor(address payable paymentAddress, address taskPoolAddress, address workerPoolAddress) {
         paymentContract = Payment(paymentAddress);
-        taskContract = Task(taskAddress);
+        taskPoolContract = TaskPool(taskPoolAddress);
+        workerPoolContract = WorkerPool(workerPoolAddress);
         admin = msg.sender;
         nextOrderId = 0;
     }
 
-    function addWorker(address worker) public onlyAdmin {
-        workers.push(worker);
+    function addWorker(address worker, uint256 _computingPower) public onlyAdmin {
+        workerPoolContract.addWorker(worker, _computingPower);
+        TriggerTaskPool();
     }
 
     function removeWorker(address worker) public onlyAdmin {
-        for (uint256 i = 0; i < workers.length; i++) {
-            if (workers[i] == worker) {
-                workers[i] = workers[workers.length - 1];
-                workers.pop();
-                break;
-            }
-        }
+        workerPoolContract.removeWorker(worker);
     }
 
     function createOrderPreview(
         string memory folderUrl,
         uint256 requiredPower
     ) public returns (uint256) {
-        uint256 taskId = taskContract.createTask(
-            SharedStructs.TaskType.Training,
-            folderUrl,
-            requiredPower
-        );
-        Order newOrder = new Order(taskId, msg.sender);
         uint256 orderId = nextOrderId++;
+        
+        Order newOrder = new Order(msg.sender, folderUrl, requiredPower);
         orders[orderId] = newOrder;
 
         // update [userAdress, order] map
@@ -95,13 +81,14 @@ contract Marketplace {
         Payment(paymentContract).deposit{value: msg.value}(msg.sender);
 
         order.confirm(paymentAmount);
-
-        // Add tasks to the TaskPool
-        /*
-        taskPool.push(
-            TaskInPool(order.taskId(), orderId, SharedStructs.TaskType.Training)
+        taskPoolContract.createTask(
+            SharedStructs.TaskType.Training,
+            orderId,
+            order.folderUrl(),
+            order.requiredComputingPower()
         );
-        */
+
+        TriggerTaskPool();
     }
 
     // get order by user adress
@@ -117,7 +104,6 @@ contract Marketplace {
         public
         view
         returns (
-            uint256 _taskId,
             uint256 _validateTaskId,
             address _client,
             uint256 _paymentAmount,
@@ -125,44 +111,43 @@ contract Marketplace {
         )
     {
         Order order = orders[orderId];
-        _taskId = order.taskId();
         _validateTaskId = order.validateTaskId();
         _client = order.client();
         _paymentAmount = order.paymentAmount();
         _orderStatus = order.orderStatus();
     }
 
-    function assignTaskFromPool() public {
-        require(taskPool.length > 0, "No tasks in the pool.");
-
-        // Get the next task from the pool
-        TaskInPool memory task = taskPool[0];
-
-        // Find a worker with enough available capacity
-        address worker = findAvailableWorker();
-        require(worker != address(0), "No available worker found.");
-
-        // Assign the task to the worker
-        taskContract.assignTask(task.taskId, worker);
-        workerLoad[worker]++;
-
-        // Remove the task from the pool
-        taskPool[0] = taskPool[taskPool.length - 1];
-        taskPool.pop();
+    function CompleteTask(uint256 taskId) external
+    {
+        SharedStructs.TaskInfo memory task = taskPoolContract.getTask(taskId);
+        taskPoolContract.completeTask(taskId);
+        Order order = orders[task.orderId];
+        if(task.taskType == SharedStructs.TaskType.Training)
+        {
+            taskPoolContract.createTask(
+                SharedStructs.TaskType.Training,
+                task.orderId,
+                order.folderUrl(),
+                order.requiredComputingPower());
+        }
+        else
+        {
+            order.SetOrderStatus(SharedStructs.OrderStatus.Completed);
+        }
+        TriggerTaskPool();
     }
 
-    function findAvailableWorker() private view returns (address) {
-        uint256 minLoad = type(uint256).max;
-        address availableWorker = address(0);
-
-        for (uint256 i = 0; i < workers.length; i++) {
-            if (workerLoad[workers[i]] < minLoad) {
-                minLoad = workerLoad[workers[i]];
-                availableWorker = workers[i];
+    function TriggerTaskPool() private
+    {
+        if(taskPoolContract.HasTask())
+        {
+            SharedStructs.TaskInfo memory task =  taskPoolContract.getPendingTask();
+            uint256 workerId = workerPoolContract.assignTask(task.requiredPower);
+            if(workerId != workerPoolContract.Invalid_WorkerId())
+            {
+                taskPoolContract.assignTask(task.id, workerId);
             }
         }
-
-        return availableWorker;
     }
 
     function setMarketplaceAddress(address marketplaceAddress) external {
@@ -173,29 +158,4 @@ contract Marketplace {
         marketplace = marketplaceAddress;
     }
 
-    function onTaskCompleted(uint256 taskId, address worker) external {
-        require(
-            msg.sender == address(taskContract),
-            "Only the Task contract can notify the Marketplace of a completed task."
-        );
-        taskContract.completeTask(taskId);
-        // Update worker's load
-        workerLoad[worker]--;
-        SharedStructs.TaskInfo memory task = taskContract.getTask(taskId);
-        if (task.taskType == SharedStructs.TaskType.Training) {
-            task.taskType = SharedStructs.TaskType.Validation;
-            task.status = SharedStructs.TaskStatus.Created;
-        }
-        // Try to assign a new task from the pool
-        if (taskPool.length > 0) {
-            assignTaskFromPool();
-        }
-    }
-
-    function selectRandomWorker() private view returns (address) {
-        uint256 randomIndex = uint256(
-            keccak256(abi.encodePacked(block.timestamp, block.difficulty))
-        ) % workers.length;
-        return workers[randomIndex];
-    }
 }
