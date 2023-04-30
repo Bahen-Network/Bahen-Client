@@ -13,7 +13,7 @@ library SharedStructs {
         // wei
         uint256 requiredPower;
         address creator;
-        address worker;
+        uint256 workerId;
     }
 
     enum TaskType {
