@@ -16,24 +16,20 @@ contract MarketplaceTest {
     }
 
     function test_create_order_preview() public returns (string memory) {
-        string memory modelUrl = "https://example.com/model";
-        string memory trainDataUrl = "https://example.com/train-data";
-        string memory validateDataUrl = "https://example.com/validate-data";
+        string memory folderUrl = "https://example.com/";
         uint256 requiredPower = 100;
 
-        uint256 orderId = marketplaceInstance.createOrderPreview(modelUrl, trainDataUrl, validateDataUrl, requiredPower);
+        uint256 orderId = marketplaceInstance.createOrderPreview(folderUrl, requiredPower);
 
         require(orderId == 0, "OK");
         return "test_create_order_preview: passed";
     }
 
     function test_confirm_order() public {
-        string memory modelUrl = "https://example.com/model";
-        string memory trainDataUrl = "https://example.com/train-data";
-        string memory validateDataUrl = "https://example.com/validate-data";
+        string memory folderUrl = "https://example.com/";
         uint256 requiredPower = 100;
 
-        uint256 orderId = marketplaceInstance.createOrderPreview(modelUrl, trainDataUrl, validateDataUrl, requiredPower);
+        uint256 orderId = marketplaceInstance.createOrderPreview(folderUrl, requiredPower);
 
         uint256 paymentAmount = 1 ether;
         marketplaceInstance.confirmOrder{value: paymentAmount}(orderId, paymentAmount);

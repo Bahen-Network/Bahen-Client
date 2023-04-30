@@ -7,8 +7,7 @@ library SharedStructs {
         uint256 orderId;
         TaskType taskType;
         TaskStatus status;
-        string dataUrl;
-        string validateDataUrl;
+        string folderUrl;
         // wei
         uint256 requiredPower;
         address creator;

@@ -49,14 +49,12 @@ contract Marketplace {
     }
 
     function createOrderPreview(
-        string memory modelUrl,
-        string memory trainDataUrl,
-        string memory validateDataUrl,
+        string memory folderUrl,
         uint256 requiredPower
     ) public returns (uint256) {
         uint256 orderId = nextOrderId++;
         
-        Order newOrder = new Order(msg.sender, modelUrl, trainDataUrl, validateDataUrl, requiredPower);
+        Order newOrder = new Order(msg.sender, folderUrl, requiredPower);
         orders[orderId] = newOrder;
 
         // update [userAdress, order] map
@@ -75,11 +73,6 @@ contract Marketplace {
             msg.sender == order.client(),
             "Only the client can perform this operation."
         );
-
-        require(
-            order.orderStatus() != SharedStructs.OrderStatus.Confirmed,
-            "Order already confirmed."
-        );
         // require(workers.length > 0, "No workers available.");
 
         require(msg.value >= paymentAmount, "Not enough funds provided.");
@@ -91,8 +84,7 @@ contract Marketplace {
         taskPoolContract.createTask(
             SharedStructs.TaskType.Training,
             orderId,
-            order.modelUrl(),
-            order.trainDataUrl(),
+            order.folderUrl(),
             order.requiredComputingPower()
         );
 
@@ -135,8 +127,7 @@ contract Marketplace {
             taskPoolContract.createTask(
                 SharedStructs.TaskType.Training,
                 task.orderId,
-                order.modelUrl(),
-                order.validateDataUrl(),
+                order.folderUrl(),
                 order.requiredComputingPower());
         }
         else

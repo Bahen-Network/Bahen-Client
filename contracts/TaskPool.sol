@@ -14,8 +14,7 @@ contract TaskPool {
     function createTask(
         SharedStructs.TaskType taskType,
         uint256 orderId,
-        string memory modelUrl,
-        string memory dataUrl,
+        string memory folderUrl,
         uint256 requiredPower
     ) public returns (uint256) {
         uint256 taskId = nextTaskId++;
@@ -24,8 +23,7 @@ contract TaskPool {
             orderId,
             taskType,
             SharedStructs.TaskStatus.Created,
-            modelUrl,
-            dataUrl,
+            folderUrl,
             requiredPower,
             msg.sender,
             0

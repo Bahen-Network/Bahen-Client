@@ -40,13 +40,13 @@ const getMarketplaceContractInstance = async () => {
   return contract;
 };
 
-export const createOrderPreview = async (requiredPower) => {
-  const contractInstance = await getContract();
+export const createOrderPreview = async (folderUrl, requiredPower) => {
+  const contractInstance = await getMarketplaceContractInstance();
   const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
   try {
     const result = await contractInstance.methods
-      .createOrderPreview('','','',requiredPower)
+      .createOrderPreview(folderUrl, requiredPower)
       .send({ from: accounts[0] });
 
     const orderId = result.events.OrderCreated.returnValues.orderId;
@@ -82,9 +82,9 @@ export const getOrderInfo = async (orderId) => {
     if(orderInfo._orderStatus == "0")
     {
       orderStatus = "Created";
-    }else if(orderInfo._orderStatus == "0"){
+    }else if(orderInfo._orderStatus == "1"){
       orderStatus = "Confirmed";
-    }else if(orderInfo._orderStatus == "0"){
+    }else if(orderInfo._orderStatus == "2"){
       orderStatus = "Completed";
     }else{
       orderStatus = "Failed";

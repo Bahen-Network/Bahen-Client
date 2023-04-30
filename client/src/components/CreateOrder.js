@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 
 
 const CreateOrder = ({ onUpload }) => {
-  const inputRef = useRef();
+  const inputRef1 = useRef();
+  const inputRef2 = useRef();
   const [folderUrl, setFolderUrl] = useState('');
   const [requiredPower, setRequiredPower] = useState(null);
   const navigate = useNavigate();
@@ -18,9 +19,16 @@ const CreateOrder = ({ onUpload }) => {
     }
   };
 
-  const handleChange = async (e) => {
+  const handleChangeUpload = async (e) => {
     if (e.target.files.length > 0) {
-      const folderUrl = await onUpload(Array.from(e.target.files));
+      console.log("folderUrl:", folderUrl)
+      await onUpload(Array.from(e.target.files), folderUrl);
+    }
+  };
+
+  const handleChangeFirstUpload = async (e) => {
+    if (e.target.files.length > 0) {
+      const folderUrl = await onUpload(Array.from(e.target.files), "");
       setFolderUrl(folderUrl);
     }
   };
@@ -37,17 +45,48 @@ const CreateOrder = ({ onUpload }) => {
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label>
-            Directory:
+            Scripts Directory:
             <input
               type="file"
-              ref={inputRef}
-              onChange={handleChange}
+              ref={inputRef1}
+              onChange={handleChangeFirstUpload}
               directory="" // This attribute allows folder selection
               webkitdirectory="" // This attribute allows folder selection in Webkit-based browsers
               multiple
               style={{ display: 'none' }}
             />
-            <button onClick={() => inputRef.current.click()}>Select Folder</button>
+            <button onClick={() => inputRef1.current.click()}>Select Folder</button>
+          </label>
+        </div>
+        <div className="mb-2">
+          <label>
+            Training Data Directory:
+            <input
+              type="file"
+              ref={inputRef2}
+              onChange={handleChangeUpload}
+              directory="" // This attribute allows folder selection
+              webkitdirectory="" // This attribute allows folder selection in Webkit-based browsers
+              multiple
+              style={{ display: 'none' }}
+            />
+            <button onClick={() => inputRef2.current.click()}>Select Folder</button>
+          </label>
+        </div>
+        <div className="mb-1">
+          <label>
+            Test Data Directory:
+            <input
+              type="file"
+              ref={inputRef2}
+              name="test"
+              onChange={handleChangeUpload}
+              directory="" // This attribute allows folder selection
+              webkitdirectory="" // This attribute allows folder selection in Webkit-based browsers
+              multiple
+              style={{ display: 'none' }}
+            />
+            <button onClick={() => inputRef2.current.click()}>Select Folder</button>
           </label>
         </div>
         <div className="mb-3">

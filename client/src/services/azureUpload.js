@@ -29,15 +29,22 @@ const createContainerIfNotExists = async (blobServiceClient, containerName) => {
 };
 
 // Upload files to Azure Blob Storage
-export const uploadToAzure = async (files) => {
+export const uploadToAzure = async (files, folderUrl) => {
   if (!blobServiceClient) {
     console.error('BlobServiceClient not initialized');
     return;
   }
+  
+  let containerId;
+  if (folderUrl == "") {
+    containerId = uuidv4();
+  }
+  else{
+    const containerIdList = folderUrl.split("/");
+    containerId = containerIdList[containerIdList.length - 1];
+  }
 
-  const containerId = uuidv4();
-
-  const containerClient =await createContainerIfNotExists(blobServiceClient, containerId);
+  const containerClient = await createContainerIfNotExists(blobServiceClient, containerId);
 
   const promises = files.map(async (file) => {
     const blockBlobClient = containerClient.getBlockBlobClient(file.webkitRelativePath);

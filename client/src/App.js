@@ -4,7 +4,7 @@ import CreateOrder from './components/CreateOrder';
 import OrderPreview from './components/OrderPreview';
 import Home from './components/Home';
 import UserOrders from './components/UserOrders';
-import { uploadToAzure } from './azureUpload';
+import { uploadToAzure } from './services/azureUpload';
 
 function App() {
 
