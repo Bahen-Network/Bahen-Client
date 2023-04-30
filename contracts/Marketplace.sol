@@ -5,11 +5,12 @@ import "./Payment.sol";
 import "./TaskPool.sol";
 import "./Order.sol";
 import "./SharedStructs.sol";
+import "./WorkerPool.sol";
 
 contract Marketplace {
     Payment private paymentContract;
     TaskPool private taskPoolContract;
-    address[] private workers;
+    WorkerPool private workerPoolContract;
     address private admin;
     address private marketplace;
     mapping(address => uint256) public workerLoad;
@@ -30,25 +31,20 @@ contract Marketplace {
         _;
     }
 
-    constructor(address payable paymentAddress, address taskPoolAddress) {
+    constructor(address payable paymentAddress, address taskPoolAddress, address workerPoolAddress) {
         paymentContract = Payment(paymentAddress);
         taskPoolContract = TaskPool(taskPoolAddress);
+        workerPoolContract = WorkerPool(workerPoolAddress);
         admin = msg.sender;
         nextOrderId = 0;
     }
 
-    function addWorker(address worker) public onlyAdmin {
-        workers.push(worker);
+    function addWorker(address worker, uint256 _computingPower) public onlyAdmin {
+        workerPoolContract.addWorker(worker, _computingPower);
     }
 
     function removeWorker(address worker) public onlyAdmin {
-        for (uint256 i = 0; i < workers.length; i++) {
-            if (workers[i] == worker) {
-                workers[i] = workers[workers.length - 1];
-                workers.pop();
-                break;
-            }
-        }
+        workerPoolContract.removeWorker(worker);
     }
 
     function createOrderPreview(
@@ -128,32 +124,11 @@ contract Marketplace {
         _orderStatus = order.orderStatus();
     }
 
-    function findAvailableWorker() private view returns (address) {
-        uint256 minLoad = type(uint256).max;
-        address availableWorker = address(0);
-
-        for (uint256 i = 0; i < workers.length; i++) {
-            if (workerLoad[workers[i]] < minLoad) {
-                minLoad = workerLoad[workers[i]];
-                availableWorker = workers[i];
-            }
-        }
-
-        return availableWorker;
-    }
-
     function setMarketplaceAddress(address marketplaceAddress) external {
         require(
             msg.sender == admin,
             "Only admin can set the marketplace address."
         );
         marketplace = marketplaceAddress;
-    }
-    
-    function selectRandomWorker() private view returns (address) {
-        uint256 randomIndex = uint256(
-            keccak256(abi.encodePacked(block.timestamp, block.difficulty))
-        ) % workers.length;
-        return workers[randomIndex];
     }
 }
