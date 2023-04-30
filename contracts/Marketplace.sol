@@ -41,6 +41,7 @@ contract Marketplace {
 
     function addWorker(address worker, uint256 _computingPower) public onlyAdmin {
         workerPoolContract.addWorker(worker, _computingPower);
+        TriggerTaskPool();
     }
 
     function removeWorker(address worker) public onlyAdmin {
@@ -54,15 +55,8 @@ contract Marketplace {
         uint256 requiredPower
     ) public returns (uint256) {
         uint256 orderId = nextOrderId++;
-        uint256 taskId = taskPoolContract.createTask(
-            SharedStructs.TaskType.Training,
-            orderId,
-            modelUrl,
-            trainDataUrl,
-            validateDataUrl,
-            requiredPower
-        );
-        Order newOrder = new Order(taskId, msg.sender);
+        
+        Order newOrder = new Order(msg.sender, modelUrl, trainDataUrl, validateDataUrl, requiredPower);
         orders[orderId] = newOrder;
 
         // update [userAdress, order] map
@@ -94,6 +88,15 @@ contract Marketplace {
         Payment(paymentContract).deposit{value: msg.value}(msg.sender);
 
         order.confirm(paymentAmount);
+        taskPoolContract.createTask(
+            SharedStructs.TaskType.Training,
+            orderId,
+            order.modelUrl(),
+            order.trainDataUrl(),
+            order.requiredComputingPower()
+        );
+
+        TriggerTaskPool();
     }
 
     // get order by user adress
@@ -109,7 +112,6 @@ contract Marketplace {
         public
         view
         returns (
-            uint256 _taskId,
             uint256 _validateTaskId,
             address _client,
             uint256 _paymentAmount,
@@ -117,11 +119,44 @@ contract Marketplace {
         )
     {
         Order order = orders[orderId];
-        _taskId = order.taskId();
         _validateTaskId = order.validateTaskId();
         _client = order.client();
         _paymentAmount = order.paymentAmount();
         _orderStatus = order.orderStatus();
+    }
+
+    function CompleteTask(uint256 taskId) external
+    {
+        SharedStructs.TaskInfo memory task = taskPoolContract.getTask(taskId);
+        taskPoolContract.completeTask(taskId);
+        Order order = orders[task.orderId];
+        if(task.taskType == SharedStructs.TaskType.Training)
+        {
+            taskPoolContract.createTask(
+                SharedStructs.TaskType.Training,
+                task.orderId,
+                order.modelUrl(),
+                order.validateDataUrl(),
+                order.requiredComputingPower());
+        }
+        else
+        {
+            order.SetOrderStatus(SharedStructs.OrderStatus.Completed);
+        }
+        TriggerTaskPool();
+    }
+
+    function TriggerTaskPool() private
+    {
+        if(taskPoolContract.HasTask())
+        {
+            SharedStructs.TaskInfo memory task =  taskPoolContract.getPendingTask();
+            uint256 workerId = workerPoolContract.assignTask(task.requiredPower);
+            if(workerId != workerPoolContract.Invalid_WorkerId())
+            {
+                taskPoolContract.assignTask(task.id, workerId);
+            }
+        }
     }
 
     function setMarketplaceAddress(address marketplaceAddress) external {
@@ -131,4 +166,5 @@ contract Marketplace {
         );
         marketplace = marketplaceAddress;
     }
+
 }

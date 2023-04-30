@@ -17,16 +17,17 @@ contract WorkerPool
     address[] private workerAddresses;
     uint256 public Invalid_WorkerId = 0;
 
-    function addWorker(address _workerAddress, uint256 _computingPower) public{
+    function addWorker(address _workerAddress, uint256 _computingPower) public
+    {
         uint256 _workerId = nextWorkerId++;
         workers[_workerAddress] = Worker(_workerId, _computingPower, false, true);
         workerIds[_workerId] = _workerAddress;
         workerAddresses.push(_workerAddress);
     }
 
-    function removeWorker(address _workerAddress) public view
+    function removeWorker(address _workerAddress) public
     {
-        workers[_workerAddress].isActivate;
+        workers[_workerAddress].isActivate = false;
     }
 
     function getWorkerByWorkerId(uint256 _workerId) public view returns (Worker memory) {

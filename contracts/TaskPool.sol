@@ -15,8 +15,7 @@ contract TaskPool {
         SharedStructs.TaskType taskType,
         uint256 orderId,
         string memory modelUrl,
-        string memory trainDataUrl,
-        string memory validateDataUrl,
+        string memory dataUrl,
         uint256 requiredPower
     ) public returns (uint256) {
         uint256 taskId = nextTaskId++;
@@ -26,8 +25,7 @@ contract TaskPool {
             taskType,
             SharedStructs.TaskStatus.Created,
             modelUrl,
-            trainDataUrl,
-            validateDataUrl,
+            dataUrl,
             requiredPower,
             msg.sender,
             0
@@ -43,13 +41,12 @@ contract TaskPool {
         return tasks[taskId];
     }
 
-    function getPendingTask() public view returns(SharedStructs.TaskInfo memory)
+    function getPendingTask() public view returns(SharedStructs.TaskInfo memory task)
     {
-        require(HasTask(), "No tasks in the pool.");
-        tasks[taskIds[0]]; 
+        return tasks[taskIds[0]]; 
     }
 
-    function HasTask() private view returns(bool)
+    function HasTask() public view returns(bool)
     {
         return taskIds.length > 0;
     }

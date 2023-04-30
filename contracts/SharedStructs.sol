@@ -7,8 +7,7 @@ library SharedStructs {
         uint256 orderId;
         TaskType taskType;
         TaskStatus status;
-        string modelUrl;
-        string trainDataUrl;
+        string dataUrl;
         string validateDataUrl;
         // wei
         uint256 requiredPower;
