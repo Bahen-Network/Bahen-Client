@@ -42,9 +42,7 @@ const CreateOrder = ({ onUpload }) => {
       body: JSON.stringify({ 'container': container })
     };
     const response = await fetch(azureFunctionUrl, requestOptions);
-    console.log(response);
     const data = await response.json();
-    console.log(data);
     // Replace this with a call to the actual API when it's available
     setRequiredPower(data.result_unit);
   };
