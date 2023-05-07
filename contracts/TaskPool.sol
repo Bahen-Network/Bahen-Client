@@ -33,9 +33,8 @@ contract TaskPool {
         return taskId;
     }
 
-    function getTask(
-        uint256 taskId
-    ) public view returns (SharedStructs.TaskInfo memory) {
+    function getTask(uint256 taskId) public view returns (SharedStructs.TaskInfo memory) 
+    {
         return tasks[taskId];
     }
 
