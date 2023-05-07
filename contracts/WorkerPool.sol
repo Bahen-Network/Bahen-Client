@@ -30,12 +30,18 @@ contract WorkerPool
         workers[_workerAddress].isActivate = false;
     }
 
-    function getWorkerByWorkerId(uint256 _workerId) public view returns (Worker memory) {
+    function getWorkerByWorkerId(uint256 _workerId) public view returns (Worker memory)
+    {
         address workerAddress = workerIds[_workerId];
         return workers[workerAddress];
     }
 
-    function findWorker(uint256 _requiredComputingPower) public view returns (uint256 workerId) {
+    function getWorkerByWorkerAddress(address workerAddress) public view returns(Worker memory)
+    {
+        return workers[workerAddress];
+    }
+
+    function findWorker(uint256 _requiredComputingPower) private view returns (uint256 workerId) {
         address[] memory qualifiedWorkers = new address[](workerAddresses.length);
         uint256 qualifiedCount = 0;
 
