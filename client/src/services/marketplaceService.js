@@ -90,8 +90,8 @@ export const getOrderInfo = async (orderId) => {
       orderStatus = "Failed";
     }
     return {
-      taskId: orderInfo._taskId,
-      validateTaskId: orderInfo._validateTaskId,
+      trainTaskId: orderInfo._trainTaskId == 0? "Not Create": orderInfo._trainTaskId,
+      validateTaskId: orderInfo._validateTaskId  == 0? "Not Create": orderInfo._trainTaskId,
       client: orderInfo._client,
       paymentAmount: orderInfo._paymentAmount,
       orderStatus: orderStatus,
