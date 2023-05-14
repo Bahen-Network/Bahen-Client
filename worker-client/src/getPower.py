@@ -1,16 +1,23 @@
-import GPUtil
+# power.py
 import psutil
-
+import GPUtil
 def get_cpu_power():
-    # You can design a benchmark test here
-    # For simplicity, we use CPU frequency as an indicator of CPU power
-    return psutil.cpu_freq().current
+    # Here, we assume that the power of a CPU is proportional to the number of cores and the frequency
+    cpu_freq = psutil.cpu_freq().current  # MHz
+    cpu_count = psutil.cpu_count()
+    return cpu_freq * cpu_count
 
 def get_gpu_power():
-    # You can design a benchmark test here
-    # For simplicity, we use GPU memory as an indicator of GPU power
-    GPUs = GPUtil.getGPUs()
-    return sum([gpu.memoryTotal for gpu in GPUs]) if GPUs else 0
+    # Here, we assume that the power of a GPU is proportional to the memory and load
+    total_gpu_power = 0
+    gpus = GPUtil.getGPUs()
+    for gpu in gpus:
+        gpu_memory = gpu.memoryTotal # Total memory in MB
+        gpu_load = gpu.load * 100  # GPU load is in [0, 1], convert it to percentage
+        total_gpu_power += gpu_memory * gpu_load
+    return total_gpu_power
 
 def get_power():
     return get_cpu_power() + get_gpu_power()
+
+
