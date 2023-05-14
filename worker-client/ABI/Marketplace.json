@@ -1,0 +1,443 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "paymentAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "taskPoolAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "workerPoolAddress",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "orderId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "paymentAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "ConfirmOrder",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "message",
+				"type": "string"
+			}
+		],
+		"name": "Log",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "adr",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "adr2",
+				"type": "address"
+			}
+		],
+		"name": "Logad",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "message",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "orderId",
+				"type": "uint256"
+			}
+		],
+		"name": "OrderCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "taskId",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "worker",
+				"type": "address"
+			}
+		],
+		"name": "TaskCompleted",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "workerAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "taskId",
+				"type": "uint256"
+			}
+		],
+		"name": "CompleteTask",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "worker",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_computingPower",
+				"type": "uint256"
+			}
+		],
+		"name": "addWorker",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "orderId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "paymentAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "confirmOrder",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "folderUrl",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "requiredPower",
+				"type": "uint256"
+			}
+		],
+		"name": "createOrderPreview",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "orderId",
+				"type": "uint256"
+			}
+		],
+		"name": "getOrderInfo",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "_trainTaskId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_validateTaskId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_client",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_paymentAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "enum SharedStructs.OrderStatus",
+				"name": "_orderStatus",
+				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "taskId",
+				"type": "uint256"
+			}
+		],
+		"name": "getTask",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "orderId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "enum SharedStructs.TaskType",
+						"name": "taskType",
+						"type": "uint8"
+					},
+					{
+						"internalType": "enum SharedStructs.TaskStatus",
+						"name": "status",
+						"type": "uint8"
+					},
+					{
+						"internalType": "string",
+						"name": "folderUrl",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "requiredPower",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "creator",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "workerId",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct SharedStructs.TaskInfo",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
+		"name": "getUserOrders",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "worker",
+				"type": "address"
+			}
+		],
+		"name": "getWorkerInfo",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "workerId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "computingPower",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isBusy",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "isActivate",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "taskId",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct WorkerPool.Worker",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "orders",
+		"outputs": [
+			{
+				"internalType": "contract Order",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "worker",
+				"type": "address"
+			}
+		],
+		"name": "removeWorker",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "marketplaceAddress",
+				"type": "address"
+			}
+		],
+		"name": "setMarketplaceAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "userOrders",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "workerLoad",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

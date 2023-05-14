@@ -1,0 +1,111 @@
+import json
+from web3 import Web3
+from utils import perform_training_task
+import time
+
+# Load Config file
+with open('config.json', 'r') as f:
+    config = json.load(f)
+
+# Connect to Ethereum node
+provider = config['provider']
+web3 = Web3(Web3.HTTPProvider(provider))
+
+# Set default account
+account_address = config['account_address']
+private_key = config['private_key']
+web3.eth.defaultAccount = account_address
+
+# Load contract
+contract_address = web3.to_checksum_address(config['contract_address'])
+with open('../ABI/Marketplace.json', 'r') as f:
+    abi = json.load(f)
+marketplace_contract = web3.eth.contract(address=contract_address, abi=abi)
+
+# read config from config.json
+gas = config['gas']
+gasPrice = config['gasPrice']
+gasPrice_wei = web3.to_wei(str(gasPrice), 'gwei')
+# If you are operating on the Ropesten test network, your chain ID should be 3. 
+# If you are operating on the main network, the chain ID should be 1. 
+# If you operate on the local Ganache network, the chain ID may be 1337 (or other value determined by the Ganache configuration).
+chainId = config['chainId']
+
+
+computing_power = config['computing_power']
+
+def register_worker():
+    print("Registering worker with computing power: ", computing_power)
+    nonce = web3.eth.get_transaction_count(account_address)
+    txn = marketplace_contract.functions.addWorker(account_address, computing_power).build_transaction({
+        'chainId': chainId,
+        'gas': gas,
+        'gasPrice': gasPrice_wei,
+        'nonce': nonce,
+    })
+    signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
+    web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+
+def remove_worker():
+    print("Removing worker...")
+    nonce = web3.eth.getTransactionCount(account_address)
+    txn = marketplace_contract.functions.removeWorker(account_address).build_transaction({
+        'chainId': chainId,
+        'gas': gas,
+        'gasPrice': gasPrice_wei,
+        'nonce': nonce,
+    })
+    signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
+    web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+
+def complete_task(taskId):
+    print("Completing task...")
+    nonce = web3.eth.getTransactionCount(account_address)
+    txn = marketplace_contract.functions.completeTask(taskId).build_transaction({
+        'chainId': chainId,
+        'gas': gas,
+        'gasPrice': gasPrice_wei,
+        'nonce': nonce,
+    })
+    signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
+    web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+
+def start_polling():
+    print("Start polling...")
+    while True:
+        worker_info = marketplace_contract.functions.getWorkerInfo(account_address).call()
+        if worker_info['taskId'] != 0:
+            task = marketplace_contract.functions.getTask(worker_info['taskId']).call()
+            perform_training_task(task)
+            complete_task(worker_info['taskId'])
+        time.sleep(10)  # Poll every 10 seconds
+
+
+def complete_task(taskId):
+    print("Completing task...")
+    nonce = web3.eth.getTransactionCount(account_address)
+    txn = marketplace_contract.functions.completeTask(taskId).buildTransaction({
+        'chainId': 3,
+        'gas': 70000,
+        'gasPrice': web3.to_wei('1', 'gwei'),
+        'nonce': nonce,
+    })
+    signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
+    web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+
+if __name__ == "__main__":
+    print("Commands: register, remove, start, quit")
+    while True:
+        command = input("Enter command: ")
+        if command.lower() == "register":
+            register_worker()
+        elif command.lower() == "remove":
+            remove_worker()
+        elif command.lower() == "start":
+            start_polling()
+        elif command.lower() == "quit":
+            print("Exiting program.")
+            break
+        else:
+            print("Invalid command. Please enter a valid command!")
+
