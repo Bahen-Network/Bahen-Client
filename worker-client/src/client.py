@@ -2,6 +2,7 @@ import json
 from web3 import Web3
 from utils import perform_training_task
 import time
+from getPower import get_power  # Here we import the get_power function from the power.py file
 
 # Load Config file
 with open('config.json', 'r') as f:
@@ -94,7 +95,7 @@ def complete_task(taskId):
     web3.eth.send_raw_transaction(signed_txn.rawTransaction)
 
 if __name__ == "__main__":
-    print("Commands: register, remove, start, quit")
+    print("Commands: register, remove, start, getPower, quit")
     while True:
         command = input("Enter command: ")
         if command.lower() == "register":
@@ -103,6 +104,8 @@ if __name__ == "__main__":
             remove_worker()
         elif command.lower() == "start":
             start_polling()
+        elif command.lower() == "getpower":
+            print(get_power())
         elif command.lower() == "quit":
             print("Exiting program.")
             break
