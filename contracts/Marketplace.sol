@@ -39,13 +39,20 @@ contract Marketplace {
         nextOrderId = 0;
     }
 
-    function addWorker(address worker, uint256 _computingPower) public onlyAdmin {
+    function addWorker(address worker, uint256 _computingPower) public 
+    {
         workerPoolContract.addWorker(worker, _computingPower);
         TriggerTaskPool();
     }
 
-    function removeWorker(address worker) public onlyAdmin {
+    function removeWorker(address worker) public onlyAdmin 
+    {
         workerPoolContract.removeWorker(worker);
+    }
+
+    function getWorkerInfo(address worker) public view returns(WorkerPool.Worker memory)
+    {
+        return workerPoolContract.getWorkerByWorkerAddress(worker);
     }
 
     function createOrderPreview(
@@ -80,14 +87,14 @@ contract Marketplace {
         // Send the funds to the Marketplace contract
         Payment(paymentContract).deposit{value: msg.value}(msg.sender);
 
-        order.confirm(paymentAmount);
-        taskPoolContract.createTask(
+        uint256 taskId = taskPoolContract.createTask(
             SharedStructs.TaskType.Training,
             orderId,
             order.folderUrl(),
             order.requiredComputingPower()
         );
-
+        order.SetOrdertrainTaskId(taskId);
+        order.confirm(paymentAmount);
         TriggerTaskPool();
     }
 
@@ -104,6 +111,7 @@ contract Marketplace {
         public
         view
         returns (
+            uint256 _trainTaskId,
             uint256 _validateTaskId,
             address _client,
             uint256 _paymentAmount,
@@ -111,17 +119,20 @@ contract Marketplace {
         )
     {
         Order order = orders[orderId];
+        _trainTaskId = order.trainTaskId();
         _validateTaskId = order.validateTaskId();
         _client = order.client();
         _paymentAmount = order.paymentAmount();
         _orderStatus = order.orderStatus();
     }
 
-    function CompleteTask(uint256 taskId) external
+    function CompleteTask(address workerAddress, uint256 taskId) external
     {
+        require(workerPoolContract.validateWorkerTask(workerAddress, taskId), "Invalid request");
         SharedStructs.TaskInfo memory task = taskPoolContract.getTask(taskId);
         taskPoolContract.completeTask(taskId);
         Order order = orders[task.orderId];
+        workerPoolContract.finishTask(workerAddress);
         if(task.taskType == SharedStructs.TaskType.Training)
         {
             taskPoolContract.createTask(
@@ -142,7 +153,7 @@ contract Marketplace {
         if(taskPoolContract.HasTask())
         {
             SharedStructs.TaskInfo memory task =  taskPoolContract.getPendingTask();
-            uint256 workerId = workerPoolContract.assignTask(task.requiredPower);
+            uint256 workerId = workerPoolContract.assignTask(task.requiredPower, task.id);
             if(workerId != workerPoolContract.Invalid_WorkerId())
             {
                 taskPoolContract.assignTask(task.id, workerId);

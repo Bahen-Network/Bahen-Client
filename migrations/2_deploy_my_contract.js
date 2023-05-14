@@ -13,7 +13,7 @@ module.exports = async function (deployer) {
   const taskPoolInstance = await TaskPool.deployed();
 
   // 部署WorkerPool合约
-  await deployer.deploy(TaskPool);
+  await deployer.deploy(WorkerPool);
   const workerPoolInstance = await WorkerPool.deployed();
 
   // 使用已部署的Payment和Task合约的地址，部署Marketplace合约
