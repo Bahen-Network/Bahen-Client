@@ -39,7 +39,8 @@ const UserOrders = () => {
         <thead>
           <tr>
             <th>Order ID</th>
-            <th>Task ID</th>
+            <th>Train Task ID</th>
+            <th>Validate Task ID</th>
             <th>Client</th>
             <th>Payment Amount</th>
             <th>Order Status</th>
@@ -49,7 +50,8 @@ const UserOrders = () => {
           {orders.map((order, index) => (
             <tr key={index}>
               <td>{index}</td>
-              <td>{order.taskId}</td>
+              <td>{order.trainTaskId}</td>
+              <td>{order.validateTaskId}</td>
               <td>{order.client}</td>
               <td>{order.paymentAmount}</td>
               <td>{order.orderStatus}</td>
