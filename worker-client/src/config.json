@@ -1,0 +1,10 @@
+{
+    "provider": "http://localhost:7545",
+    "contract_address": "0x5288DC5AAA1992656E5016ca9A8E3f303aCd9ff3",
+    "account_address": "0x42e543edDB9b581485E1b155aa6F345184546d28",
+    "private_key": "0xee920c9206705ba0e61d9f469fadc0f4f34942238631d581c68ff84e8ce0d2d3",
+    "computing_power": 1000,
+    "chainId": 1337, 
+    "gas": 70000,
+    "gasPrice": 1
+}

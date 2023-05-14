@@ -41,8 +41,9 @@ contract Marketplace {
 
     function addWorker(address worker, uint256 _computingPower) public 
     {
-        workerPoolContract.addWorker(worker, _computingPower);
-        TriggerTaskPool();
+        // workerPoolContract.addWorker(worker, _computingPower);
+        // TriggerTaskPool();
+        emit Log("Add Worker successed!!!");
     }
 
     function removeWorker(address worker) public onlyAdmin 
@@ -53,6 +54,11 @@ contract Marketplace {
     function getWorkerInfo(address worker) public view returns(WorkerPool.Worker memory)
     {
         return workerPoolContract.getWorkerByWorkerAddress(worker);
+    }
+
+    function getTask(uint256 taskId) public view returns (SharedStructs.TaskInfo memory) 
+    {
+        return taskPoolContract.getTask(taskId);
     }
 
     function createOrderPreview(
