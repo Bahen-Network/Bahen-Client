@@ -31,4 +31,14 @@ contract Order {
     function SetOrderStatus(SharedStructs.OrderStatus _orderStatus) public{
         orderStatus = _orderStatus;
     }
+
+    function SetOrdertrainTaskId(uint256 taskId) public
+    {
+        trainTaskId = taskId;
+    }
+
+    function SetOrderValidateTaskId(uint256 taskId) public
+    {
+        validateTaskId = taskId;
+    }
 }
