@@ -12,7 +12,7 @@ with open('config.json', 'r') as f:
 provider = config['provider']
 web3 = Web3(Web3.HTTPProvider(provider))
 
-# Set default account
+# Set default accountget
 account_address = config['account_address']
 private_key = config['private_key']
 web3.eth.defaultAccount = account_address
@@ -33,8 +33,8 @@ gasPrice_wei = web3.to_wei(str(gasPrice), 'gwei')
 chainId = config['chainId']
 
 
-computing_power = config['computing_power']
-
+# computing_power = config['computing_power']
+computing_power = int(get_power())
 def register_worker():
     print("Registering worker with computing power: ", computing_power)
     nonce = web3.eth.get_transaction_count(account_address)
@@ -49,7 +49,7 @@ def register_worker():
 
 def remove_worker():
     print("Removing worker...")
-    nonce = web3.eth.getTransactionCount(account_address)
+    nonce = web3.eth.get_transaction_count(account_address)
     txn = marketplace_contract.functions.removeWorker(account_address).build_transaction({
         'chainId': chainId,
         'gas': gas,
@@ -71,24 +71,34 @@ def complete_task(taskId):
     signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
     web3.eth.send_raw_transaction(signed_txn.rawTransaction)
 
+# struct Worker {
+#    uint256 id;
+#    uint256 computingPower;
+#    bool isBusy;
+#    bool isActive;
+#    uint256 currentTaskId;
+#}
 def start_polling():
     print("Start polling...")
     while True:
         worker_info = marketplace_contract.functions.getWorkerInfo(account_address).call()
-        if worker_info['taskId'] != 0:
-            task = marketplace_contract.functions.getTask(worker_info['taskId']).call()
+        if worker_info[4] != 0:  # Access the fifth item in the tuple
+            task = marketplace_contract.functions.getTask(worker_info[4]).call()
             perform_training_task(task)
-            complete_task(worker_info['taskId'])
+            complete_task(worker_info[4])
+        else:
+            print("No task now!")
         time.sleep(10)  # Poll every 10 seconds
+
 
 
 def complete_task(taskId):
     print("Completing task...")
-    nonce = web3.eth.getTransactionCount(account_address)
-    txn = marketplace_contract.functions.completeTask(taskId).buildTransaction({
-        'chainId': 3,
-        'gas': 70000,
-        'gasPrice': web3.to_wei('1', 'gwei'),
+    nonce = web3.eth.get_transaction_count(account_address)
+    txn = marketplace_contract.functions.CompleteTask(account_address, taskId).build_transaction({
+        'chainId': chainId,
+        'gas': gas,
+        'gasPrice': gasPrice_wei,
         'nonce': nonce,
     })
     signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)

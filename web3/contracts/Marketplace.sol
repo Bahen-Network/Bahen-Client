@@ -24,6 +24,8 @@ contract Marketplace {
     event OrderCreated(string message, uint256 orderId);
     event ConfirmOrder(uint256 orderId, uint256 paymentAmount);
     event Log(string message);
+    event LogBool(bool LogBool);
+
     event Logad(address adr, address adr2);
 
     modifier onlyAdmin() {
@@ -41,9 +43,10 @@ contract Marketplace {
 
     function addWorker(address worker, uint256 _computingPower) public 
     {
-        // workerPoolContract.addWorker(worker, _computingPower);
-        // TriggerTaskPool();
-        emit Log("Add Worker successed!!!");
+        emit Log("--Add Worker start!!!");
+        workerPoolContract.addWorker(worker, _computingPower);
+        TriggerTaskPool();
+        emit Log("--Add Worker successed!!!");
     }
 
     function removeWorker(address worker) public onlyAdmin 
@@ -141,8 +144,9 @@ contract Marketplace {
         workerPoolContract.finishTask(workerAddress);
         if(task.taskType == SharedStructs.TaskType.Training)
         {
+            emit Log("Create train Task !!!");
             taskPoolContract.createTask(
-                SharedStructs.TaskType.Training,
+                SharedStructs.TaskType.Validation,
                 task.orderId,
                 order.folderUrl(),
                 order.requiredComputingPower());
@@ -156,6 +160,8 @@ contract Marketplace {
 
     function TriggerTaskPool() private
     {
+        emit Log("TriggerTaskPool start");
+        emit LogBool(taskPoolContract.HasTask());
         if(taskPoolContract.HasTask())
         {
             SharedStructs.TaskInfo memory task =  taskPoolContract.getPendingTask();
@@ -163,8 +169,11 @@ contract Marketplace {
             if(workerId != workerPoolContract.Invalid_WorkerId())
             {
                 taskPoolContract.assignTask(task.id, workerId);
+                Order order = orders[task.orderId];
+                order.SetOrderStatus(SharedStructs.OrderStatus.Completed);
             }
         }
+        emit Log("TriggerTaskPool end");
     }
 
     function setMarketplaceAddress(address marketplaceAddress) external 
