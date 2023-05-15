@@ -57,6 +57,19 @@
 		"inputs": [
 			{
 				"indexed": false,
+				"internalType": "bool",
+				"name": "LogBool",
+				"type": "bool"
+			}
+		],
+		"name": "LogBool",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
 				"internalType": "address",
 				"name": "adr",
 				"type": "address"

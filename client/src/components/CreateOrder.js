@@ -35,7 +35,7 @@ const CreateOrder = ({ onUpload }) => {
 
   const calculateCost = async () => {
     // Replace this with a call to the actual API when it's available
-    setRequiredPower(999999999999999);
+    setRequiredPower(999);
   };
 
   return (
