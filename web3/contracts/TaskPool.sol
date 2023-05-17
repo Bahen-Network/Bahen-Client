@@ -5,6 +5,7 @@ import "./SharedStructs.sol";
 
 contract TaskPool {
     uint256 private nextTaskId = 1;
+    uint256 private pendingTaskHead = 1;
     mapping(uint256 => SharedStructs.TaskInfo) public tasks;
     uint256[] private taskIds;
     event TaskCreated(uint256 indexed taskId, address indexed creator);
@@ -33,20 +34,31 @@ contract TaskPool {
         return taskId;
     }
 
-    function getTask(
-        uint256 taskId
-    ) public view returns (SharedStructs.TaskInfo memory) {
+    function getAllTasks() public view returns (SharedStructs.TaskInfo[] memory)
+    {
+        uint256 length = taskIds.length;
+        SharedStructs.TaskInfo[] memory taskArray = new SharedStructs.TaskInfo[](length);
+        for(uint256 i = 0; i < length; i++)
+        {
+            taskArray[i] = tasks[taskIds[i]];
+        }
+
+        return taskArray;
+    }
+
+    function getTask(uint256 taskId) public view returns (SharedStructs.TaskInfo memory) 
+    {
         return tasks[taskId];
     }
 
     function getPendingTask() public view returns(SharedStructs.TaskInfo memory task)
     {
-        return tasks[taskIds[0]]; 
+        return tasks[pendingTaskHead]; 
     }
 
     function HasTask() public view returns(bool)
     {
-        return taskIds.length > 0;
+        return nextTaskId > pendingTaskHead;
     }
 
     function assignTask(uint256 taskId, uint256 workerId) public {
@@ -58,6 +70,7 @@ contract TaskPool {
         );
         task.status = SharedStructs.TaskStatus.Assigned;
         task.workerId = workerId;
+        pendingTaskHead++;
         emit TaskAssigned(taskId, workerId);
     }
 
@@ -68,11 +81,10 @@ contract TaskPool {
             "Task is not in Assigned status."
         );
         task.status = SharedStructs.TaskStatus.Completed;
-        removeTaskAfterComplete(taskId);
         emit TaskCompleted(taskId);
     }
 
-    function removeTaskAfterComplete(uint256 taskId) private
+    function removeTaskAfterTaskAsign(uint256 taskId) private
     {
         uint256 index = findTaskIndex(taskId);
         if(index < taskIds.length)

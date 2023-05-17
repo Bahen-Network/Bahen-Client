@@ -16,7 +16,7 @@ const OrderPreview = () => {
     const fetchOrderDetails = async () => {
       const order = await getOrderInfo(orderId);
       setOrderDetails({
-        taskId: order.taskId,
+        trainTaskId: order.trainTaskId,
         validateTaskId: order.validateTaskId,
         client: order.client,
         paymentAmount: order.paymentAmount,
@@ -41,7 +41,7 @@ const OrderPreview = () => {
       {orderDetails && (
         <>
           <p>Order ID: {orderId}</p>
-          <p>Task ID: {orderDetails.taskId}</p>
+          <p>TrainTask ID: {orderDetails.trainTaskId}</p>
           <p>ValidateTask Id: {orderDetails.validateTaskId}</p>
           <p>Payment Amount: {orderDetails.paymentAmount}</p>
           <p>orderStatus: {orderDetails.orderStatus}</p>

@@ -24,6 +24,8 @@ contract Marketplace {
     event OrderCreated(string message, uint256 orderId);
     event ConfirmOrder(uint256 orderId, uint256 paymentAmount);
     event Log(string message);
+    event LogBool(bool LogBool);
+
     event Logad(address adr, address adr2);
 
     modifier onlyAdmin() {
@@ -39,13 +41,27 @@ contract Marketplace {
         nextOrderId = 0;
     }
 
-    function addWorker(address worker, uint256 _computingPower) public onlyAdmin {
+    function addWorker(address worker, uint256 _computingPower) public 
+    {
+        emit Log("--Add Worker start!!!");
         workerPoolContract.addWorker(worker, _computingPower);
         TriggerTaskPool();
+        emit Log("--Add Worker successed!!!");
     }
 
-    function removeWorker(address worker) public onlyAdmin {
+    function removeWorker(address worker) public onlyAdmin 
+    {
         workerPoolContract.removeWorker(worker);
+    }
+
+    function getWorkerInfo(address worker) public view returns(WorkerPool.Worker memory)
+    {
+        return workerPoolContract.getWorkerByWorkerAddress(worker);
+    }
+
+    function getTask(uint256 taskId) public view returns (SharedStructs.TaskInfo memory) 
+    {
+        return taskPoolContract.getTask(taskId);
     }
 
     function createOrderPreview(
@@ -80,14 +96,14 @@ contract Marketplace {
         // Send the funds to the Marketplace contract
         Payment(paymentContract).deposit{value: msg.value}(msg.sender);
 
-        order.confirm(paymentAmount);
-        taskPoolContract.createTask(
+        uint256 taskId = taskPoolContract.createTask(
             SharedStructs.TaskType.Training,
             orderId,
             order.folderUrl(),
             order.requiredComputingPower()
         );
-
+        order.SetOrdertrainTaskId(taskId);
+        order.confirm(paymentAmount);
         TriggerTaskPool();
     }
 
@@ -104,6 +120,7 @@ contract Marketplace {
         public
         view
         returns (
+            uint256 _trainTaskId,
             uint256 _validateTaskId,
             address _client,
             uint256 _paymentAmount,
@@ -111,21 +128,25 @@ contract Marketplace {
         )
     {
         Order order = orders[orderId];
+        _trainTaskId = order.trainTaskId();
         _validateTaskId = order.validateTaskId();
         _client = order.client();
         _paymentAmount = order.paymentAmount();
         _orderStatus = order.orderStatus();
     }
 
-    function CompleteTask(uint256 taskId) external
+    function CompleteTask(address workerAddress, uint256 taskId) external
     {
+        require(workerPoolContract.validateWorkerTask(workerAddress, taskId), "Invalid request");
         SharedStructs.TaskInfo memory task = taskPoolContract.getTask(taskId);
         taskPoolContract.completeTask(taskId);
         Order order = orders[task.orderId];
+        workerPoolContract.finishTask(workerAddress);
         if(task.taskType == SharedStructs.TaskType.Training)
         {
+            emit Log("Create train Task !!!");
             taskPoolContract.createTask(
-                SharedStructs.TaskType.Training,
+                SharedStructs.TaskType.Validation,
                 task.orderId,
                 order.folderUrl(),
                 order.requiredComputingPower());
@@ -139,18 +160,24 @@ contract Marketplace {
 
     function TriggerTaskPool() private
     {
+        emit Log("TriggerTaskPool start");
+        emit LogBool(taskPoolContract.HasTask());
         if(taskPoolContract.HasTask())
         {
             SharedStructs.TaskInfo memory task =  taskPoolContract.getPendingTask();
-            uint256 workerId = workerPoolContract.assignTask(task.requiredPower);
+            uint256 workerId = workerPoolContract.assignTask(task.requiredPower, task.id);
             if(workerId != workerPoolContract.Invalid_WorkerId())
             {
                 taskPoolContract.assignTask(task.id, workerId);
+                Order order = orders[task.orderId];
+                order.SetOrderStatus(SharedStructs.OrderStatus.Completed);
             }
         }
+        emit Log("TriggerTaskPool end");
     }
 
-    function setMarketplaceAddress(address marketplaceAddress) external {
+    function setMarketplaceAddress(address marketplaceAddress) external 
+    {
         require(
             msg.sender == admin,
             "Only admin can set the marketplace address."

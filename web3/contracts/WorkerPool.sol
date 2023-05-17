@@ -11,6 +11,7 @@ contract WorkerPool
         uint256 computingPower;
         bool isBusy;
         bool isActivate;
+        uint256 taskId;
     }
     mapping(address => Worker) public workers;
     mapping(uint256 => address) public workerIds;
@@ -20,7 +21,7 @@ contract WorkerPool
     function addWorker(address _workerAddress, uint256 _computingPower) public
     {
         uint256 _workerId = nextWorkerId++;
-        workers[_workerAddress] = Worker(_workerId, _computingPower, false, true);
+        workers[_workerAddress] = Worker(_workerId, _computingPower, false, true, 0);
         workerIds[_workerId] = _workerAddress;
         workerAddresses.push(_workerAddress);
     }
@@ -30,19 +31,28 @@ contract WorkerPool
         workers[_workerAddress].isActivate = false;
     }
 
-    function getWorkerByWorkerId(uint256 _workerId) public view returns (Worker memory) {
+    function getWorkerByWorkerId(uint256 _workerId) public view returns (Worker memory)
+    {
         address workerAddress = workerIds[_workerId];
         return workers[workerAddress];
     }
 
-    function findWorker(uint256 _requiredComputingPower) public view returns (uint256 workerId) {
+    function getWorkerByWorkerAddress(address workerAddress) public view returns(Worker memory)
+    {
+        return workers[workerAddress];
+    }
+
+    function findWorker(uint256 _requiredComputingPower) private view returns (uint256 workerId) 
+    {
         address[] memory qualifiedWorkers = new address[](workerAddresses.length);
         uint256 qualifiedCount = 0;
 
-        for (uint256 i = 0; i < workerAddresses.length; i++) {
+        for (uint256 i = 0; i < workerAddresses.length; i++) 
+        {
             address workerAddress = workerAddresses[i];
-            Worker storage worker = workers[workerAddress];
-            if (!worker.isBusy && worker.computingPower >= _requiredComputingPower && worker.isActivate == true) {
+            Worker memory worker = workers[workerAddress];
+            if (!worker.isBusy && worker.computingPower >= _requiredComputingPower && worker.isActivate == true) 
+            {
                 qualifiedWorkers[qualifiedCount] = workerAddress;
                 qualifiedCount++;
             }
@@ -56,19 +66,42 @@ contract WorkerPool
         return workers[qualifiedWorkers[randomIndex]].workerId;
     }
 
-    function assignTask(uint256 _requiredComputingPower) public returns (uint256) {
+    function assignTask(uint256 _requiredComputingPower, uint256 taskId) public returns (uint256) 
+    {
         uint256 workerId = findWorker(_requiredComputingPower);
-        if (workerId == Invalid_WorkerId) {
+        if (workerId == Invalid_WorkerId) 
+        {
             return Invalid_WorkerId;
         }
 
         Worker storage worker = workers[workerIds[workerId]];
         worker.isBusy = true;
+        worker.taskId = taskId;
         return workerId;
     }
 
-    function finishTask(uint256 workerId) public {
+    function finishTask(uint256 workerId) private 
+    {
         Worker storage worker = workers[workerIds[workerId]];
+        worker.taskId = 0;
         worker.isBusy = false;
+    }
+
+    function finishTask(address workerAddress) public 
+    {
+        Worker storage worker = workers[workerAddress];
+        worker.taskId = 0;
+        worker.isBusy = false;
+    }
+
+    function validateWorkerTask(address workerAddress, uint256 taskId)public view returns(bool)
+    {
+        Worker memory worker = workers[workerAddress];
+        if(worker.taskId == taskId)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
