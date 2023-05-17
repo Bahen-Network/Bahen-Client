@@ -34,8 +34,21 @@ const CreateOrder = ({ onUpload }) => {
   };
 
   const calculateCost = async () => {
-    // Replace this with a call to the actual API when it's available
-    setRequiredPower(999);
+    try{
+      const azureFunctionUrl = 'https://cost-calculate-v3.azurewebsites.net/api/HttpTrigger1?code=4rfvfm-4EvfSb_zcFkO4GKDeT24s-xlTIV290YOlAGsmAzFub4xLAA==';
+      const container = folderUrl.split("/").pop();
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'container': container })
+      };
+      const response = await fetch(azureFunctionUrl, requestOptions);
+      const data = await response.json();
+      setRequiredPower(data.result_unit);
+    }
+    catch(error) {
+      setRequiredPower(999);
+    }
   };
 
   return (
