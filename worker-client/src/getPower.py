@@ -1,23 +1,33 @@
 # power.py
-import psutil
 import GPUtil
-def get_cpu_power():
-    # Here, we assume that the power of a CPU is proportional to the number of cores and the frequency
-    cpu_freq = psutil.cpu_freq().current  # MHz
-    cpu_count = psutil.cpu_count()
-    return cpu_freq * cpu_count
+
+flops_dict = {
+    'Tesla T4': 65e12,  # 125 TFLOPS for Tensor Cores
+    'Tesla V100': 125e12,  # 125 TFLOPS for Tensor Cores
+    'Tesla A100': 312e12,  # 312 TFLOPS for Tensor Cores
+    'RTX 2080': 42.4e12,  # 285.6 TFLOPS for Tensor Cores
+    'RTX 3070': 40.6e12,  # 285.6 TFLOPS for Tensor Cores
+    'RTX 3080': 59.5e12,  # 285.6 TFLOPS for Tensor Cores
+    'RTX 3090': 71e12,  # 285.6 TFLOPS for Tensor Cores
+    'RTX A6000': 154.8e12,  # 112 TFLOPS for Tensor Cores
+    'A40': 149.7e12,  # 112 TFLOPS for Tensor Cores
+    # Add more GPUs as needed...
+}
+
+RTX3090_FLOPs = 71e12
 
 def get_gpu_power():
-    # Here, we assume that the power of a GPU is proportional to the memory and load
-    total_gpu_power = 0
+    total_gpu_flops = 0
     gpus = GPUtil.getGPUs()
     for gpu in gpus:
-        gpu_memory = gpu.memoryTotal # Total memory in MB
-        gpu_load = gpu.load * 100  # GPU load is in [0, 1], convert it to percentage
-        total_gpu_power += gpu_memory * gpu_load
-    return total_gpu_power
+        gpu_name = gpu.name
+        for k in flops_dict.keys():
+            if k in gpu_name:
+                total_gpu_flops += flops_dict[k]
+                break
+    return total_gpu_flops
 
 def get_power():
-    return get_cpu_power() + get_gpu_power()
+    return get_gpu_power() / RTX3090_FLOPs
 
 
