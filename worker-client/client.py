@@ -1,11 +1,11 @@
 import json
 from web3 import Web3
-from utils import perform_training_task
 import time
-from getPower import get_power  # Here we import the get_power function from the power.py file
+from src.getPower import get_power
+from src.utils import perform_training_task  # Here we import the get_power function from the power.py file
 
 # Load Config file
-with open('config.json', 'r') as f:
+with open('src/config.json', 'r') as f:
     config = json.load(f)
 
 # Connect to Ethereum node
@@ -19,7 +19,7 @@ web3.eth.defaultAccount = account_address
 
 # Load contract
 contract_address = web3.to_checksum_address(config['contract_address'])
-with open('../ABI/Marketplace.json', 'r') as f:
+with open('ABI/Marketplace.json', 'r') as f:
     abi = json.load(f)
 marketplace_contract = web3.eth.contract(address=contract_address, abi=abi)
 
