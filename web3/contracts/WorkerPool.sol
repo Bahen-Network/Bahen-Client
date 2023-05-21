@@ -20,6 +20,7 @@ contract WorkerPool
 
     function addWorker(address _workerAddress, uint256 _computingPower) public
     {
+        require(workers[_workerAddress].isActivate == false, "This address has already registered.");
         uint256 _workerId = nextWorkerId++;
         workers[_workerAddress] = Worker(_workerId, _computingPower, false, true, 0);
         workerIds[_workerId] = _workerAddress;
@@ -33,12 +34,14 @@ contract WorkerPool
 
     function getWorkerByWorkerId(uint256 _workerId) public view returns (Worker memory)
     {
+        require(workers[workerIds[_workerId]].isActivate == true, "This worker not registered.");
         address workerAddress = workerIds[_workerId];
         return workers[workerAddress];
     }
 
     function getWorkerByWorkerAddress(address workerAddress) public view returns(Worker memory)
     {
+        require(workers[workerAddress].isActivate == true, "This worker not registered.");
         return workers[workerAddress];
     }
 
