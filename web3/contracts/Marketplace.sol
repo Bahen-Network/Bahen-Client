@@ -145,11 +145,13 @@ contract Marketplace {
         if(task.taskType == SharedStructs.TaskType.Training)
         {
             emit Log("Create train Task !!!");
-            taskPoolContract.createTask(
+            
+            uint256 newTaskId = taskPoolContract.createTask(
                 SharedStructs.TaskType.Validation,
                 task.orderId,
                 order.folderUrl(),
                 order.requiredComputingPower());
+            order.SetOrderValidateTaskId(newTaskId);
         }
         else
         {
