@@ -70,6 +70,36 @@ export const getUserOrders = async (userAddress) => {
   }
 };
 
+export const getWorkerList = async () => {
+  try {
+    const contractInstance = await getMarketplaceContractInstance();
+    const workers = await contractInstance.methods.getWorkerList().call();
+
+    return workers;
+  } catch (error) {
+    console.error("Error fetching worker lists:", error);
+    throw error;
+  }
+};
+
+export const getWorkerInfo = async (workerAddress) => {
+  try {
+    const contractInstance = await getMarketplaceContractInstance(); // 添加 await 关键字
+    const workerInfo = await contractInstance.methods.getWorkerInfo(workerAddress).call();
+
+    return {
+      workerId: workerInfo.workerId,
+      computingPower: workerInfo.computingPower,
+      isBusy: workerInfo.isBusy? "true": "false",
+      isActivate: workerInfo.isActivate? "true": "false",
+    };
+  } catch (error) {
+    console.error("Error fetching workerInfo:", error);
+    throw error;
+  }
+};
+
+
 export const getOrderInfo = async (orderId) => {
   try {
     const contractInstance = await getMarketplaceContractInstance(); // 添加 await 关键字
