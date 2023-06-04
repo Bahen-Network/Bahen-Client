@@ -16,7 +16,8 @@ contract TaskPool {
         SharedStructs.TaskType taskType,
         uint256 orderId,
         string memory folderUrl,
-        uint256 requiredPower
+        uint256 requiredPower,
+        uint256 exceptWorkerId
     ) public returns (uint256) {
         uint256 taskId = nextTaskId++;
         tasks[taskId] = SharedStructs.TaskInfo(
@@ -27,11 +28,21 @@ contract TaskPool {
             folderUrl,
             requiredPower,
             msg.sender,
-            0
+            0,
+            exceptWorkerId
         );
         taskIds.push(taskId);
         emit TaskCreated(taskId, msg.sender);
         return taskId;
+    }
+
+    function createTask(
+        SharedStructs.TaskType taskType,
+        uint256 orderId,
+        string memory folderUrl,
+        uint256 requiredPower
+    ) public returns (uint256) {
+        return createTask(taskType, orderId, folderUrl, requiredPower, 0);
     }
 
     function getAllTasks() public view returns (SharedStructs.TaskInfo[] memory)

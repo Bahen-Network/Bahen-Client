@@ -48,10 +48,15 @@ contract Marketplace {
         TriggerTaskPool();
         emit Log("--Add Worker successed!!!");
     }
-
+    
     function removeWorker(address worker) public onlyAdmin 
     {
         workerPoolContract.removeWorker(worker);
+    }
+
+    function getWorkerList() public view returns(address[] memory)
+    {
+        return workerPoolContract.getWorkerList();
     }
 
     function getWorkerInfo(address worker) public view returns(WorkerPool.Worker memory)
@@ -150,7 +155,8 @@ contract Marketplace {
                 SharedStructs.TaskType.Validation,
                 task.orderId,
                 order.folderUrl(),
-                order.requiredComputingPower());
+                order.requiredComputingPower(),
+                workerPoolContract.getWorkerIdByWorkerAddress(workerAddress));
             order.SetOrderValidateTaskId(newTaskId);
         }
         else
@@ -167,7 +173,7 @@ contract Marketplace {
         if(taskPoolContract.HasTask())
         {
             SharedStructs.TaskInfo memory task =  taskPoolContract.getPendingTask();
-            uint256 workerId = workerPoolContract.assignTask(task.requiredPower, task.id);
+            uint256 workerId = workerPoolContract.assignTask(task.requiredPower, task.id, task.expectWorkerId);
             if(workerId != workerPoolContract.Invalid_WorkerId())
             {
                 taskPoolContract.assignTask(task.id, workerId);
