@@ -16,7 +16,8 @@ contract TaskPool {
         SharedStructs.TaskType taskType,
         uint256 orderId,
         string memory folderUrl,
-        uint256 requiredPower
+        uint256 requiredPower,
+        uint256 orderLevel
     ) public returns (uint256) {
         uint256 taskId = nextTaskId++;
         tasks[taskId] = SharedStructs.TaskInfo(
@@ -27,37 +28,44 @@ contract TaskPool {
             folderUrl,
             requiredPower,
             msg.sender,
-            0
+            0,
+            orderLevel // Set the new field
         );
         taskIds.push(taskId);
         emit TaskCreated(taskId, msg.sender);
         return taskId;
     }
 
-    function getAllTasks() public view returns (SharedStructs.TaskInfo[] memory)
+    function getAllTasks()
+        public
+        view
+        returns (SharedStructs.TaskInfo[] memory)
     {
         uint256 length = taskIds.length;
-        SharedStructs.TaskInfo[] memory taskArray = new SharedStructs.TaskInfo[](length);
-        for(uint256 i = 0; i < length; i++)
-        {
+        SharedStructs.TaskInfo[]
+            memory taskArray = new SharedStructs.TaskInfo[](length);
+        for (uint256 i = 0; i < length; i++) {
             taskArray[i] = tasks[taskIds[i]];
         }
 
         return taskArray;
     }
 
-    function getTask(uint256 taskId) public view returns (SharedStructs.TaskInfo memory) 
-    {
+    function getTask(
+        uint256 taskId
+    ) public view returns (SharedStructs.TaskInfo memory) {
         return tasks[taskId];
     }
 
-    function getPendingTask() public view returns(SharedStructs.TaskInfo memory task)
+    function getPendingTask()
+        public
+        view
+        returns (SharedStructs.TaskInfo memory task)
     {
-        return tasks[pendingTaskHead]; 
+        return tasks[pendingTaskHead];
     }
 
-    function HasTask() public view returns(bool)
-    {
+    function HasTask() public view returns (bool) {
         return nextTaskId > pendingTaskHead;
     }
 
@@ -84,22 +92,19 @@ contract TaskPool {
         emit TaskCompleted(taskId);
     }
 
-    function removeTaskAfterTaskAsign(uint256 taskId) private
-    {
+    function removeTaskAfterTaskAsign(uint256 taskId) private {
         uint256 index = findTaskIndex(taskId);
-        if(index < taskIds.length)
-        {
+        if (index < taskIds.length) {
             taskIds[index] = taskIds[taskIds.length - 1];
             taskIds.pop();
         }
     }
 
-    function findTaskIndex(uint256 taskId) internal view returns(uint256 taskIndex)
-    {
-        for(uint256 i = 0; i < taskIds.length; i++)
-        {
-            if(taskIds[i] == taskId)
-            {
+    function findTaskIndex(
+        uint256 taskId
+    ) internal view returns (uint256 taskIndex) {
+        for (uint256 i = 0; i < taskIds.length; i++) {
+            if (taskIds[i] == taskId) {
                 return i;
             }
         }

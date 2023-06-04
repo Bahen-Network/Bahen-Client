@@ -10,11 +10,16 @@ const CreateOrder = ({ onUpload }) => {
   const [folderUrl, setFolderUrl] = useState('');
   const [requiredPower, setRequiredPower] = useState(null);
   const navigate = useNavigate();
+  const [orderLevel, setOrderLevel] = useState(1);
+
+  const handleLevelChange = (e) => {
+    setOrderLevel(e.target.value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (requiredPower !== null) {
-      const orderId = await createOrderPreview(folderUrl, requiredPower);
+      const orderId = await createOrderPreview(folderUrl, requiredPower, orderLevel);
       navigate(`/order-preview/${orderId}`, { state: { requiredPower } });
     }
   };
@@ -102,6 +107,18 @@ const CreateOrder = ({ onUpload }) => {
             <button onClick={() => inputRef2.current.click()}>Select Folder</button>
           </label>
         </div>
+
+        <div className="mb-3">
+          <label>
+            Order Level:
+            <select onChange={handleLevelChange}>
+              <option value="1">1 (highest power)</option>
+              <option value="2">2 (medium power)</option>
+              <option value="3">3 (lowest power)</option>
+            </select>
+          </label>
+        </div>
+
         <div className="mb-3">
           <label htmlFor="folderUrl" className="form-label">
             Folder URL:
@@ -109,6 +126,7 @@ const CreateOrder = ({ onUpload }) => {
           <input type="text" className="form-control" id="folderUrl" value={folderUrl} onChange={(e) => setFolderUrl(e.target.value)} />
         </div>
         <button type="button" className="btn btn-primary mb-3" onClick={calculateCost}>Calculate Cost</button>
+
         {requiredPower !== null && (
           <>
             <p>Required Power: {requiredPower} (wei)</p>

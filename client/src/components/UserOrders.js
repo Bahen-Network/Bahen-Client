@@ -44,6 +44,7 @@ const UserOrders = () => {
             <th>Client</th>
             <th>Payment Amount</th>
             <th>Order Status</th>
+            <th>Order Level</th>
           </tr>
         </thead>
         <tbody>
@@ -55,6 +56,7 @@ const UserOrders = () => {
               <td>{order.client}</td>
               <td>{order.paymentAmount}</td>
               <td>{order.orderStatus}</td>
+              <td>{order.orderLevel}</td>
             </tr>
           ))}
         </tbody>
