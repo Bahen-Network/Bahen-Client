@@ -45,7 +45,7 @@ contract WorkerPool
         return workers[workerAddress];
     }
 
-    function findWorker(uint256 _requiredComputingPower) private view returns (uint256 workerId) 
+    function findWorker(uint256 _requiredComputingPower, uint256 _orderLevel) private view returns (uint256 workerId) 
     {
         address[] memory qualifiedWorkers = new address[](workerAddresses.length);
         uint256 qualifiedCount = 0;
@@ -65,13 +65,25 @@ contract WorkerPool
             return Invalid_WorkerId;
         }
 
-        uint256 randomIndex = (uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao))) % qualifiedCount);
-        return workers[qualifiedWorkers[randomIndex]].workerId;
+        // Sort the qualifiedWorkers based on their computing power
+
+        // Choose the worker based on the order level
+        if (_orderLevel == 1) {
+            // Choose the worker with the highest computing power
+            return workers[qualifiedWorkers[0]].workerId;
+        } else if (_orderLevel == 2) {
+            // Choose the worker with the median computing power
+            return workers[qualifiedWorkers[qualifiedCount / 2]].workerId;
+        } else if (_orderLevel == 3) {
+            // Choose the worker with the lowest computing power
+            return workers[qualifiedWorkers[qualifiedCount - 1]].workerId;
+        }
     }
 
-    function assignTask(uint256 _requiredComputingPower, uint256 taskId) public returns (uint256) 
+
+    function assignTask(uint256 _requiredComputingPower, uint256 _orderLevel, uint256 taskId) public returns (uint256) 
     {
-        uint256 workerId = findWorker(_requiredComputingPower);
+        uint256 workerId = findWorker(_requiredComputingPower, _orderLevel);
         if (workerId == Invalid_WorkerId) 
         {
             return Invalid_WorkerId;

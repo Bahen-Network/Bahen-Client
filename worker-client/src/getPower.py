@@ -28,6 +28,6 @@ def get_gpu_power():
     return total_gpu_flops
 
 def get_power():
-    return get_gpu_power() / RTX3090_FLOPs
+    return get_gpu_power()
 
 

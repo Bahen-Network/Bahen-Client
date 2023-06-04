@@ -11,8 +11,9 @@ contract Order {
     string public folderUrl;
     uint256 public requiredComputingPower;
     SharedStructs.OrderStatus public orderStatus; 
+    uint256 public orderLevel;
 
-    constructor(address _client, string memory _folderUrl, uint256 _requiredComputingPower) {
+    constructor(address _client, string memory _folderUrl, uint256 _requiredComputingPower, uint256 _orderLevel) {
         validateTaskId = 0;
         trainTaskId = 0;
         client = _client;
@@ -20,8 +21,9 @@ contract Order {
         orderStatus = SharedStructs.OrderStatus.Created; 
         folderUrl = _folderUrl;
         requiredComputingPower = _requiredComputingPower;
+        orderLevel = _orderLevel; // Assign the new variable
     }
-
+    
     function confirm(uint256 _paymentAmount) public {
         require(orderStatus != SharedStructs.OrderStatus.Confirmed , "Order already confirmed.");
         paymentAmount = _paymentAmount;

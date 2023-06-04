@@ -90,8 +90,6 @@ def start_polling():
             print("No task now!")
         time.sleep(10)  # Poll every 10 seconds
 
-
-
 def complete_task(taskId):
     print("Completing task...")
     nonce = web3.eth.get_transaction_count(account_address)

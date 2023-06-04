@@ -12,7 +12,6 @@ const OrderPreview = () => {
   const [orderDetails, setOrderDetails] = useState(null);
 
   useEffect(() => {
-    
     const fetchOrderDetails = async () => {
       const order = await getOrderInfo(orderId);
       setOrderDetails({
@@ -21,16 +20,16 @@ const OrderPreview = () => {
         client: order.client,
         paymentAmount: order.paymentAmount,
         orderStatus: order.orderStatus,
+        orderLevel: order.orderLevel,
       });
     };
-    
 
     fetchOrderDetails();
   }, [orderId]);
 
-  const handleConfirmOrder = async (paymentAmount) => {
+  const handleConfirmOrder = async (paymentAmount, orderLevel) => {
     console.log(`Order Confirmed start!!: ${orderId}`);
-    await confirmOrder(orderId, paymentAmount);
+    await confirmOrder(orderId, paymentAmount, orderLevel);
     console.log(`Order Confirmed success!!: ${orderId}`);
     navigate('/');
   };
@@ -44,11 +43,12 @@ const OrderPreview = () => {
           <p>TrainTask ID: {orderDetails.trainTaskId}</p>
           <p>ValidateTask Id: {orderDetails.validateTaskId}</p>
           <p>Payment Amount: {orderDetails.paymentAmount}</p>
-          <p>orderStatus: {orderDetails.orderStatus}</p>
+          <p>Order Level: {orderDetails.orderLevel}</p>
+          <p>Order Status: {orderDetails.orderStatus}</p>
           <p>Your Client Adress: {orderDetails.client}</p>
         </>
       )}
-      <button onClick={() => handleConfirmOrder(requiredPower)}>Confirm Order ({requiredPower} wei)</button>
+      <button onClick={() => handleConfirmOrder(requiredPower, orderDetails.orderLevel)}>Confirm Order ({requiredPower} wei)</button>
       <div className="navigation">
         <Link to="/">
           <button>Back to Home</button>
