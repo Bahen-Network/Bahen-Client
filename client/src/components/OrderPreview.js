@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
-import { Link, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { confirmOrder, getOrderInfo } from '../services/marketplaceService';
+import '../styles/OrderPreview.css'; // Import a CSS file
 
 const OrderPreview = () => {
   const { orderId } = useParams();
@@ -10,50 +11,59 @@ const OrderPreview = () => {
   const requiredPower = location.state?.requiredPower || 0;
 
   const [orderDetails, setOrderDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
+      setLoading(true);
       const order = await getOrderInfo(orderId);
-      setOrderDetails({
-        trainTaskId: order.trainTaskId,
-        validateTaskId: order.validateTaskId,
-        client: order.client,
-        paymentAmount: order.paymentAmount,
-        orderStatus: order.orderStatus,
-        orderLevel: order.orderLevel,
-      });
+      setOrderDetails(order);
+      setLoading(false);
     };
 
     fetchOrderDetails();
   }, [orderId]);
 
-  const handleConfirmOrder = async (paymentAmount, orderLevel) => {
-    console.log(`Order Confirmed start!!: ${orderId}`);
-    await confirmOrder(orderId, paymentAmount, orderLevel);
-    console.log(`Order Confirmed success!!: ${orderId}`);
-    navigate('/');
-  };
+  const handleConfirmOrder = async () => {
+    // Ensure `paymentAmount` and `orderLevel` are defined
+    if (orderDetails.paymentAmount && orderDetails.orderLevel) {
+      console.log(`Order Confirmed start!!: ${orderId}`);
+      await confirmOrder(orderId, orderDetails.paymentAmount, orderDetails.orderLevel);
+      console.log(`Order Confirmed success!!: ${orderId}`);
+      navigate('/');
+    } else {
+      console.error('Missing required order details.');
+    }
+};
 
   return (
-    <div>
-      <h2>Order Preview</h2>
-      {orderDetails && (
-        <>
-          <p>Order ID: {orderId}</p>
-          <p>TrainTask ID: {orderDetails.trainTaskId}</p>
-          <p>ValidateTask Id: {orderDetails.validateTaskId}</p>
-          <p>Payment Amount: {orderDetails.paymentAmount}</p>
-          <p>Order Level: {orderDetails.orderLevel}</p>
-          <p>Order Status: {orderDetails.orderStatus}</p>
-          <p>Your Client Adress: {orderDetails.client}</p>
-        </>
+    <div className="order-preview-container">
+      <h2 className="order-preview-title">Order Preview</h2>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="order-preview-card">
+          {orderDetails && (
+            <>
+              <p className="order-details">Order ID: {orderId}</p>
+              <p className="order-details">TrainTask ID: {orderDetails.trainTaskId}</p>
+              <p className="order-details">ValidateTask Id: {orderDetails.validateTaskId}</p>
+              <p className="order-details">Payment Amount: {orderDetails.paymentAmount}</p>
+              <p className="order-details">Order Level: {orderDetails.orderLevel}</p>
+              <p className="order-details">Order Status: {orderDetails.orderStatus}</p>
+              <p className="order-details">Your Client Adress: {orderDetails.client}</p>
+            </>
+          )}
+          <button className="confirm-button" onClick={handleConfirmOrder}>
+            Confirm Order ({requiredPower} wei)
+          </button>
+          <div className="navigation">
+            <Link to="/" className="home-link">
+              Back to Home
+            </Link>
+          </div>
+        </div>
       )}
-      <button onClick={() => handleConfirmOrder(requiredPower, orderDetails.orderLevel)}>Confirm Order ({requiredPower} wei)</button>
-      <div className="navigation">
-        <Link to="/">
-          <button>Back to Home</button>
-        </Link>
-      </div>
     </div>
   );
 };
