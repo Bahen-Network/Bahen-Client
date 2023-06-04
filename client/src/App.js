@@ -5,6 +5,7 @@ import OrderPreview from './components/OrderPreview';
 import Home from './components/Home';
 import UserOrders from './components/UserOrders';
 import { uploadToAzure } from './services/azureUpload';
+import WorkerList from './components/WorkerList'
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
           <Route path="/create-order" element={<CreateOrder onUpload={handleUpload}/>} />
           <Route path="/order-preview/:orderId" element={<OrderPreview />} />
           <Route path="/user-orders" element={<UserOrders />} /> 
+          <Route path="/worker-list" element={<WorkerList />} /> 
         </Routes>
       </div>
     </Router>

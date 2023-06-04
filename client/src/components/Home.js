@@ -13,6 +13,9 @@ const Home = () => {
         <Link to="/user-orders" className="home-button">
           My Orders
         </Link>
+        <Link to="/worker-list" className="home-button">
+          Worker list
+        </Link>
       </div>
     </div>
   );
