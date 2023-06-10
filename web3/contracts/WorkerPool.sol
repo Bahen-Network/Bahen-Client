@@ -27,6 +27,11 @@ contract WorkerPool
         workerAddresses.push(_workerAddress);
     }
 
+    function getWorkerList() public view returns(address[] memory) 
+    {
+        return workerAddresses;
+    }
+
     function removeWorker(address _workerAddress) public
     {
         workers[_workerAddress].isActivate = false;
@@ -45,7 +50,14 @@ contract WorkerPool
         return workers[workerAddress];
     }
 
-    function findWorker(uint256 _requiredComputingPower, uint256 _orderLevel) private view returns (uint256 workerId) 
+    function getWorkerIdByWorkerAddress(address workerAddress) public view returns(uint256 workerId)
+    {
+        require(workers[workerAddress].isActivate == true, "This worker not registered.");
+        Worker memory worker = workers[workerAddress];
+        return worker.workerId;
+    }
+
+    function findWorker(uint256 _requiredComputingPower, uint256 exceptWorkerId, uint256 _orderLevel) private view returns (uint256 workerId) 
     {
         address[] memory qualifiedWorkers = new address[](workerAddresses.length);
         uint256 qualifiedCount = 0;
@@ -54,7 +66,7 @@ contract WorkerPool
         {
             address workerAddress = workerAddresses[i];
             Worker memory worker = workers[workerAddress];
-            if (!worker.isBusy && worker.computingPower >= _requiredComputingPower && worker.isActivate == true) 
+            if (!worker.isBusy && worker.computingPower >= _requiredComputingPower && worker.isActivate == true && worker.workerId != exceptWorkerId) 
             {
                 qualifiedWorkers[qualifiedCount] = workerAddress;
                 qualifiedCount++;
@@ -80,10 +92,9 @@ contract WorkerPool
         }
     }
 
-
-    function assignTask(uint256 _requiredComputingPower, uint256 _orderLevel, uint256 taskId) public returns (uint256) 
+    function assignTask(uint256 _requiredComputingPower, uint256 taskId, uint256 exceptWorkerId, uint256 _orderLevel) public returns (uint256) 
     {
-        uint256 workerId = findWorker(_requiredComputingPower, _orderLevel);
+        uint256 workerId = findWorker(_requiredComputingPower, exceptWorkerId, _orderLevel);
         if (workerId == Invalid_WorkerId) 
         {
             return Invalid_WorkerId;
@@ -93,6 +104,12 @@ contract WorkerPool
         worker.isBusy = true;
         worker.taskId = taskId;
         return workerId;
+    }
+
+
+    function assignTask(uint256 _requiredComputingPower, uint256 taskId) public returns (uint256) 
+    {
+        return assignTask(_requiredComputingPower, taskId, 0);
     }
 
     function finishTask(uint256 workerId) private 

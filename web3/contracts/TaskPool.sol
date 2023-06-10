@@ -17,6 +17,7 @@ contract TaskPool {
         uint256 orderId,
         string memory folderUrl,
         uint256 requiredPower,
+        uint256 exceptWorkerId,
         uint256 orderLevel
     ) public returns (uint256) {
         uint256 taskId = nextTaskId++;
@@ -29,6 +30,7 @@ contract TaskPool {
             requiredPower,
             msg.sender,
             0,
+            exceptWorkerId,
             orderLevel // Set the new field
         );
         taskIds.push(taskId);
@@ -36,10 +38,17 @@ contract TaskPool {
         return taskId;
     }
 
-    function getAllTasks()
-        public
-        view
-        returns (SharedStructs.TaskInfo[] memory)
+    function createTask(
+        SharedStructs.TaskType taskType,
+        uint256 orderId,
+        string memory folderUrl,
+        uint256 requiredPower,
+        uint256 orderLevel
+    ) public returns (uint256) {
+        return createTask(taskType, orderId, folderUrl, requiredPower, 0, orderLevel);
+    }
+
+    function getAllTasks() public view returns (SharedStructs.TaskInfo[] memory)
     {
         uint256 length = taskIds.length;
         SharedStructs.TaskInfo[]

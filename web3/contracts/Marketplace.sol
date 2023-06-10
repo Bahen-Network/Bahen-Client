@@ -51,14 +51,19 @@ contract Marketplace {
         TriggerTaskPool();
         emit Log("--Add Worker successed!!!");
     }
-
-    function removeWorker(address worker) public onlyAdmin {
+    
+    function removeWorker(address worker) public onlyAdmin 
+    {
         workerPoolContract.removeWorker(worker);
     }
 
-    function getWorkerInfo(
-        address worker
-    ) public view returns (WorkerPool.Worker memory) {
+    function getWorkerList() public view returns(address[] memory)
+    {
+        return workerPoolContract.getWorkerList();
+    }
+
+    function getWorkerInfo(address worker) public view returns(WorkerPool.Worker memory)
+    {
         return workerPoolContract.getWorkerByWorkerAddress(worker);
     }
 
@@ -165,6 +170,7 @@ contract Marketplace {
                 task.orderId,
                 order.folderUrl(),
                 order.requiredComputingPower(),
+                workerPoolContract.getWorkerIdByWorkerAddress(workerAddress));
                 order.orderLevel()
             );
             order.SetOrderValidateTaskId(newTaskId);
@@ -174,18 +180,16 @@ contract Marketplace {
         TriggerTaskPool();
     }
 
-    function TriggerTaskPool() private {
+    function TriggerTaskPool() private
+   {
         emit Log("TriggerTaskPool start");
         emit LogBool(taskPoolContract.HasTask());
-        if (taskPoolContract.HasTask()) {
-            SharedStructs.TaskInfo memory task = taskPoolContract
-                .getPendingTask();
-            uint256 workerId = workerPoolContract.assignTask(
-                task.requiredPower,
-                task.orderLevel,
-                task.id
-            );
-            if (workerId != workerPoolContract.Invalid_WorkerId()) {
+        if(taskPoolContract.HasTask())
+        {
+            SharedStructs.TaskInfo memory task =  taskPoolContract.getPendingTask();
+            uint256 workerId = workerPoolContract.assignTask(task.requiredPower, task.id, task.expectWorkerId, task.orderLevel);
+            if(workerId != workerPoolContract.Invalid_WorkerId())
+            {
                 taskPoolContract.assignTask(task.id, workerId);
                 Order order = orders[task.orderId];
                 order.SetOrderStatus(SharedStructs.OrderStatus.Completed);
