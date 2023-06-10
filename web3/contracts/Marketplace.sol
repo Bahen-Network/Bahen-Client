@@ -170,7 +170,7 @@ contract Marketplace {
                 task.orderId,
                 order.folderUrl(),
                 order.requiredComputingPower(),
-                workerPoolContract.getWorkerIdByWorkerAddress(workerAddress));
+                workerPoolContract.getWorkerIdByWorkerAddress(workerAddress),
                 order.orderLevel()
             );
             order.SetOrderValidateTaskId(newTaskId);
