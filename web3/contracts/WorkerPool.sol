@@ -107,9 +107,9 @@ contract WorkerPool
     }
 
 
-    function assignTask(uint256 _requiredComputingPower, uint256 taskId) public returns (uint256) 
+    function assignTask(uint256 _requiredComputingPower, uint256 taskId, uint256 _orderLevel) public returns (uint256) 
     {
-        return assignTask(_requiredComputingPower, taskId, 0);
+        return assignTask(_requiredComputingPower, taskId, 0, _orderLevel);
     }
 
     function finishTask(uint256 workerId) private 
