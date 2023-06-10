@@ -40,13 +40,13 @@ const getMarketplaceContractInstance = async () => {
   return contract;
 };
 
-export const createOrderPreview = async (folderUrl, requiredPower) => {
+export const createOrderPreview = async (folderUrl, requiredPower, orderLevel) => {
   const contractInstance = await getMarketplaceContractInstance();
   const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
   try {
     const result = await contractInstance.methods
-      .createOrderPreview(folderUrl, requiredPower)
+      .createOrderPreview(folderUrl, requiredPower, orderLevel)
       .send({ from: accounts[0] });
 
     const orderId = result.events.OrderCreated.returnValues.orderId;
@@ -102,35 +102,36 @@ export const getWorkerInfo = async (workerAddress) => {
 
 export const getOrderInfo = async (orderId) => {
   try {
-    const contractInstance = await getMarketplaceContractInstance(); // 添加 await 关键字
+    const contractInstance = await getMarketplaceContractInstance();
 
     const orderInfo = await contractInstance.methods.getOrderInfo(orderId).call();
 
     console.log("get orderInfo:", orderInfo);
 
     let orderStatus;
-    if(orderInfo._orderStatus == "0")
-    {
+    if (orderInfo._orderStatus == "0") {
       orderStatus = "Created";
-    }else if(orderInfo._orderStatus == "1"){
+    } else if (orderInfo._orderStatus == "1") {
       orderStatus = "Confirmed";
-    }else if(orderInfo._orderStatus == "2"){
+    } else if (orderInfo._orderStatus == "2") {
       orderStatus = "Completed";
-    }else{
+    } else {
       orderStatus = "Failed";
     }
     return {
-      trainTaskId: orderInfo._trainTaskId == 0? "Not Create": orderInfo._trainTaskId,
-      validateTaskId: orderInfo._validateTaskId  == 0? "Not Create": orderInfo._trainTaskId,
+      trainTaskId: orderInfo._trainTaskId == 0 ? "Not Create" : orderInfo._trainTaskId,
+      validateTaskId: orderInfo._validateTaskId == 0 ? "Not Create" : orderInfo._validateTaskId,
       client: orderInfo._client,
       paymentAmount: orderInfo._paymentAmount,
       orderStatus: orderStatus,
+      orderLevel: orderInfo._orderLevel // 订单等级
     };
   } catch (error) {
     console.error("Error fetching order:", error);
     throw error;
   }
 };
+
 
 
 export const confirmOrder = async (orderId, paymentAmount) => {
@@ -147,4 +148,5 @@ export const confirmOrder = async (orderId, paymentAmount) => {
   }
   return result;
 };
+
 

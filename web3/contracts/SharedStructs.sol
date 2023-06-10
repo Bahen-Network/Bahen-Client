@@ -13,6 +13,7 @@ library SharedStructs {
         address creator;
         uint256 workerId;
         uint256 expectWorkerId;
+        uint256 orderLevel;
     }
 
     enum TaskType {

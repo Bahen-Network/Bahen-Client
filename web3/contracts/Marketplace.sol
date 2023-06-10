@@ -33,7 +33,11 @@ contract Marketplace {
         _;
     }
 
-    constructor(address payable paymentAddress, address taskPoolAddress, address workerPoolAddress) {
+    constructor(
+        address payable paymentAddress,
+        address taskPoolAddress,
+        address workerPoolAddress
+    ) {
         paymentContract = Payment(paymentAddress);
         taskPoolContract = TaskPool(taskPoolAddress);
         workerPoolContract = WorkerPool(workerPoolAddress);
@@ -41,8 +45,7 @@ contract Marketplace {
         nextOrderId = 0;
     }
 
-    function addWorker(address worker, uint256 _computingPower) public 
-    {
+    function addWorker(address worker, uint256 _computingPower) public {
         emit Log("--Add Worker start!!!");
         workerPoolContract.addWorker(worker, _computingPower);
         TriggerTaskPool();
@@ -64,18 +67,25 @@ contract Marketplace {
         return workerPoolContract.getWorkerByWorkerAddress(worker);
     }
 
-    function getTask(uint256 taskId) public view returns (SharedStructs.TaskInfo memory) 
-    {
+    function getTask(
+        uint256 taskId
+    ) public view returns (SharedStructs.TaskInfo memory) {
         return taskPoolContract.getTask(taskId);
     }
 
     function createOrderPreview(
         string memory folderUrl,
-        uint256 requiredPower
+        uint256 requiredPower,
+        uint256 orderLevel
     ) public returns (uint256) {
         uint256 orderId = nextOrderId++;
-        
-        Order newOrder = new Order(msg.sender, folderUrl, requiredPower);
+
+        Order newOrder = new Order(
+            msg.sender,
+            folderUrl,
+            requiredPower,
+            orderLevel
+        );
         orders[orderId] = newOrder;
 
         // update [userAdress, order] map
@@ -105,7 +115,8 @@ contract Marketplace {
             SharedStructs.TaskType.Training,
             orderId,
             order.folderUrl(),
-            order.requiredComputingPower()
+            order.requiredComputingPower(),
+            order.orderLevel()
         );
         order.SetOrdertrainTaskId(taskId);
         order.confirm(paymentAmount);
@@ -129,7 +140,8 @@ contract Marketplace {
             uint256 _validateTaskId,
             address _client,
             uint256 _paymentAmount,
-            SharedStructs.OrderStatus _orderStatus
+            SharedStructs.OrderStatus _orderStatus,
+            uint _orderLevel
         )
     {
         Order order = orders[orderId];
@@ -138,42 +150,44 @@ contract Marketplace {
         _client = order.client();
         _paymentAmount = order.paymentAmount();
         _orderStatus = order.orderStatus();
+        _orderLevel = order.orderLevel();
     }
 
-    function CompleteTask(address workerAddress, uint256 taskId) external
-    {
-        require(workerPoolContract.validateWorkerTask(workerAddress, taskId), "Invalid request");
+    function CompleteTask(address workerAddress, uint256 taskId) external {
+        require(
+            workerPoolContract.validateWorkerTask(workerAddress, taskId),
+            "Invalid request"
+        );
         SharedStructs.TaskInfo memory task = taskPoolContract.getTask(taskId);
         taskPoolContract.completeTask(taskId);
         Order order = orders[task.orderId];
         workerPoolContract.finishTask(workerAddress);
-        if(task.taskType == SharedStructs.TaskType.Training)
-        {
+        if (task.taskType == SharedStructs.TaskType.Training) {
             emit Log("Create train Task !!!");
-            
+
             uint256 newTaskId = taskPoolContract.createTask(
                 SharedStructs.TaskType.Validation,
                 task.orderId,
                 order.folderUrl(),
                 order.requiredComputingPower(),
                 workerPoolContract.getWorkerIdByWorkerAddress(workerAddress));
+                order.orderLevel()
+            );
             order.SetOrderValidateTaskId(newTaskId);
-        }
-        else
-        {
+        } else {
             order.SetOrderStatus(SharedStructs.OrderStatus.Completed);
         }
         TriggerTaskPool();
     }
 
     function TriggerTaskPool() private
-    {
+   {
         emit Log("TriggerTaskPool start");
         emit LogBool(taskPoolContract.HasTask());
         if(taskPoolContract.HasTask())
         {
             SharedStructs.TaskInfo memory task =  taskPoolContract.getPendingTask();
-            uint256 workerId = workerPoolContract.assignTask(task.requiredPower, task.id, task.expectWorkerId);
+            uint256 workerId = workerPoolContract.assignTask(task.requiredPower, task.id, task.expectWorkerId, task.orderLevel);
             if(workerId != workerPoolContract.Invalid_WorkerId())
             {
                 taskPoolContract.assignTask(task.id, workerId);
@@ -184,13 +198,11 @@ contract Marketplace {
         emit Log("TriggerTaskPool end");
     }
 
-    function setMarketplaceAddress(address marketplaceAddress) external 
-    {
+    function setMarketplaceAddress(address marketplaceAddress) external {
         require(
             msg.sender == admin,
             "Only admin can set the marketplace address."
         );
         marketplace = marketplaceAddress;
     }
-
 }
