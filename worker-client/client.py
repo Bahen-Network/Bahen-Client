@@ -3,6 +3,7 @@ from web3 import Web3
 import time
 from src.getPower import get_power
 from src.utils import perform_training_task  # Here we import the get_power function from the power.py file
+import requests
 
 # Load Config file
 with open('src/config.json', 'r') as f:
@@ -92,6 +93,17 @@ def start_polling():
 
 def complete_task(taskId):
     print("Completing task...")
+    
+    # Call Azure function to validate task
+    function_app_url = "https://proof-of-train.azurewebsites.net/api/HttpTrigger1?"
+    headers = {"x-functions-key": '0Mc51OFbjT1J8PFJeoiuG55iM1Xg_PR6GPPXhlU8iVSCAzFuAAgrIw=='}
+    try:
+        response = requests.post(function_app_url, headers=headers)
+        if response.text == 'True':
+            print("Task completed")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e} for task validation")
+
     nonce = web3.eth.get_transaction_count(account_address)
     txn = marketplace_contract.functions.CompleteTask(account_address, taskId).build_transaction({
         'chainId': chainId,
