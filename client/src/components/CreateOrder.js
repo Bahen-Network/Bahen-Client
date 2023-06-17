@@ -39,7 +39,7 @@ const CreateOrder = ({ onUpload }) => {
   const calculateCost = async () => {
     setLoading(true);
     try{
-      const azureFunctionUrl = 'https://cost-calculate-v3.azurewebsites.net/api/HttpTrigger1?code=4rfvfm-4EvfSb_zcFkO4GKDeT24s-xlTIV290YOlAGsmAzFub4xLAA==';
+      const azureFunctionUrl = 'https://calc-cost.azurewebsites.net/api/HttpTrigger2?code=hTRlWthKKGKDAZ2F4NbpRIOXF688VIEa7ulSV8uWIeGGAzFuA14rkQ==';
       const container = folderUrl.split("/").pop();
       const requestOptions = {
         method: 'POST',
