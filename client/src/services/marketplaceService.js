@@ -1,5 +1,34 @@
 import Web3 from 'web3';
 import Marketplace from '../api/Marketplace.json';
+import detectEthereumProvider from '@metamask/detect-provider';
+export const configureMoonbaseAlpha = async () => {
+  const provider = await detectEthereumProvider({ mustBeMetaMask: true });
+  if (provider) {
+      try {
+          await provider.request({ method: "eth_requestAccounts"});
+          await provider.request({
+              method: "wallet_addEthereumChain",
+              params: [
+                  {
+                      chainId: "0x507", // Moonbase Alpha's chainId is 1287, which is 0x507 in hex
+                      chainName: "Moonbase Alpha",
+                      nativeCurrency: {
+                          name: 'DEV',
+                          symbol: 'DEV',
+                          decimals: 18
+                      },
+                  rpcUrls: ["https://rpc.api.moonbase.moonbeam.network"],
+                  blockExplorerUrls: ["https://moonbase.moonscan.io/"]
+                  },
+              ]
+          })
+      } catch(e) {
+          console.error(e);
+      }  
+  } else {
+      console.error("Please install MetaMask");
+  }
+}
 
 let web3;
 let contract;
@@ -26,7 +55,9 @@ const getWeb3 = async () => {
 export const getUserAddress = async () => {
   const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
-  return accounts[0];
+  const userAddress = accounts[0];
+  console.log(`User address: ${userAddress}`);
+  return userAddress;
 };
 
 
@@ -44,6 +75,8 @@ export const createOrderPreview = async (folderUrl, requiredPower, orderLevel) =
   const contractInstance = await getMarketplaceContractInstance();
   const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
+  const address = await getUserAddress();
+  console.log(`User address: ${address}`);
   try {
     const result = await contractInstance.methods
       .createOrderPreview(folderUrl, requiredPower, orderLevel)
@@ -59,6 +92,8 @@ export const createOrderPreview = async (folderUrl, requiredPower, orderLevel) =
 };
 
 export const getUserOrders = async (userAddress) => {
+  const address = await getUserAddress();
+  console.log(`User address: ${address}`);
   try {
     const contractInstance = await getMarketplaceContractInstance();
     const userOrderIds = await contractInstance.methods.getUserOrders(userAddress).call();
@@ -71,6 +106,8 @@ export const getUserOrders = async (userAddress) => {
 };
 
 export const getWorkerList = async () => {
+  const address = await getUserAddress();
+  console.log(`User address: ${address}`);
   try {
     const contractInstance = await getMarketplaceContractInstance();
     const workers = await contractInstance.methods.getWorkerList().call();
@@ -83,6 +120,8 @@ export const getWorkerList = async () => {
 };
 
 export const getWorkerInfo = async (workerAddress) => {
+  const address = await getUserAddress();
+  console.log(`User address: ${address}`);
   try {
     const contractInstance = await getMarketplaceContractInstance(); // 添加 await 关键字
     const workerInfo = await contractInstance.methods.getWorkerInfo(workerAddress).call();
@@ -101,6 +140,8 @@ export const getWorkerInfo = async (workerAddress) => {
 
 
 export const getOrderInfo = async (orderId) => {
+  const address = await getUserAddress();
+  console.log(`User address: ${address}`);
   try {
     const contractInstance = await getMarketplaceContractInstance();
 
