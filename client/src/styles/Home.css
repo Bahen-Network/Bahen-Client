@@ -1,37 +1,17 @@
 .home-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f1f1f1;
-    font-family: Arial, sans-serif;
-  }
-  
-  h2 {
-    margin-bottom: 30px;
-  }
-  
-  .buttons-container {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .home-button {
-    display: inline-block;
-    background-color: #4caf50;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 10px 20px;
-    margin: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .home-button:hover {
-    background-color: #45a049;
-  }
-  
+  background: url('../../public/bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 30px;
+}

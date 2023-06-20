@@ -67,16 +67,28 @@ function App() {
           <div style={{ display: 'flex' }}>
             <MenuLink href="/">Demo</MenuLink>
             <MenuLink href="/">About</MenuLink>
-            <MenuLink href="/">My Order</MenuLink>
+            <MenuLink href="/user-orders">My Order</MenuLink>
           </div>
-          <div style={{ marginLeft: 'auto', display: 'flex' }}>
-            <Button size="large" type="primary" style={{ marginRight: 20 }}>
-              Train
-            </Button>
-            <ConnectButton></ConnectButton>
+          <div
+            style={{
+              marginLeft: 'auto',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <div>
+              <a href="/create-order">
+                <Button size="large" type="primary" style={{ marginRight: 20 }}>
+                  Train
+                </Button>
+              </a>
+            </div>
+            <div>
+              <ConnectButton></ConnectButton>
+            </div>
           </div>
         </Header>
-        <Content style={{ padding: '0 50px' }}>
+        <Content>
           <Router>
             <div>
               <Routes>
@@ -95,7 +107,13 @@ function App() {
             </div>
           </Router>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
+        <Footer
+          style={{
+            textAlign: 'center',
+            backgroundColor: '#000',
+            color: '#fff',
+          }}
+        >
           © 2023 All Rights Reserved by Lab Apex
         </Footer>
       </Layout>
