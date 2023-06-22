@@ -49,7 +49,7 @@ function App() {
 
   return (
     <ConfigProvider theme={{ token: { colorPrimary: '#6558F5' } }}>
-      <Layout>
+      <Layout style={{ backgroundColor: '#000', color: '#fff' }}>
         <Header
           style={{
             width: '100%',
@@ -57,6 +57,7 @@ function App() {
             alignItems: 'center',
             height: 88,
             background: '#000',
+            borderBottom: '2px solid #1F1F1F',
           }}
         >
           <div>
@@ -113,6 +114,7 @@ function App() {
             textAlign: 'center',
             backgroundColor: '#000',
             color: '#fff',
+            borderTop: '2px solid #1F1F1F',
           }}
         >
           © 2023 All Rights Reserved by Lab Apex
