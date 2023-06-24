@@ -24,11 +24,8 @@ const CreateOrder = ({ onUpload }) => {
   const [orderLevel, setOrderLevel] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  const handleLevelChange = (e) => setOrderLevel(e.target.value);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(`User address  CreateOrder: ${address}  folder: ${folderUrl}, requiredPower:${requiredPower}`);
     if (requiredPower !== null) {
       const orderId = await createOrderPreview(
         folderUrl,
@@ -146,7 +143,6 @@ const CreateOrder = ({ onUpload }) => {
             />
           </div>
         </Section>
-        </form>
         <Section title="Pretrain Settings">
           <div
             style={{
@@ -217,7 +213,6 @@ const CreateOrder = ({ onUpload }) => {
           style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 32 }}
         >
         </div>
-        <form onSubmit={handleSubmit}>
           <button
             type="button"
             className="btn btn-primary mb-3"
@@ -240,7 +235,7 @@ const CreateOrder = ({ onUpload }) => {
               <p>Required Power: {requiredPower} (wei)</p>
               <br />
               <button type="submit" className="btn btn-success">
-                Create Order Preview (need pay gas cost)
+                Create Order Preview (need to pay gas cost)
               </button>
             </>
           )}
