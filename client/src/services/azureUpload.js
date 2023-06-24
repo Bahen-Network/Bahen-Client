@@ -2,7 +2,7 @@ import { BlobServiceClient, logger } from "@azure/storage-blob";
 import { v4 as uuidv4 } from 'uuid';
 
 const account = "kejie1";
-const sasToken = "?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2023-06-19T21:36:52Z&st=2023-06-19T13:36:52Z&spr=https&sig=h%2BF2oerbslyKuG4GYs818U%2BUxrTUEJlj4svCi%2BXVF58%3D";
+const sasToken = "?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2023-07-09T18:21:11Z&st=2023-06-24T10:21:11Z&spr=https&sig=G%2FbwEZ0zl87Im3trxFFRTCeLJZ3qjHZfjkpRigY%2BKSg%3D";
 // Init blob service client
 let blobServiceClient;
 

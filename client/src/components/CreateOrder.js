@@ -1,14 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { createOrderPreview } from '../services/marketplaceService';
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 import { UploadOutlined } from '@ant-design/icons';
 import {
   Button,
   ConfigProvider,
   Upload,
   Select,
-  Divider,
   Steps,
   Typography,
 } from 'antd';
@@ -19,8 +17,7 @@ const { Title, Paragraph } = Typography;
 
 const CreateOrder = ({ onUpload }) => {
   const scriptInputRef = useRef();
-  const trainingInputRef = useRef();
-  const testInputRef = useRef();
+  const dataInputRef = useRef();
   const [folderUrl, setFolderUrl] = useState('');
   const [requiredPower, setRequiredPower] = useState(null);
   const navigate = useNavigate();
@@ -31,6 +28,7 @@ const CreateOrder = ({ onUpload }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(`User address  CreateOrder: ${address}  folder: ${folderUrl}, requiredPower:${requiredPower}`);
     if (requiredPower !== null) {
       const orderId = await createOrderPreview(
         folderUrl,
@@ -42,17 +40,20 @@ const CreateOrder = ({ onUpload }) => {
   };
 
   const handleScriptUploadChange = handleUploadChange(scriptInputRef);
-  const handleTrainingUploadChange = handleUploadChange(trainingInputRef);
-  const handleTestUploadChange = handleUploadChange(testInputRef);
+  const handleDataUploadChange = handleUploadChange(dataInputRef);
 
   function handleUploadChange(inputRef) {
     return async (e) => {
       if (e.target.files.length > 0) {
-        const folderUrl = await onUpload(
-          Array.from(e.target.files),
-          inputRef.current ? '' : folderUrl
-        );
-        setFolderUrl(folderUrl);
+        if (folderUrl.length > 0) {
+          console.log("at 49 folderUrl: ", folderUrl)
+          await onUpload(Array.from(e.target.files), folderUrl);
+        }
+        else{
+          const folderUrl = await onUpload(Array.from(e.target.files), "");
+          console.log("at 53 folderUrl: ", folderUrl)
+          setFolderUrl(folderUrl);
+        }
       }
     };
   }
@@ -80,6 +81,7 @@ const CreateOrder = ({ onUpload }) => {
 
   return (
     <div className="container" style={{ display: 'flex' }}>
+      
       <div
         style={{
           width: '50%',
@@ -95,7 +97,8 @@ const CreateOrder = ({ onUpload }) => {
           </Title>
           <Paragraph style={{ color: '#fff' }}>Create your AI today</Paragraph>
         </div>
-        <Section title="Training Files">
+        <form onSubmit={handleSubmit}>
+        <Section title="Upload Training Files and Data">
           <div
             style={{
               display: 'flex',
@@ -106,18 +109,10 @@ const CreateOrder = ({ onUpload }) => {
           >
             <div style={{ fontSize: '14px' }}>Data Set</div>
             <div>
-              <Upload
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                onChange={({ file, fileList }) => {
-                  if (file.status !== 'uploading') {
-                    console.log(file, fileList);
-                  }
-                }}
-              >
-                <Button style={{ color: '#000' }} icon={<UploadOutlined />}>
-                  Upload
-                </Button>
-              </Upload>
+              <FileInputGroup
+              ref={scriptInputRef}
+              onChange={handleDataUploadChange}
+            />
             </div>
           </div>
           <div
@@ -131,29 +126,27 @@ const CreateOrder = ({ onUpload }) => {
             <div style={{ fontSize: '14px' }}>
               <div>Train Script</div>
               <div style={{ color: '#666', fontSize: 12, fontStyle: 'italic' }}>
-                model_test.py
               </div>
             </div>
             <div>
-              <Upload
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                onChange={({ file, fileList }) => {
-                  if (file.status !== 'uploading') {
-                    console.log(file, fileList);
-                  }
-                }}
-              >
-                <Button style={{ color: '#000' }} icon={<UploadOutlined />}>
-                  Upload
-                </Button>
-              </Upload>
+              <FileInputGroup
+              ref={scriptInputRef}
+              onChange={handleScriptUploadChange}
+            />
             </div>
           </div>
           <div style={{ display: 'flex', fontStyle: 'italic' }}>
-            <div style={{ fontSize: '14px', marginRight: 4 }}>Folder URL: </div>
-            <div style={{ color: '#666' }}>https://apexlab.windows.net</div>
+          <div style={{ fontSize: 14 }}> Folder Url</div>
+          <input
+              type="text"
+              className="form-control"
+              id="folderUrl"
+              value={folderUrl}
+              onChange={(e) => setFolderUrl(e.target.value)}
+            />
           </div>
         </Section>
+        </form>
         <Section title="Pretrain Settings">
           <div
             style={{
@@ -166,16 +159,15 @@ const CreateOrder = ({ onUpload }) => {
             <div style={{ fontSize: '14px' }}>Version of PyTorch</div>
             <div>
               <Select
-                defaultValue="PyTorch 1.9"
+                defaultValue="PyTorch"
                 style={{ width: 210 }}
                 onChange={(value) => {
                   console.log(`selected ${value}`);
                 }}
                 options={[
-                  { value: 'jack', label: 'Jack' },
-                  { value: 'PyTorch 1.9', label: 'PyTorch 1.9' },
-                  { value: 'Yiminghe', label: 'yiminghe' },
-                  { value: 'disabled', label: 'Disabled', disabled: true },
+                  { value: 'Tensorflow', label: 'Tensorflow' },
+                  { value: 'PyTorch', label: 'PyTorch' },
+                  { value: 'Others', label: 'Others', disabled: true },
                 ]}
               />
             </div>
@@ -216,60 +208,16 @@ const CreateOrder = ({ onUpload }) => {
           >
             <div style={{ fontSize: '14px' }}>Required Power</div>
             <div>
-              <Button type="primary">Calculate</Button>
+              <Button type="primary" onClick={calculateCost}>Calculate
+              </Button>
             </div>
           </div>
         </Section>
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 32 }}
         >
-          <Button size="large" style={{ marginRight: 16 }}>
-            Cancel
-          </Button>
-          <Button size="large" type="primary">
-            Train
-          </Button>
         </div>
         <form onSubmit={handleSubmit}>
-          <FileInputGroup
-            ref={scriptInputRef}
-            label="Scripts Directory:"
-            onChange={handleScriptUploadChange}
-          />
-          <FileInputGroup
-            ref={trainingInputRef}
-            label="Training Data Directory:"
-            onChange={handleTrainingUploadChange}
-          />
-          <FileInputGroup
-            ref={testInputRef}
-            label="Test Data Directory:"
-            onChange={handleTestUploadChange}
-          />
-
-          <div className="mb-3">
-            <label>
-              Order Level:
-              <select onChange={handleLevelChange}>
-                <option value="1">1 (highest power)</option>
-                <option value="2">2 (medium power)</option>
-                <option value="3">3 (lowest power)</option>
-              </select>
-            </label>
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="folderUrl" className="form-label">
-              Folder URL:
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="folderUrl"
-              value={folderUrl}
-              onChange={(e) => setFolderUrl(e.target.value)}
-            />
-          </div>
           <button
             type="button"
             className="btn btn-primary mb-3"
@@ -344,9 +292,9 @@ const FileInputGroup = React.forwardRef(({ label, onChange }, ref) => (
         multiple
         style={{ display: 'none' }}
       />
-      <button type="button" onClick={() => ref.current.click()}>
-        Select Folder
-      </button>
+      <Button onClick={() => ref.current.click()} icon={<UploadOutlined />}>
+        Upload Directory
+      </Button>
     </label>
   </div>
 ));
