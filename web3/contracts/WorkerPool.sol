@@ -35,6 +35,7 @@ contract WorkerPool
     function removeWorker(address _workerAddress) public
     {
         workers[_workerAddress].isActivate = false;
+        removeTaskAfterTaskAsign(_workerAddress);
     }
 
     function getWorkerByWorkerId(uint256 _workerId) public view returns (Worker memory)
@@ -135,5 +136,23 @@ contract WorkerPool
         }
 
         return false;
+    }
+
+    function removeTaskAfterTaskAsign(address _workerAddress) private {
+        uint256 index = findWorkerAddressIndex(_workerAddress);
+        if (index < workerAddresses.length) {
+            workerAddresses[index] = workerAddresses[workerAddresses.length - 1];
+            workerAddresses.pop();
+        }
+    }
+
+    function findWorkerAddressIndex(address _workerAddress) internal view returns (uint256 taskIndex) {
+        for (uint256 i = 0; i < workerAddresses.length; i++) {
+            if (workerAddresses[i] == _workerAddress) {
+                return i;
+            }
+        }
+
+        return workerAddresses.length;
     }
 }

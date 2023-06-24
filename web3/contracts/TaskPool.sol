@@ -109,9 +109,7 @@ contract TaskPool {
         }
     }
 
-    function findTaskIndex(
-        uint256 taskId
-    ) internal view returns (uint256 taskIndex) {
+    function findTaskIndex(uint256 taskId) internal view returns (uint256 taskIndex) {
         for (uint256 i = 0; i < taskIds.length; i++) {
             if (taskIds[i] == taskId) {
                 return i;
