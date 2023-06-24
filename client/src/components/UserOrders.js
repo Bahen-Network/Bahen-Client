@@ -62,7 +62,7 @@ const UserOrders = () => {
 
       {/* TODO mock records */}
       <Table
-        dataSource={records}
+        dataSource={orders}
         columns={[
           {
             title: 'Order ID',
