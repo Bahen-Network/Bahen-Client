@@ -45,8 +45,8 @@ const getWeb3 = async () => {
         console.error('User denied account access');
       }
     } else {
-      const provider = new Web3.providers.HttpProvider('http://localhost:8545');
-      web3 = new Web3(provider);
+      const provider = new Web3.providers.HttpProvider('https://rpc.api.moonbase.moonbeam.network');
+      web3 = new Web3('https://rpc.api.moonbase.moonbeam.network');
     }
   }
   return web3;
@@ -67,6 +67,8 @@ const getMarketplaceContractInstance = async () => {
     const networkId = await web3Instance.eth.net.getId();
     const deployedNetwork = Marketplace.networks[networkId];
     contract = new web3Instance.eth.Contract(Marketplace.abi, deployedNetwork && deployedNetwork.address);
+    console.log(networkId)
+    console.log(contract)
   }
   return contract;
 };
@@ -76,7 +78,7 @@ export const createOrderPreview = async (folderUrl, requiredPower, orderLevel) =
   const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
   const address = await getUserAddress();
-  console.log(`User address: ${address}`);
+  console.log(`User address  CreateOrder: ${address}  folder: ${folderUrl}, requiredPower:${requiredPower}`);
   try {
     const result = await contractInstance.methods
       .createOrderPreview(folderUrl, requiredPower, orderLevel)
