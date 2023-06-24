@@ -1,12 +1,15 @@
 .home-container {
+  background: url('../../public/bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  color: #fff;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 100vh;
-  position: relative;
-  background-color: #f1f1f1;
-  font-family: Arial, sans-serif;
+  align-items: center;
+  text-align: center;
 }
 
 .moonbase-button {

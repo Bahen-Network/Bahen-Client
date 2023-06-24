@@ -1,11 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getUserOrders, getOrderInfo, getUserAddress } from '../services/marketplaceService';
-import styles from '../styles/UserOrders.module.css'; 
+import { Typography, Table, Button } from 'antd';
+import {
+  getUserOrders,
+  getOrderInfo,
+  getUserAddress,
+} from '../services/marketplaceService';
+import styles from '../styles/UserOrders.module.css';
+
+const { Title, Paragraph } = Typography;
+
+// todo mock records
+const records = [
+  {
+    index: 1,
+    trainTaskId: '0x1234567890',
+  },
+];
 
 const UserOrders = () => {
   const [orders, setOrders] = useState([]);
-  const [userAddress, setUserAddress] = useState("");
+  const [userAddress, setUserAddress] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,11 +36,13 @@ const UserOrders = () => {
       const fetchOrders = async () => {
         try {
           const orderIds = await getUserOrders(userAddress);
-          const orderDetailsPromises = orderIds.map((orderId) => getOrderInfo(orderId));
+          const orderDetailsPromises = orderIds.map((orderId) =>
+            getOrderInfo(orderId)
+          );
           const orders = await Promise.all(orderDetailsPromises);
           setOrders(orders);
         } catch (error) {
-          console.error("Error fetching user orders:", error);
+          console.error('Error fetching user orders:', error);
         }
       };
       fetchOrders();
@@ -34,40 +51,57 @@ const UserOrders = () => {
 
   return (
     <div className={styles.container}>
-      <h2>User Orders</h2>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Train Task ID</th>
-            <th>Validate Task ID</th>
-            <th>Client</th>
-            <th>Payment Amount</th>
-            <th>Order Status</th>
-            <th>Order Level</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order, index) => (
-            <tr key={index}>
-              <td>{index}</td>
-              <td>{order.trainTaskId}</td>
-              <td>{order.validateTaskId}</td>
-              <td>{order.client}</td>
-              <td>{order.paymentAmount}</td>
-              <td>{order.orderStatus}</td>
-              <td>{order.orderLevel}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className={styles.navigation}>
-        <Link to="/">
-          <button>Back to Home</button>
-    </Link>
-  </div>
-</div>
-);
+      <div style={{ marginLeft: 20, marginBottom: 30 }}>
+        <Title style={{ marginBottom: 10, color: '#fff' }} level={2}>
+          Orders
+        </Title>
+        <Paragraph style={{ color: '#fff' }}>
+          You can view all your train orders here
+        </Paragraph>
+      </div>
+
+      {/* TODO mock records */}
+      <Table
+        dataSource={records}
+        columns={[
+          {
+            title: 'Order ID',
+            dataIndex: 'index',
+          },
+          {
+            title: 'Train Task ID',
+            dataIndex: 'trainTaskId',
+          },
+          {
+            title: 'Validate Task ID',
+            dataIndex: 'validateTaskId',
+          },
+          {
+            title: 'Client',
+            dataIndex: 'client',
+          },
+          {
+            title: 'Payment Amount',
+            dataIndex: 'paymentAmount',
+          },
+          {
+            title: 'Order Status',
+            dataIndex: 'orderStatus',
+          },
+          {
+            title: 'Order Level',
+            dataIndex: 'orderLevel',
+          },
+          {
+            title: 'Operation',
+            render: (text, record, index) => {
+              return <Button>View Details</Button>;
+            },
+          },
+        ]}
+      />
+    </div>
+  );
 };
 
 export default UserOrders;
