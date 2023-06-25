@@ -4,7 +4,7 @@ npm-debug.log
 
 # Build artifacts
 build/
-client/src/api/
+
 
 # Truffle artifacts
 .truffle/
