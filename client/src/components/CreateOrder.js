@@ -202,45 +202,35 @@ const CreateOrder = ({ onUpload }) => {
               marginBottom: 10,
             }}
           >
-            <div style={{ fontSize: '14px' }}>Required Power</div>
+            <div style={{ fontSize: '14px' }}>Required Power: {requiredPower} (wei)</div>
             <div>
-              <Button type="primary" onClick={calculateCost}>Calculate
-              </Button>
+            <Button type="primary" loading={loading} onClick={calculateCost}>Calculate</Button>
+
             </div>
           </div>
+          {requiredPower !== null && (
+            <>
+              <Button 
+                type="primary" 
+                loading={loading} 
+                onClick={handleSubmit}
+                disabled={loading}
+              >
+                {loading ? 'We are processing your order, please wait...' : 'Create Order Preview (need to pay gas cost)'}
+              </Button>
+              {loading && <Progress percent={50} status="active" />}
+            </>
+          )}
+
+
         </Section>
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 32 }}
         >
         </div>
-          <button
-            type="button"
-            className="btn btn-primary mb-3"
-            onClick={calculateCost}
-            disabled={loading}
-          >
-            {loading ? (
-              <span
-                className="spinner-border spinner-border-sm"
-                role="status"
-                aria-hidden="true"
-              ></span>
-            ) : (
-              'Calculate Cost'
-            )}
-          </button>
-
-          {requiredPower !== null && (
-            <>
-              <p>Required Power: {requiredPower} (wei)</p>
-              <br />
-              <button type="submit" className="btn btn-success">
-                Create Order Preview (need to pay gas cost)
-              </button>
-            </>
-          )}
         </form>
       </div>
+
       <div style={{ width: 380, paddingTop: 36, paddingLeft: 64 }}>
         <ConfigProvider theme={{ token: { colorTextBase: '#fff' } }}>
           <Steps
