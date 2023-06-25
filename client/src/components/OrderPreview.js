@@ -3,9 +3,9 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { confirmOrder, getOrderInfo } from '../services/marketplaceService';
 import '../styles/OrderPreview.css'; // Import a CSS file
-import { Tabs, Typography, ConfigProvider } from 'antd';
+import {Button, Tabs, Typography, ConfigProvider } from 'antd';
 import Section from './Section';
-
+const { TabPane } = Tabs;
 const { Title, Paragraph } = Typography;
 
 function InfoItem({ title, content }) {
@@ -30,6 +30,7 @@ const OrderPreview = () => {
     const fetchOrderDetails = async () => {
       setLoading(true);
       const order = await getOrderInfo(orderId);
+      console.log(`---------------------fdsafdsagsdagdfs-----${orderId}`)
       setOrderDetails(order);
       setLoading(false);
     };
@@ -38,12 +39,11 @@ const OrderPreview = () => {
   }, [orderId]);
 
   const handleConfirmOrder = async () => {
-    // Ensure `paymentAmount` and `orderLevel` are defined
-    if (orderDetails.paymentAmount && orderDetails.orderLevel) {
+    if (orderDetails?.paymentAmount && orderDetails?.orderLevel) {
       console.log(`Order Confirmed start!!: ${orderId}`);
       await confirmOrder(
         orderId,
-        orderDetails.paymentAmount,
+        0, // Temporary value for requiredComputingPower, change according to your needs
         orderDetails.orderLevel
       );
       console.log(`Order Confirmed success!!: ${orderId}`);
@@ -57,7 +57,7 @@ const OrderPreview = () => {
     <div className="order-preview-container">
       <div
         style={{
-          width: '652px',
+          width: '852px',
           paddingTop: 36,
           paddingBottom: 36,
           paddingRight: 64,
@@ -72,79 +72,66 @@ const OrderPreview = () => {
             Monitor your order here
           </Paragraph>
         </div>
-        <Section title="Training Files">
-          <InfoItem title="Order ID" content="123" />
-          <InfoItem title="TrainTask ID" content="dsfsaf" />
-          <InfoItem title="ValidateTask Id" content="123" />
-        </Section>
-        <Section title="Order Information">
-          <ConfigProvider theme={{ token: { colorText: '#fff' } }}>
-            <Tabs
-              defaultActiveKey="1"
-              items={[
-                {
-                  key: '1',
-                  label: 'Train Task',
-                  children: (
+        {orderDetails ? (
+          <>
+            <Section title="Training Files">
+              <InfoItem title="Order ID" content={orderId} />
+              <InfoItem title="TrainTask ID" content={orderDetails.trainTaskId} />
+              <InfoItem title="ValidateTask Id" content={orderDetails.validateTaskId} />
+            </Section>
+            <Section title="Order Information">
+              <ConfigProvider theme={{ token: { colorText: '#fff' } }}>
+                <Tabs
+                  defaultActiveKey="1"
+                  onChange={(value) => {
+                    console.log('value: ', value);
+                  }}
+                >
+                  <TabPane key="1" tab="Train Task">
                     <div>
-                      <InfoItem title="Order ID" content="123" />
-                      <InfoItem title="TrainTask ID" content="dsfsaf" />
-                      <InfoItem title="ValidateTask Id" content="123" />
+                      <InfoItem title="Order ID" content={orderId} />
+                      <InfoItem title="TrainTask ID" content={orderDetails.trainTaskId} />
+                      <InfoItem title="Payment Amount" content={orderDetails.paymentAmount} />
+                      <InfoItem title="Order Level" content={orderDetails.orderLevel} />
+                      <InfoItem title="Order Status" content={orderDetails.orderStatus} />
+                      <InfoItem title="Your Client Adress" content={orderDetails.client} />
                     </div>
-                  ),
-                },
-                {
-                  key: '2',
-                  label: 'Validate Task',
-                  children: (
+                  </TabPane>
+                  <TabPane key="2" tab="Validate Task">
                     <div>
-                      <InfoItem title="Order ID" content="123" />
+                      <InfoItem title="Order ID" content={orderId} />
                     </div>
-                  ),
-                },
-              ]}
-              onChange={(value) => {
-                console.log('value: ', value);
-              }}
-            />
-          </ConfigProvider>
-        </Section>
-        {loading ? (
-          <div>Loading...</div>
+                  </TabPane>
+                </Tabs>
+              </ConfigProvider>
+            </Section>
+            <Section title="Order Confirmation">
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: 15,
+                  }}
+                >
+                  <div>
+                    <Button type="primary" onClick={handleConfirmOrder}>Confirm Order ({requiredPower} wei)
+                    </Button>
+                  </div>
+                  <div className="navigation">
+                      <Link
+                        to="/"
+                        className="home-link"
+                        disabled={loading}
+                      >
+                        Back to Home
+                      </Link>
+                    </div>
+                </div>
+              </Section>
+          </>
         ) : (
-          <div className="order-preview-card">
-            {orderDetails && (
-              <>
-                <p className="order-details">Order ID: {orderId}</p>
-                <p className="order-details">
-                  TrainTask ID: {orderDetails.trainTaskId}
-                </p>
-                <p className="order-details">
-                  ValidateTask Id: {orderDetails.validateTaskId}
-                </p>
-                <p className="order-details">
-                  Payment Amount: {orderDetails.paymentAmount}
-                </p>
-                <p className="order-details">
-                  Order Level: {orderDetails.orderLevel}
-                </p>
-                <p className="order-details">
-                  Order Status: {orderDetails.orderStatus}
-                </p>
-                <p className="order-details">
-                  Your Client Adress: {orderDetails.client}
-                </p>
-              </>
-            )}
-            <button className="confirm-button" onClick={handleConfirmOrder}>
-              Confirm Order ({requiredPower} wei)
-            </button>
-            <div className="navigation">
-              <Link to="/" className="home-link">
-                Back to Home
-              </Link>
-            </div>
-          </div>
+          <div>Loading order details...</div>
         )}
       </div>
       <div style={{ width: 380, paddingTop: 36, paddingLeft: 64 }}></div>

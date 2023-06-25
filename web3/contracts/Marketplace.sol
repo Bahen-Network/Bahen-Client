@@ -141,7 +141,8 @@ contract Marketplace {
             address _client,
             uint256 _paymentAmount,
             SharedStructs.OrderStatus _orderStatus,
-            uint _orderLevel
+            uint _orderLevel,
+            uint256 _requiredComputingPower
         )
     {
         Order order = orders[orderId];
@@ -151,6 +152,7 @@ contract Marketplace {
         _paymentAmount = order.paymentAmount();
         _orderStatus = order.orderStatus();
         _orderLevel = order.orderLevel();
+        _requiredComputingPower = order.requiredComputingPower();
     }
 
     function CompleteTask(address workerAddress, uint256 taskId) external {

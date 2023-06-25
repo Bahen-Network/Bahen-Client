@@ -166,6 +166,7 @@ export const getOrderInfo = async (orderId) => {
       validateTaskId: orderInfo._validateTaskId == 0 ? "Not Create" : orderInfo._validateTaskId,
       client: orderInfo._client,
       paymentAmount: orderInfo._paymentAmount,
+      requiredComputingPower: orderInfo._requiredComputingPower,
       orderStatus: orderStatus,
       orderLevel: orderInfo._orderLevel // 订单等级
     };
