@@ -55,3 +55,29 @@ export const uploadToAzure = async (files, folderUrl) => {
   return containerUrl
 
 };
+
+export const downloadFromAzure = async (containerName) => {
+  if (!blobServiceClient) {
+    console.error('BlobServiceClient not initialized');
+    return;
+  }
+  try {
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+    const blobList = containerClient.listBlobsFlat();
+
+    for await (const blob of blobList) {
+      const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
+      const response = await blockBlobClient.download(0);
+      const blobURL = blockBlobClient.url;
+
+      const link = document.createElement('a');
+      link.href = blobURL;
+      link.setAttribute('download', blob.name);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+  } catch (error) {
+    console.error('Error downloading from Azure:', error);
+  }
+};
