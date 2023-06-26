@@ -7,17 +7,16 @@ import {
   getUserAddress,
 } from '../services/marketplaceService';
 import styles from '../styles/UserOrders.module.css';
+import { downloadFromAzure } from './services/azureUpload';
 
 const { Title, Paragraph } = Typography;
-
-// todo mock records
-const records = [
-  {
-    index: 1,
-    trainTaskId: '0x1234567890',
-  },
-];
-
+const handleDownload = async (orderId) => {
+  try {
+      await downloadFromAzure(orderId);
+  } catch (error) {
+      console.error('Download failed:', error);
+  }
+}
 const UserOrders = () => {
   const [orders, setOrders] = useState([]);
   const [userAddress, setUserAddress] = useState('');
@@ -95,7 +94,7 @@ const UserOrders = () => {
           {
             title: 'Operation',
             render: (text, record, index) => {
-              return <Button>View Details</Button>;
+              return <Button onClick={() => handleDownload(record.orderId)}>Download Model</Button>;
             },
           },
         ]}
