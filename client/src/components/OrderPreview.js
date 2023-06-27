@@ -43,7 +43,7 @@ const OrderPreview = () => {
       console.log(`Order Confirmed start!!: ${orderId}`);
       await confirmOrder(
         orderId,
-        0, // Temporary value for requiredComputingPower, change according to your needs
+        requiredPower * 10000, // Temporary value for requiredComputingPower, change according to your needs
         orderDetails.orderLevel
       );
       console.log(`Order Confirmed success!!: ${orderId}`);
@@ -91,7 +91,7 @@ const OrderPreview = () => {
                     <div>
                       <InfoItem title="Order ID" content={orderId} />
                       <InfoItem title="TrainTask ID" content={orderDetails.trainTaskId} />
-                      <InfoItem title="Payment Amount" content={orderDetails.paymentAmount} />
+                      <InfoItem title="Payment Amount" content={requiredPower * 10000} />
                       <InfoItem title="Order Level" content={orderDetails.orderLevel} />
                       <InfoItem title="Order Status" content={orderDetails.orderStatus} />
                       <InfoItem title="Your Client Adress" content={orderDetails.client} />
@@ -115,7 +115,7 @@ const OrderPreview = () => {
                   }}
                 >
                   <div>
-                    <Button type="primary" onClick={handleConfirmOrder}>Confirm Order ({requiredPower} wei)
+                    <Button type="primary" onClick={handleConfirmOrder}>Confirm Order ({requiredPower*10000} wei)
                     </Button>
                   </div>
                   <div className="navigation">

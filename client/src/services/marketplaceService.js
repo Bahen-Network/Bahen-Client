@@ -183,6 +183,7 @@ export const confirmOrder = async (orderId, paymentAmount) => {
   const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
   let result;
+  console.log(accounts[0], paymentAmount);
   try {
     result = await contractInstance.methods
       .confirmOrder(orderId, paymentAmount)

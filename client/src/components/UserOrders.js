@@ -7,7 +7,7 @@ import {
   getUserAddress,
 } from '../services/marketplaceService';
 import styles from '../styles/UserOrders.module.css';
-import { downloadFromAzure } from './services/azureUpload';
+import { downloadFromAzure } from '../services/azureUpload';
 
 const { Title, Paragraph } = Typography;
 const handleDownload = async (orderId) => {
