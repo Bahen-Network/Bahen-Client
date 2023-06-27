@@ -155,6 +155,12 @@ contract Marketplace {
         _requiredComputingPower = order.requiredComputingPower();
     }
 
+    function transferFunds(address recipient, uint256 amount) public {
+        require(address(this).balance >= amount, "Insufficient contract balance.");
+
+        payable(recipient).transfer(amount);
+    }
+
     function CompleteTask(address workerAddress, uint256 taskId) external {
         require(
             workerPoolContract.validateWorkerTask(workerAddress, taskId),
@@ -164,21 +170,14 @@ contract Marketplace {
         taskPoolContract.completeTask(taskId);
         Order order = orders[task.orderId];
         workerPoolContract.finishTask(workerAddress);
-        if (task.taskType == SharedStructs.TaskType.Training) {
-            emit Log("Create train Task !!!");
+        order.SetOrderStatus(SharedStructs.OrderStatus.Completed);
 
-            uint256 newTaskId = taskPoolContract.createTask(
-                SharedStructs.TaskType.Validation,
-                task.orderId,
-                order.folderUrl(),
-                order.requiredComputingPower(),
-                workerPoolContract.getWorkerIdByWorkerAddress(workerAddress),
-                order.orderLevel()
-            );
-            order.SetOrderValidateTaskId(newTaskId);
-        } else {
-            order.SetOrderStatus(SharedStructs.OrderStatus.Completed);
-        }
+        // Calculate the payment for the worker
+        uint256 paymentWorker = order.paymentAmount() * 9 / 10;  // assuming payment field is stored in the Task struct
+
+        // Transfer the payment to the worker
+        Payment(paymentContract).payWorker(workerAddress, paymentWorker);
+
         TriggerTaskPool();
     }
 
