@@ -49,6 +49,10 @@ contract Payment {
         emit Withdrawal(msg.sender, amount);
     }
 
+    function payWorker(address worker, uint256 amount) public {
+        _transferETH(worker, amount);
+    }
+
     // Internal function to transfer ETH to a specific address
     function _transferETH(address to, uint256 amount) internal {
         // Ensure the contract has a sufficient balance
