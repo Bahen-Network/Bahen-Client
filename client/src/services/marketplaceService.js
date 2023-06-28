@@ -73,7 +73,7 @@ const getMarketplaceContractInstance = async () => {
   return contract;
 };
 
-export const createOrderPreview = async (folderUrl, requiredPower, orderLevel) => {
+export const createOrderPreview = async (folderUrl, requiredPower, paymentAmount, orderLevel) => {
   const contractInstance = await getMarketplaceContractInstance();
   const web3Instance = await getWeb3();
   const accounts = await web3Instance.eth.getAccounts();
@@ -81,8 +81,8 @@ export const createOrderPreview = async (folderUrl, requiredPower, orderLevel) =
   console.log(`User address  CreateOrder: ${address}  folder: ${folderUrl}, requiredPower:${requiredPower}`);
   try {
     const result = await contractInstance.methods
-      .createOrderPreview(folderUrl, requiredPower, orderLevel)
-      .send({ from: accounts[0] });
+      .createOrderPreview(folderUrl, requiredPower, paymentAmount, orderLevel)
+      .send({ from: accounts[0], value: paymentAmount });
 
     const orderId = result.events.OrderCreated.returnValues.orderId;
     console.log(`Order Preview Created: ${orderId}`);
@@ -162,6 +162,7 @@ export const getOrderInfo = async (orderId) => {
       orderStatus = "Failed";
     }
     return {
+      orderId: orderId,
       trainTaskId: orderInfo._trainTaskId == 0 ? "Not Create" : orderInfo._trainTaskId,
       validateTaskId: orderInfo._validateTaskId == 0 ? "Not Create" : orderInfo._validateTaskId,
       client: orderInfo._client,
@@ -176,22 +177,3 @@ export const getOrderInfo = async (orderId) => {
     throw error;
   }
 };
-
-
-
-export const confirmOrder = async (orderId, paymentAmount) => {
-  const contractInstance = await getMarketplaceContractInstance();
-  const web3Instance = await getWeb3();
-  const accounts = await web3Instance.eth.getAccounts();
-  let result;
-  try {
-    result = await contractInstance.methods
-      .confirmOrder(orderId, paymentAmount)
-      .send({ from: accounts[0], value: paymentAmount });
-  } catch (error) {
-    console.error('Error executing transaction:', error);
-  }
-  return result;
-};
-
-
