@@ -194,8 +194,6 @@ contract Marketplace {
             if(workerId != workerPoolContract.Invalid_WorkerId())
             {
                 taskPoolContract.assignTask(task.id, workerId);
-                Order order = orders[task.orderId];
-                order.SetOrderStatus(SharedStructs.OrderStatus.Completed);
             }
         }
         emit Log("TriggerTaskPool end");
