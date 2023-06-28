@@ -19,12 +19,12 @@
 }
 
 .table th {
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
   font-weight: bold;
 }
 
 .table tbody tr:nth-child(even) {
-  background-color: #f8f8f8;
+  /* background-color: #f8f8f8; */
 }
 
 .navigation {
