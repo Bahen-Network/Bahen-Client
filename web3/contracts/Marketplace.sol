@@ -76,37 +76,22 @@ contract Marketplace {
     function createOrderPreview(
         string memory folderUrl,
         uint256 requiredPower,
+        uint256 paymentAmount,
         uint256 orderLevel
-    ) public returns (uint256) {
+    ) public payable returns (uint256) {
+
+        require(msg.value >= paymentAmount, "Not enough funds provided.");
         uint256 orderId = nextOrderId++;
 
-        Order newOrder = new Order(
+        Order order = new Order(
             msg.sender,
             folderUrl,
             requiredPower,
             orderLevel
         );
-        orders[orderId] = newOrder;
-
-        // update [userAdress, order] map
+        orders[orderId] = order;
         userOrders[msg.sender].push(orderId);
-
         emit OrderCreated("Cread order success!", orderId);
-        return orderId;
-    }
-
-    function confirmOrder(
-        uint256 orderId,
-        uint256 paymentAmount
-    ) public payable {
-        Order order = orders[orderId];
-        require(
-            msg.sender == order.client(),
-            "Only the client can perform this operation."
-        );
-        // require(workers.length > 0, "No workers available.");
-
-        require(msg.value >= paymentAmount, "Not enough funds provided.");
 
         // Send the funds to the Marketplace contract
         Payment(paymentContract).deposit{value: msg.value}(msg.sender);
@@ -121,6 +106,7 @@ contract Marketplace {
         order.SetOrdertrainTaskId(taskId);
         order.confirm(paymentAmount);
         TriggerTaskPool();
+        return orderId;
     }
 
     // get order by user adress
@@ -136,6 +122,7 @@ contract Marketplace {
         public
         view
         returns (
+            uint256 _orderId,
             uint256 _trainTaskId,
             uint256 _validateTaskId,
             address _client,
@@ -146,6 +133,7 @@ contract Marketplace {
             string memory _floderUrl
         )
     {
+        _orderId = orderId;
         Order order = orders[orderId];
         _trainTaskId = order.trainTaskId();
         _validateTaskId = order.validateTaskId();

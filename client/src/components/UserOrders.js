@@ -65,15 +65,11 @@ const UserOrders = () => {
         columns={[
           {
             title: 'Order ID',
-            dataIndex: 'index',
+            dataIndex: 'orderId',
           },
           {
             title: 'Train Task ID',
             dataIndex: 'trainTaskId',
-          },
-          {
-            title: 'Validate Task ID',
-            dataIndex: 'validateTaskId',
           },
           {
             title: 'Client',

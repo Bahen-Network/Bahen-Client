@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { createOrderPreview } from '../services/marketplaceService';
 import { useNavigate } from 'react-router-dom';
 import { UploadOutlined } from '@ant-design/icons';
+
+import { confirmOrder, getOrderInfo } from '../services/marketplaceService';
 import {
   Button,
   ConfigProvider,
@@ -27,11 +29,14 @@ const CreateOrder = ({ onUpload }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (requiredPower !== null) {
+      setOrderLevel(orderLevel);
       const orderId = await createOrderPreview(
         folderUrl,
         requiredPower,
+        requiredPower * 1,
         orderLevel
       );
+      handleConfirmOrder(orderId);
       navigate(`/order-preview/${orderId}`, { state: { requiredPower } });
     }
   };
