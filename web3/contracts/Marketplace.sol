@@ -142,7 +142,8 @@ contract Marketplace {
             uint256 _paymentAmount,
             SharedStructs.OrderStatus _orderStatus,
             uint _orderLevel,
-            uint256 _requiredComputingPower
+            uint256 _requiredComputingPower,
+            string memory _floderUrl
         )
     {
         Order order = orders[orderId];
@@ -153,6 +154,7 @@ contract Marketplace {
         _orderStatus = order.orderStatus();
         _orderLevel = order.orderLevel();
         _requiredComputingPower = order.requiredComputingPower();
+        _floderUrl = order.folderUrl();
     }
 
     function transferFunds(address recipient, uint256 amount) public {
