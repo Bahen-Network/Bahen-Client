@@ -1,9 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { createOrderPreview } from '../services/marketplaceService';
+import { createOrderPreview, calculateCostPay } from '../services/marketplaceService';
 import { useNavigate } from 'react-router-dom';
 import { UploadOutlined } from '@ant-design/icons';
-
-import { confirmOrder, getOrderInfo } from '../services/marketplaceService';
 import {
   Button,
   ConfigProvider,
@@ -36,7 +34,6 @@ const CreateOrder = ({ onUpload }) => {
         requiredPower * 1,
         orderLevel
       );
-      handleConfirmOrder(orderId);
       navigate(`/order-preview/${orderId}`, { state: { requiredPower } });
     }
   };
@@ -61,6 +58,10 @@ const CreateOrder = ({ onUpload }) => {
   }
 
   const calculateCost = async () => {
+    await calculateCostPay(
+      10000
+    );
+    
     setLoading(true);
     try {
       const azureFunctionUrl =

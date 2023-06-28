@@ -109,6 +109,16 @@ contract Marketplace {
         return orderId;
     }
 
+    function calculateCost(
+        uint256 paymentAmount
+    ) public payable{
+
+        require(msg.value >= paymentAmount, "Not enough funds provided.");
+        
+        Payment(paymentContract).deposit{value: msg.value}(msg.sender);
+    }
+
+
     // get order by user adress
     function getUserOrders(
         address user
