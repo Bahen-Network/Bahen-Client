@@ -168,7 +168,8 @@ export const getOrderInfo = async (orderId) => {
       paymentAmount: orderInfo._paymentAmount,
       requiredComputingPower: orderInfo._requiredComputingPower,
       orderStatus: orderStatus,
-      orderLevel: orderInfo._orderLevel // 订单等级
+      orderLevel: orderInfo._orderLevel,
+      floderUrl: orderInfo._floderUrl
     };
   } catch (error) {
     console.error("Error fetching order:", error);

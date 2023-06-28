@@ -7,7 +7,7 @@ import {
   getUserAddress,
 } from '../services/marketplaceService';
 import styles from '../styles/UserOrders.module.css';
-import { downloadFromAzure } from './services/azureUpload';
+import { downloadFromAzure } from '../services/azureUpload';
 
 const { Title, Paragraph } = Typography;
 const handleDownload = async (orderId) => {
@@ -94,7 +94,7 @@ const UserOrders = () => {
           {
             title: 'Operation',
             render: (text, record, index) => {
-              return <Button onClick={() => handleDownload(record.orderId)}>Download Model</Button>;
+              return <Button onClick={() => handleDownload(record.floderUrl)}>Download Model</Button>;
             },
           },
         ]}
