@@ -11,7 +11,6 @@ flops_dict = {
     'RTX 3090': 71e12,  # 285.6 TFLOPS for Tensor Cores
     'RTX A6000': 154.8e12,  # 112 TFLOPS for Tensor Cores
     'A40': 149.7e12,  # 112 TFLOPS for Tensor Cores
-    # Add more GPUs as needed...
 }
 
 RTX3090_FLOPs = 71e12
@@ -28,6 +27,5 @@ def get_gpu_power():
     return total_gpu_flops
 
 def get_power():
-    return get_gpu_power()
-
+    return round(get_gpu_power() / RTX3090_FLOPs)
 

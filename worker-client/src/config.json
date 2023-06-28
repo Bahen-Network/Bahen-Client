@@ -1,10 +1,9 @@
 {
-    "provider": "http://localhost:7545",
-    "contract_address": "0xd9B45bE08a433aD02134967c33C53e564c793294",
-    "account_address": "0x42e543edDB9b581485E1b155aa6F345184546d28",
-    "private_key": "0xee920c9206705ba0e61d9f469fadc0f4f34942238631d581c68ff84e8ce0d2d3",
-    "computing_power": 999990,
-    "chainId": 1337, 
+    "provider": "https://rpc.api.moonbase.moonbeam.network",
+    "contract_address": "0xbcfBC6271E7FE1EbC65a042ED051570C6799EB39",
+    "account_address": "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac",
+    "private_key": "5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
+    "chainId": 1287, 
     "gas": 6721970,
     "gasPrice": 1
 }
