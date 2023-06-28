@@ -28,13 +28,8 @@ marketplace_contract = web3.eth.contract(address=contract_address, abi=abi)
 gas = config['gas']
 gasPrice = config['gasPrice']
 gasPrice_wei = web3.to_wei(str(gasPrice), 'gwei')
-# If you are operating on the Ropesten test network, your chain ID should be 3. 
-# If you are operating on the main network, the chain ID should be 1. 
-# If you operate on the local Ganache network, the chain ID may be 1337 (or other value determined by the Ganache configuration).
 chainId = config['chainId']
 
-
-# computing_power = config['computing_power']
 computing_power = int(get_power())
 def register_worker():
     print("Registering worker with computing power: ", computing_power)
@@ -60,59 +55,33 @@ def remove_worker():
     signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
     web3.eth.send_raw_transaction(signed_txn.rawTransaction)
 
-def complete_task(taskId):
-    print("Completing task...")
-    nonce = web3.eth.getTransactionCount(account_address)
-    txn = marketplace_contract.functions.completeTask(taskId).build_transaction({
-        'chainId': chainId,
-        'gas': gas,
-        'gasPrice': gasPrice_wei,
-        'nonce': nonce,
-    })
-    signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
-    web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-
-# struct Worker {
-#    uint256 id;
-#    uint256 computingPower;
-#    bool isBusy;
-#    bool isActive;
-#    uint256 currentTaskId;
-#}
 def start_polling():
     print("Start polling...")
     while True:
         worker_info = marketplace_contract.functions.getWorkerInfo(account_address).call()
         if worker_info[4] != 0:  # Access the fifth item in the tuple
             task = marketplace_contract.functions.getTask(worker_info[4]).call()
-            perform_training_task(task)
-            complete_task(worker_info[4])
+            container = task[4].split('/')[-1]
+            #perform_training_task(task)
+            complete_task(worker_info[4], container)
         else:
             print("No task now!")
         time.sleep(10)  # Poll every 10 seconds
 
-def complete_task(taskId):
-    print("Completing task...")
-    
+def complete_task(task_id, container):
+    print("Completing task...") 
     # Call Azure function to validate task
     function_app_url = "https://proof-of-train.azurewebsites.net/api/HttpTrigger1?"
     headers = {"x-functions-key": '0Mc51OFbjT1J8PFJeoiuG55iM1Xg_PR6GPPXhlU8iVSCAzFuAAgrIw=='}
+    body = {'task_id': task_id, 'container': container}
     try:
-        response = requests.post(function_app_url, headers=headers)
+        response = requests.post(function_app_url, headers=headers, params=body)
         if response.text == 'True':
             print("Task completed")
+        else:
+            print("Task failed")
     except Exception as e:
         print(f"An unexpected error occurred: {e} for task validation")
-
-    nonce = web3.eth.get_transaction_count(account_address)
-    txn = marketplace_contract.functions.CompleteTask(account_address, taskId).build_transaction({
-        'chainId': chainId,
-        'gas': gas,
-        'gasPrice': gasPrice_wei,
-        'nonce': nonce,
-    })
-    signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
-    web3.eth.send_raw_transaction(signed_txn.rawTransaction)
 
 if __name__ == "__main__":
     print("Commands: register, remove, start, getPower, quit")
@@ -131,4 +100,3 @@ if __name__ == "__main__":
             break
         else:
             print("Invalid command. Please enter a valid command!")
-

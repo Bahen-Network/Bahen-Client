@@ -6,7 +6,7 @@ import subprocess
 def perform_training_task(task):
     # Download files and data from azure blob
     print("Downloading data and script...")
-    container = task['folder_url']
+    container = task[4].split('/')[-1]
     connection_string = 'DefaultEndpointsProtocol=https;AccountName=kejie1;AccountKey=wKggITwQijuI4m+7nNyH9XC1JuYsaY8O3ftrhdgDNXVLKYtgV0mvgdPhN3fw/0slGFUTuGVdnKw9+AStVkOoEw==;EndpointSuffix=core.windows.net'
     blob_service_client = BlobServiceClient.from_connection_string(connection_string)
     container_client = blob_service_client.get_container_client(container)
@@ -25,4 +25,4 @@ def perform_training_task(task):
     # Run the training script
     print("Performing training task...")
     os.chdir('./script')
-    subprocess.call(["python", "train.py"])
+    subprocess.call(["python", "train.py", "--container", container])
