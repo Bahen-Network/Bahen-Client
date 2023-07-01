@@ -1,29 +1,29 @@
 {
   "contractName": "SharedStructs",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/SharedStructs.sol\":\"SharedStructs\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/SharedStructs.sol\":{\"keccak256\":\"0x842400fc1fba8368ceb5f4a2f6694d52be031f20efd16dd8b4e72ff6057fbf3e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a250a09706e56226ded72c4ee8ef05a70a55c6a737b0118f5bdb514ca71f7b00\",\"dweb:/ipfs/QmXkg2RrMcpqgAxbDCVPC2gTr9LNVjTvF75DpXCLkg12u7\"]}},\"version\":1}",
-  "bytecode": "0x60566050600b82828239805160001a6073146043577f4e487b7100000000000000000000000000000000000000000000000000000000600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122056220ec13660b479a1eb6b2fc7a408bd70c478c87d4f02bdb74a2390e9adff0d64736f6c63430008130033",
-  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122056220ec13660b479a1eb6b2fc7a408bd70c478c87d4f02bdb74a2390e9adff0d64736f6c63430008130033",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/SharedStructs.sol\":\"SharedStructs\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/SharedStructs.sol\":{\"keccak256\":\"0x981459dab57c739b1e734b634cd809f10d6835729970828306011124f13cdce3\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://00febc98ba08310da151bf442b0ab1a2814456a4339444236587366f152f8c8d\",\"dweb:/ipfs/QmWWFHZ7Rn9Ga3XMo6gNJJQYwbbVM1TcRMXVNHbUeat44c\"]}},\"version\":1}",
+  "bytecode": "0x60566050600b82828239805160001a6073146043577f4e487b7100000000000000000000000000000000000000000000000000000000600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220ddd44f0a3d7fef60b1f308b65f2bbdb2cc5e21f24b18807d7dbac84c560f2e2164736f6c63430008130033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220ddd44f0a3d7fef60b1f308b65f2bbdb2cc5e21f24b18807d7dbac84c560f2e2164736f6c63430008130033",
   "immutableReferences": {},
   "generatedSources": [],
   "deployedGeneratedSources": [],
-  "sourceMap": "60:640:3:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "60:640:3:-:0;;;;;;;;",
-  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\nlibrary SharedStructs {\r\n    struct TaskInfo {\r\n        uint256 id;\r\n        uint256 orderId;\r\n        TaskType taskType;\r\n        TaskStatus status;\r\n        string folderUrl;\r\n        // wei\r\n        uint256 requiredPower;\r\n        address creator;\r\n        uint256 workerId;\r\n        uint256 expectWorkerId;\r\n        uint256 orderLevel;\r\n    }\r\n\r\n    enum TaskType {\r\n        Training,\r\n        Validation\r\n    }\r\n    enum TaskStatus {\r\n        Created,\r\n        Assigned,\r\n        Completed\r\n    }\r\n\r\n    enum OrderStatus {\r\n        Created,        \r\n        Confirmed,      \r\n        Completed,      \r\n        Failed         \r\n    }\r\n}\r\n",
+  "sourceMap": "60:635:3:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "60:635:3:-:0;;;;;;;;",
+  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\nlibrary SharedStructs {\r\n    struct TaskInfo {\r\n        uint256 id;\r\n        uint256 orderId;\r\n        TaskType taskType;\r\n        TaskStatus status;\r\n        string folderUrl;\r\n        // wei\r\n        uint256 requiredPower;\r\n        address creator;\r\n        uint256 workerId;\r\n        uint256 expectWorkerId;\r\n        uint256 orderLevel;\r\n    }\r\n\r\n    enum TaskType {\r\n        Training,\r\n        Validation\r\n    }\r\n    enum TaskStatus {\r\n        Created,\r\n        processing,\r\n        Completed\r\n    }\r\n\r\n    enum OrderStatus {\r\n        Created, \r\n        processing,     \r\n        Completed,      \r\n        Failed         \r\n    }\r\n}\r\n",
   "sourcePath": "D:\\workspace\\apex\\ApexHackthon\\web3\\contracts\\SharedStructs.sol",
   "ast": {
     "absolutePath": "project:/contracts/SharedStructs.sol",
     "exportedSymbols": {
       "SharedStructs": [
-        990
+        961
       ]
     },
-    "id": 991,
+    "id": 962,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 954,
+        "id": 925,
         "literals": [
           "solidity",
           "^",
@@ -40,9 +40,9 @@
         "contractDependencies": [],
         "contractKind": "library",
         "fullyImplemented": true,
-        "id": 990,
+        "id": 961,
         "linearizedBaseContracts": [
-          990
+          961
         ],
         "name": "SharedStructs",
         "nameLocation": "68:13:3",
@@ -50,16 +50,16 @@
         "nodes": [
           {
             "canonicalName": "SharedStructs.TaskInfo",
-            "id": 977,
+            "id": 948,
             "members": [
               {
                 "constant": false,
-                "id": 956,
+                "id": 927,
                 "mutability": "mutable",
                 "name": "id",
                 "nameLocation": "124:2:3",
                 "nodeType": "VariableDeclaration",
-                "scope": 977,
+                "scope": 948,
                 "src": "116:10:3",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -68,7 +68,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 955,
+                  "id": 926,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "116:7:3",
@@ -81,12 +81,12 @@
               },
               {
                 "constant": false,
-                "id": 958,
+                "id": 929,
                 "mutability": "mutable",
                 "name": "orderId",
                 "nameLocation": "145:7:3",
                 "nodeType": "VariableDeclaration",
-                "scope": 977,
+                "scope": 948,
                 "src": "137:15:3",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -95,7 +95,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 957,
+                  "id": 928,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "137:7:3",
@@ -108,36 +108,36 @@
               },
               {
                 "constant": false,
-                "id": 961,
+                "id": 932,
                 "mutability": "mutable",
                 "name": "taskType",
                 "nameLocation": "172:8:3",
                 "nodeType": "VariableDeclaration",
-                "scope": 977,
+                "scope": 948,
                 "src": "163:17:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_enum$_TaskType_$980",
+                  "typeIdentifier": "t_enum$_TaskType_$951",
                   "typeString": "enum SharedStructs.TaskType"
                 },
                 "typeName": {
-                  "id": 960,
+                  "id": 931,
                   "nodeType": "UserDefinedTypeName",
                   "pathNode": {
-                    "id": 959,
+                    "id": 930,
                     "name": "TaskType",
                     "nameLocations": [
                       "163:8:3"
                     ],
                     "nodeType": "IdentifierPath",
-                    "referencedDeclaration": 980,
+                    "referencedDeclaration": 951,
                     "src": "163:8:3"
                   },
-                  "referencedDeclaration": 980,
+                  "referencedDeclaration": 951,
                   "src": "163:8:3",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_TaskType_$980",
+                    "typeIdentifier": "t_enum$_TaskType_$951",
                     "typeString": "enum SharedStructs.TaskType"
                   }
                 },
@@ -145,36 +145,36 @@
               },
               {
                 "constant": false,
-                "id": 964,
+                "id": 935,
                 "mutability": "mutable",
                 "name": "status",
                 "nameLocation": "202:6:3",
                 "nodeType": "VariableDeclaration",
-                "scope": 977,
+                "scope": 948,
                 "src": "191:17:3",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_enum$_TaskStatus_$984",
+                  "typeIdentifier": "t_enum$_TaskStatus_$955",
                   "typeString": "enum SharedStructs.TaskStatus"
                 },
                 "typeName": {
-                  "id": 963,
+                  "id": 934,
                   "nodeType": "UserDefinedTypeName",
                   "pathNode": {
-                    "id": 962,
+                    "id": 933,
                     "name": "TaskStatus",
                     "nameLocations": [
                       "191:10:3"
                     ],
                     "nodeType": "IdentifierPath",
-                    "referencedDeclaration": 984,
+                    "referencedDeclaration": 955,
                     "src": "191:10:3"
                   },
-                  "referencedDeclaration": 984,
+                  "referencedDeclaration": 955,
                   "src": "191:10:3",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_TaskStatus_$984",
+                    "typeIdentifier": "t_enum$_TaskStatus_$955",
                     "typeString": "enum SharedStructs.TaskStatus"
                   }
                 },
@@ -182,12 +182,12 @@
               },
               {
                 "constant": false,
-                "id": 966,
+                "id": 937,
                 "mutability": "mutable",
                 "name": "folderUrl",
                 "nameLocation": "226:9:3",
                 "nodeType": "VariableDeclaration",
-                "scope": 977,
+                "scope": 948,
                 "src": "219:16:3",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -196,7 +196,7 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 965,
+                  "id": 936,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
                   "src": "219:6:3",
@@ -209,12 +209,12 @@
               },
               {
                 "constant": false,
-                "id": 968,
+                "id": 939,
                 "mutability": "mutable",
                 "name": "requiredPower",
                 "nameLocation": "270:13:3",
                 "nodeType": "VariableDeclaration",
-                "scope": 977,
+                "scope": 948,
                 "src": "262:21:3",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -223,7 +223,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 967,
+                  "id": 938,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "262:7:3",
@@ -236,12 +236,12 @@
               },
               {
                 "constant": false,
-                "id": 970,
+                "id": 941,
                 "mutability": "mutable",
                 "name": "creator",
                 "nameLocation": "302:7:3",
                 "nodeType": "VariableDeclaration",
-                "scope": 977,
+                "scope": 948,
                 "src": "294:15:3",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -250,7 +250,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 969,
+                  "id": 940,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "294:7:3",
@@ -264,12 +264,12 @@
               },
               {
                 "constant": false,
-                "id": 972,
+                "id": 943,
                 "mutability": "mutable",
                 "name": "workerId",
                 "nameLocation": "328:8:3",
                 "nodeType": "VariableDeclaration",
-                "scope": 977,
+                "scope": 948,
                 "src": "320:16:3",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -278,7 +278,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 971,
+                  "id": 942,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "320:7:3",
@@ -291,12 +291,12 @@
               },
               {
                 "constant": false,
-                "id": 974,
+                "id": 945,
                 "mutability": "mutable",
                 "name": "expectWorkerId",
                 "nameLocation": "355:14:3",
                 "nodeType": "VariableDeclaration",
-                "scope": 977,
+                "scope": 948,
                 "src": "347:22:3",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -305,7 +305,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 973,
+                  "id": 944,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "347:7:3",
@@ -318,12 +318,12 @@
               },
               {
                 "constant": false,
-                "id": 976,
+                "id": 947,
                 "mutability": "mutable",
                 "name": "orderLevel",
                 "nameLocation": "388:10:3",
                 "nodeType": "VariableDeclaration",
-                "scope": 977,
+                "scope": 948,
                 "src": "380:18:3",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -332,7 +332,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 975,
+                  "id": 946,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "380:7:3",
@@ -347,23 +347,23 @@
             "name": "TaskInfo",
             "nameLocation": "96:8:3",
             "nodeType": "StructDefinition",
-            "scope": 990,
+            "scope": 961,
             "src": "89:317:3",
             "visibility": "public"
           },
           {
             "canonicalName": "SharedStructs.TaskType",
-            "id": 980,
+            "id": 951,
             "members": [
               {
-                "id": 978,
+                "id": 949,
                 "name": "Training",
                 "nameLocation": "439:8:3",
                 "nodeType": "EnumValue",
                 "src": "439:8:3"
               },
               {
-                "id": 979,
+                "id": 950,
                 "name": "Validation",
                 "nameLocation": "458:10:3",
                 "nodeType": "EnumValue",
@@ -377,80 +377,80 @@
           },
           {
             "canonicalName": "SharedStructs.TaskStatus",
-            "id": 984,
+            "id": 955,
             "members": [
               {
-                "id": 981,
+                "id": 952,
                 "name": "Created",
                 "nameLocation": "508:7:3",
                 "nodeType": "EnumValue",
                 "src": "508:7:3"
               },
               {
-                "id": 982,
-                "name": "Assigned",
-                "nameLocation": "526:8:3",
+                "id": 953,
+                "name": "processing",
+                "nameLocation": "526:10:3",
                 "nodeType": "EnumValue",
-                "src": "526:8:3"
+                "src": "526:10:3"
               },
               {
-                "id": 983,
+                "id": 954,
                 "name": "Completed",
-                "nameLocation": "545:9:3",
+                "nameLocation": "547:9:3",
                 "nodeType": "EnumValue",
-                "src": "545:9:3"
+                "src": "547:9:3"
               }
             ],
             "name": "TaskStatus",
             "nameLocation": "486:10:3",
             "nodeType": "EnumDefinition",
-            "src": "481:80:3"
+            "src": "481:82:3"
           },
           {
             "canonicalName": "SharedStructs.OrderStatus",
-            "id": 989,
+            "id": 960,
             "members": [
               {
-                "id": 985,
+                "id": 956,
                 "name": "Created",
-                "nameLocation": "597:7:3",
+                "nameLocation": "599:7:3",
                 "nodeType": "EnumValue",
-                "src": "597:7:3"
+                "src": "599:7:3"
               },
               {
-                "id": 986,
-                "name": "Confirmed",
-                "nameLocation": "623:9:3",
+                "id": 957,
+                "name": "processing",
+                "nameLocation": "618:10:3",
                 "nodeType": "EnumValue",
-                "src": "623:9:3"
+                "src": "618:10:3"
               },
               {
-                "id": 987,
+                "id": 958,
                 "name": "Completed",
-                "nameLocation": "649:9:3",
+                "nameLocation": "644:9:3",
                 "nodeType": "EnumValue",
-                "src": "649:9:3"
+                "src": "644:9:3"
               },
               {
-                "id": 988,
+                "id": 959,
                 "name": "Failed",
-                "nameLocation": "675:6:3",
+                "nameLocation": "670:6:3",
                 "nodeType": "EnumValue",
-                "src": "675:6:3"
+                "src": "670:6:3"
               }
             ],
             "name": "OrderStatus",
-            "nameLocation": "574:11:3",
+            "nameLocation": "576:11:3",
             "nodeType": "EnumDefinition",
-            "src": "569:128:3"
+            "src": "571:121:3"
           }
         ],
-        "scope": 991,
-        "src": "60:640:3",
+        "scope": 962,
+        "src": "60:635:3",
         "usedErrors": []
       }
     ],
-    "src": "33:669:3"
+    "src": "33:664:3"
   },
   "compiler": {
     "name": "solc",
@@ -458,7 +458,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.13",
-  "updatedAt": "2023-06-28T11:01:09.601Z",
+  "updatedAt": "2023-07-01T12:23:23.005Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
