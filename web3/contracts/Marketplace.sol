@@ -20,7 +20,6 @@ contract Marketplace {
 
     event TaskCompleted(uint256 indexed taskId, address indexed worker);
 
-    // TODO: delete message to save gas
     event OrderCreated(string message, uint256 orderId);
     event ConfirmOrder(uint256 orderId, uint256 paymentAmount);
     event Log(string message);
@@ -46,10 +45,8 @@ contract Marketplace {
     }
 
     function addWorker(address worker, uint256 _computingPower) public {
-        emit Log("--Add Worker start!!!");
         workerPoolContract.addWorker(worker, _computingPower);
         TriggerTaskPool();
-        emit Log("--Add Worker successed!!!");
     }
     
     function removeWorker(address worker) public onlyAdmin 
@@ -93,7 +90,6 @@ contract Marketplace {
         userOrders[msg.sender].push(orderId);
         emit OrderCreated("Cread order success!", orderId);
 
-        // Send the funds to the Marketplace contract
         Payment(paymentContract).deposit{value: msg.value}(msg.sender);
 
         uint256 taskId = taskPoolContract.createTask(
@@ -118,8 +114,6 @@ contract Marketplace {
         Payment(paymentContract).deposit{value: msg.value}(msg.sender);
     }
 
-
-    // get order by user adress
     function getUserOrders(
         address user
     ) public view returns (uint256[] memory) {
@@ -172,10 +166,8 @@ contract Marketplace {
         workerPoolContract.finishTask(workerAddress);
         order.SetOrderStatus(SharedStructs.OrderStatus.Completed);
 
-        // Calculate the payment for the worker
-        uint256 paymentWorker = order.paymentAmount() * 9 / 10;  // assuming payment field is stored in the Task struct
+        uint256 paymentWorker = order.paymentAmount() * 9 / 10;  
 
-        // Transfer the payment to the worker
         Payment(paymentContract).payWorker(workerAddress, paymentWorker);
 
         TriggerTaskPool();
@@ -183,18 +175,19 @@ contract Marketplace {
 
     function TriggerTaskPool() private
    {
-        emit Log("TriggerTaskPool start");
         emit LogBool(taskPoolContract.HasTask());
         if(taskPoolContract.HasTask())
         {
             SharedStructs.TaskInfo memory task =  taskPoolContract.getPendingTask();
             uint256 workerId = workerPoolContract.assignTask(task.requiredPower, task.id, task.expectWorkerId, task.orderLevel);
+            
             if(workerId != workerPoolContract.Invalid_WorkerId())
             {
+                
+                orders[task.orderId].SetOrderStatus(SharedStructs.OrderStatus.processing);
                 taskPoolContract.assignTask(task.id, workerId);
             }
         }
-        emit Log("TriggerTaskPool end");
     }
 
     function setMarketplaceAddress(address marketplaceAddress) external {

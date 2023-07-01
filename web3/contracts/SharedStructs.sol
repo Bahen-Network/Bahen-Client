@@ -27,8 +27,8 @@ library SharedStructs {
     }
 
     enum OrderStatus {
-        Created,        
-        Confirmed,      
+        Created, 
+        processing,     
         Completed,      
         Failed         
     }
