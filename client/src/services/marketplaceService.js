@@ -10,7 +10,7 @@ export const configureMoonbaseAlpha = async () => {
               method: "wallet_addEthereumChain",
               params: [
                   {
-                      chainId: "0x507", // Moonbase Alpha's chainId is 1287, which is 0x507 in hex
+                      chainId: "0x507", 
                       chainName: "Moonbase Alpha",
                       nativeCurrency: {
                           name: 'DEV',
@@ -38,10 +38,8 @@ const getWeb3 = async () => {
     if (window.ethereum) {
       web3 = new Web3(window.ethereum);
       try {
-        // Request account access if needed
         await window.ethereum.request({ method: 'eth_requestAccounts' });
       } catch (error) {
-        // User denied account access...
         console.error('User denied account access');
       }
     } else {
@@ -102,7 +100,6 @@ export const calculateCostPay = async (paymentAmount) => {
       .calculateCost(paymentAmount)
       .send({ from: accounts[0], value: paymentAmount });
 
-    const orderId = result.events.OrderCreated.returnValues.orderId;
   } catch (error) {
     console.error('Error calculateCost payment:', error);
     return null;
@@ -141,7 +138,7 @@ export const getWorkerInfo = async (workerAddress) => {
   const address = await getUserAddress();
   console.log(`User address: ${address}`);
   try {
-    const contractInstance = await getMarketplaceContractInstance(); // 添加 await 关键字
+    const contractInstance = await getMarketplaceContractInstance(); 
     const workerInfo = await contractInstance.methods.getWorkerInfo(workerAddress).call();
 
     return {
@@ -166,12 +163,12 @@ export const getOrderInfo = async (orderId) => {
     const orderInfo = await contractInstance.methods.getOrderInfo(orderId).call();
 
     console.log("get orderInfo:", orderInfo);
-
+    console.log(orderInfo)
     let orderStatus;
     if (orderInfo._orderStatus == "0") {
       orderStatus = "Created";
     } else if (orderInfo._orderStatus == "1") {
-      orderStatus = "Confirmed";
+      orderStatus = "Processing";
     } else if (orderInfo._orderStatus == "2") {
       orderStatus = "Completed";
     } else {

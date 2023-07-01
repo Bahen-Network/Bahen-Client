@@ -67,7 +67,6 @@ export const downloadFromAzure = async (folderUrl) => {
   try {
     const containerIdList = folderUrl.split("/");
     const containerId = containerIdList[containerIdList.length - 1];
-    console.log(containerId);
     const containerClient = blobServiceClient.getContainerClient(containerId);
     const blobList = containerClient.listBlobsFlat();
 
