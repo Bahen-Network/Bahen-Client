@@ -93,6 +93,22 @@ export const createOrderPreview = async (folderUrl, requiredPower, paymentAmount
   }
 };
 
+export const calculateCostPay = async (paymentAmount) => {
+  const contractInstance = await getMarketplaceContractInstance();
+  const web3Instance = await getWeb3();
+  const accounts = await web3Instance.eth.getAccounts();
+  try {
+    const result = await contractInstance.methods
+      .calculateCost(paymentAmount)
+      .send({ from: accounts[0], value: paymentAmount });
+
+    const orderId = result.events.OrderCreated.returnValues.orderId;
+  } catch (error) {
+    console.error('Error calculateCost payment:', error);
+    return null;
+  }
+};
+
 export const getUserOrders = async (userAddress) => {
   const address = await getUserAddress();
   console.log(`User address: ${address}`);
