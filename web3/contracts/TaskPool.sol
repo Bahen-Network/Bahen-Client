@@ -72,7 +72,7 @@ contract TaskPool {
             task.status == SharedStructs.TaskStatus.Created,
             "Task is not in Created status."
         );
-        task.status = SharedStructs.TaskStatus.Assigned;
+        task.status = SharedStructs.TaskStatus.processing;
         task.workerId = workerId;
         pendingTaskHead++;
         emit TaskAssigned(taskId, workerId);
@@ -82,7 +82,7 @@ contract TaskPool {
     {
         SharedStructs.TaskInfo storage task = tasks[taskId];
         require(
-            task.status == SharedStructs.TaskStatus.Assigned,
+            task.status == SharedStructs.TaskStatus.processing,
             "Task is not in Assigned status."
         );
         task.status = SharedStructs.TaskStatus.Completed;

@@ -186,7 +186,7 @@ export const getOrderInfo = async (orderId) => {
       requiredComputingPower: orderInfo._requiredComputingPower,
       orderStatus: orderStatus,
       orderLevel: orderInfo._orderLevel,
-      floderUrl: orderInfo._floderUrl
+      folderUrl: orderInfo._folderUrl
     };
   } catch (error) {
     console.error("Error fetching order:", error);

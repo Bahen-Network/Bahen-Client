@@ -22,7 +22,7 @@ library SharedStructs {
     }
     enum TaskStatus {
         Created,
-        Assigned,
+        processing,
         Completed
     }
 
