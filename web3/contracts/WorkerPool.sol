@@ -78,17 +78,14 @@ contract WorkerPool
             return Invalid_WorkerId;
         }
 
-        // Sort the qualifiedWorkers based on their computing power
-
-        // Choose the worker based on the order level
         if (_orderLevel == 1) {
-            // Choose the worker with the highest computing power
+
             return workers[qualifiedWorkers[0]].workerId;
         } else if (_orderLevel == 2) {
-            // Choose the worker with the median computing power
+
             return workers[qualifiedWorkers[qualifiedCount / 2]].workerId;
         } else if (_orderLevel == 3) {
-            // Choose the worker with the lowest computing power
+
             return workers[qualifiedWorkers[qualifiedCount - 1]].workerId;
         }
     }
@@ -138,7 +135,8 @@ contract WorkerPool
         return false;
     }
 
-    function removeTaskAfterTaskAsign(address _workerAddress) private {
+    function removeTaskAfterTaskAsign(address _workerAddress) private 
+    {
         uint256 index = findWorkerAddressIndex(_workerAddress);
         if (index < workerAddresses.length) {
             workerAddresses[index] = workerAddresses[workerAddresses.length - 1];
@@ -146,7 +144,8 @@ contract WorkerPool
         }
     }
 
-    function findWorkerAddressIndex(address _workerAddress) internal view returns (uint256 taskIndex) {
+    function findWorkerAddressIndex(address _workerAddress) internal view returns (uint256 taskIndex) 
+    {
         for (uint256 i = 0; i < workerAddresses.length; i++) {
             if (workerAddresses[i] == _workerAddress) {
                 return i;
