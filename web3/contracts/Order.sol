@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./SharedStructs.sol"; // 导入SharedStructs库
+import "./SharedStructs.sol";
 
 contract Order {
     uint256 public trainTaskId;
@@ -21,13 +21,11 @@ contract Order {
         orderStatus = SharedStructs.OrderStatus.Created; 
         folderUrl = _folderUrl;
         requiredComputingPower = _requiredComputingPower;
-        orderLevel = _orderLevel; // Assign the new variable
+        orderLevel = _orderLevel; 
     }
     
     function confirm(uint256 _paymentAmount) public {
-        require(orderStatus != SharedStructs.OrderStatus.Confirmed , "Order already confirmed.");
         paymentAmount = _paymentAmount;
-        orderStatus = SharedStructs.OrderStatus.Confirmed; 
     }
 
     function SetOrderStatus(SharedStructs.OrderStatus _orderStatus) public{

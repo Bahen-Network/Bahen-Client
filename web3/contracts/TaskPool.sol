@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./SharedStructs.sol";
+import "./Marketplace.sol";
 
 contract TaskPool {
     uint256 private nextTaskId = 1;
