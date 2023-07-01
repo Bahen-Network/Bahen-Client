@@ -1,5 +1,7 @@
 import { BlobServiceClient, logger } from "@azure/storage-blob";
 import { v4 as uuidv4 } from 'uuid';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 const account = "kejie1";
 const sasToken = "?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2023-07-09T18:21:11Z&st=2023-06-24T10:21:11Z&spr=https&sig=G%2FbwEZ0zl87Im3trxFFRTCeLJZ3qjHZfjkpRigY%2BKSg%3D";
@@ -56,28 +58,40 @@ export const uploadToAzure = async (files, folderUrl) => {
 
 };
 
-export const downloadFromAzure = async (containerName) => {
+export const downloadFromAzure = async (folderUrl) => {
   if (!blobServiceClient) {
     console.error('BlobServiceClient not initialized');
     return;
   }
+  const zip = new JSZip();
   try {
-    const containerClient = blobServiceClient.getContainerClient(containerName);
+    const containerIdList = folderUrl.split("/");
+    const containerId = containerIdList[containerIdList.length - 1];
+    console.log(containerId);
+    const containerClient = blobServiceClient.getContainerClient(containerId);
     const blobList = containerClient.listBlobsFlat();
 
     for await (const blob of blobList) {
       const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
       const response = await blockBlobClient.download(0);
-      const blobURL = blockBlobClient.url;
-
-      const link = document.createElement('a');
-      link.href = blobURL;
-      link.setAttribute('download', blob.name);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      console.log(response);
+      const blobx = await response.blobBody;
+      zip.file(blob.name, await blobToArrayBuffer(blobx), {binary: true});
     }
+    zip.generateAsync({type:"blob"}).then(function(content) {
+      saveAs(content, "apex.zip");
+    });
   } catch (error) {
     console.error('Error downloading from Azure:', error);
   }
+  
 };
+
+async function blobToArrayBuffer(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(blob);
+  });
+}
