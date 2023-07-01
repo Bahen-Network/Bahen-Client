@@ -465,7 +465,7 @@
         },
         {
           "internalType": "string",
-          "name": "_floderUrl",
+          "name": "_folderUrl",
           "type": "string"
         }
       ],
@@ -29049,12 +29049,12 @@
     "1287": {
       "events": {},
       "links": {},
-      "address": "0xbcfBC6271E7FE1EbC65a042ED051570C6799EB39",
-      "transactionHash": "0x1f042928d546dd1a5d36e28b0cebbefd4c070d3ff24c49f8e5a3d338e3ef8209"
+      "address": "0x03481702368BF256F1BCba6ceBC5d4A06e6cb384",
+      "transactionHash": "0xc29c1d9a4fc128d9c3d0af2e0c71ecf99fd6bef8bea712639942ad411c863acf"
     }
   },
   "schemaVersion": "3.4.13",
-  "updatedAt": "2023-07-01T12:23:22.985Z",
+  "updatedAt": "2023-07-01T13:36:11.464Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

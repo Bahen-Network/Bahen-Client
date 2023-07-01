@@ -42,6 +42,7 @@ def register_worker():
     })
     signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
     web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    print("Registering worker end!") 
 
 def remove_worker():
     print("Removing worker...")
@@ -54,6 +55,7 @@ def remove_worker():
     })
     signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
     web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    print("Removing worker end!") 
 
 def start_polling():
     print("Start polling...")
@@ -69,7 +71,7 @@ def start_polling():
         time.sleep(10)  # Poll every 10 seconds
 
 def complete_task(task_id, container):
-    print("Completing task...") 
+    print("Completing task start...") 
     # Call Azure function to validate task
     function_app_url = "https://proof-of-train.azurewebsites.net/api/HttpTrigger1?"
     headers = {"x-functions-key": '0Mc51OFbjT1J8PFJeoiuG55iM1Xg_PR6GPPXhlU8iVSCAzFuAAgrIw=='}
@@ -82,6 +84,7 @@ def complete_task(task_id, container):
             print("Task failed")
     except Exception as e:
         print(f"An unexpected error occurred: {e} for task validation")
+    print("Completing task end!") 
 
 if __name__ == "__main__":
     print("Commands: register, remove, start, getPower, quit")
