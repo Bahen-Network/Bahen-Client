@@ -12,7 +12,6 @@ from subprocess import check_call
 import uuid
 
 from azure.storage.blob import BlobServiceClient
-import torch
 from torch.profiler import profile, record_function, ProfilerActivity
     
 def download_modules(container_name):
@@ -78,6 +77,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     container_name = req.params.get('container')
 
+    if not container_name:
+        try:
+            req_body = req.get_json()
+        except ValueError:
+            pass
+        else:
+            container_name = req_body.get('container')
+            
     if container_name:
         # Download data and scripts
         temp_dir = download_modules(container_name)

@@ -7,7 +7,7 @@ import uuid
 import os 
 import pynvml
 
-class AzureLoggingCallback:
+class LoggingCallback:
     def __init__(self, db_url, db_key, connection_string, container_name):
 
         ## Init the cosmos db client

@@ -5,13 +5,6 @@ import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 from tqdm import tqdm 
-import argparse
-
-parser = argparse.ArgumentParser(description='A simple argparse example.')
-parser.add_argument('--container', type=str, default='client_podkat', help='An integer argument.')
-args = parser.parse_args()
-
-container_name = args.container
 
 # Set up Azure Logging
 db_url = 'https://labapex.documents.azure.com:443/'
@@ -32,7 +25,7 @@ test_loader = torch.utils.data.DataLoader(testset, batch_size=32, shuffle=False,
 
 # Set up model, loss function, and optimizer
 model = torchvision.models.resnet18(pretrained=True)
-device = torch.device("cuda")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, 100)  # CIFAR100 has 100 classes
 model = model.to(device)
@@ -43,9 +36,15 @@ epochs = 2
 
 # Train the model
 if __name__ == "__main__":
-    
-    from ApexLogging import AzureLoggingCallback
-    callback = AzureLoggingCallback(db_url, db_key, connection_string, container_name)
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--container', type=str, default='client_podkat', help='The Container Name')
+    args = parser.parse_args()
+
+    container_name = args.container
+    from BahenLogging import LoggingCallback
+    callback = LoggingCallback(db_url, db_key, connection_string, container_name)
     # Start collecting metrics
     callback.start_logging()
 
