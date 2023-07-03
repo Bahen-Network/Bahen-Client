@@ -8,7 +8,7 @@ const Home = () => {
         Embrace decentralized computing for AI development.
       </h2>
       <p style={{ fontSize: 20, maxWidth: 660, marginTop: 36 }}>
-        Introducing Apex Network, the pioneering decentralized platform
+        Introducing BAHEN Network, the pioneering decentralized platform
         revolutionizing AI training and dataset transactions.
       </p>
     </div>
