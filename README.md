@@ -50,7 +50,7 @@
 
 Bahen xDDL Protocol(Bahen Hybrid Distrubuted Deep Learning Protocol)是一个无需信任的用于深度学习计算、证明的协议。协议将允许拥有闲置算力的GPU丝滑地接入网络完成人工智能深度学习的计算任务。链上的智能合约将确保任务的匹配、订单的支付，以及一个AI-enhanced Hybrid Layer进行任务执行过程中的验证及数据隐私保护。在未来，AI-enhanced Hybrid Layer将进化成一个单独可提供验证服务、分布式学习的服务的中间件层，并允许开发者在编写代码的过程中直接运用SDK调用相关服务。
 
-针对前一篇章提到的challenges，Bahen xDDL Protocol构建了以下关键的概念及功能（以下为功能介绍，详细的技术文档可在Tech Specs阅读）：
+Bahen xDDL Protocol构建了以下关键的概念及功能（以下为功能介绍，详细的技术文档可在Tech Specs阅读）：
 
 - **Proof of Train 训练证明**
     
@@ -219,3 +219,7 @@ Bahen xDDL Protocol 以及 Bahen Network希望通过打破计算瓶颈和数据�
 | Harrison | AI Advisor | CS Phd at University of Michigan, Ann Arbor. |  |
 | *Bruce | Front-End Engineer | 黑客松组队成员，拥有极其丰富的web3经验 |  |
 | *Hao | UI&UX Designer | 黑客松组队成员，拥有7年+的设计经验 |  |
+
+&nbsp;
+## Logo
+![Untitled](./docs/images/logo.jpg)
