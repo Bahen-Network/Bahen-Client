@@ -65,8 +65,6 @@ const getMarketplaceContractInstance = async () => {
     const networkId = await web3Instance.eth.net.getId();
     const deployedNetwork = Marketplace.networks[networkId];
     contract = new web3Instance.eth.Contract(Marketplace.abi, deployedNetwork && deployedNetwork.address);
-    console.log(networkId)
-    console.log(contract)
   }
   return contract;
 };
