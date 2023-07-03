@@ -156,10 +156,6 @@ contract Marketplace {
     }
 
     function CompleteTask(address workerAddress, uint256 taskId) external {
-        require(
-            workerPoolContract.validateWorkerTask(workerAddress, taskId),
-            "Invalid request"
-        );
         SharedStructs.TaskInfo memory task = taskPoolContract.getTask(taskId);
         taskPoolContract.completeTask(taskId);
         Order order = orders[task.orderId];
