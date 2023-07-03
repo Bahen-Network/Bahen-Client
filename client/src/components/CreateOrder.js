@@ -45,12 +45,10 @@ const CreateOrder = ({ onUpload }) => {
     return async (e) => {
       if (e.target.files.length > 0) {
         if (folderUrl.length > 0) {
-          console.log("at 49 folderUrl: ", folderUrl)
           await onUpload(Array.from(e.target.files), folderUrl);
         }
         else{
           const folderUrl = await onUpload(Array.from(e.target.files), "");
-          console.log("at 53 folderUrl: ", folderUrl)
           setFolderUrl(folderUrl);
         }
       }
