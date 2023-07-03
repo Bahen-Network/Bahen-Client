@@ -1,6 +1,6 @@
-# readme_cn
+# README
 
-**[english version of the documet](https://www.notion.so/readme_en-bda3f9b85de54f5a94da5dc15e0ee5e5?pvs=21)*
+*[English Version](https://www.notion.so/readme_en-bda3f9b85de54f5a94da5dc15e0ee5e5?pvs=21)*
 
 ## Basic Information
 
@@ -13,6 +13,7 @@
 | 阶段 | PoC&MVP |
 | 项目立项日期 | 2023.03 |
 
+&nbsp;
 ## Primer on Decentralized Machine Learning
 
 ---
@@ -37,9 +38,13 @@
 
 如果有一个开放的网络来激励协作，无论是共享模型亦或是数据，结果会怎样呢？
 
+&nbsp;
 ## Solutions
 
 ---
+### An Overview of the Proposed Design
+
+![Untitled](./docs/images/howitworks.png)
 
 ### Bahen xDDL Protocol
 
@@ -91,24 +96,18 @@ Bahen xDDL Protocol(Bahen Hybrid Distrubuted Deep Learning Protocol)是一个无
     
     设计Wasp的初衷在于去学习每个合格的深度学习的过程及结果验证，而渐渐地完善我们的协议保护机制。
     
-
-### How it Works?
-
-![Untitled](notion://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F9be31f41-1787-413f-a18b-349a8f73c59d%2FUntitled.png?id=865d3f94-22fb-475b-bd27-447fa01b3523&table=block&spaceId=c7917521-72aa-4d0d-9f1e-3a2ebefcf8b9&width=2000&userId=72868a28-6510-4dde-b2d4-798f351924b0&cache=v2)
-
-**Draft Model*
-
+&nbsp;
 ## Feature Designs
 
 ---
 
-### Architecture
-
-![Untitled](notion://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fa802fe6f-f1a4-4b3e-9269-20dd599b348b%2FUntitled.png?id=2b76fada-9295-4f36-8e16-761a8e476b55&table=block&spaceId=c7917521-72aa-4d0d-9f1e-3a2ebefcf8b9&width=2000&userId=72868a28-6510-4dde-b2d4-798f351924b0&cache=v2)
-
 ### Flowchart
 
-![Untitled](notion://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Feb9eaba9-081d-4b3d-bbe4-2720142b2d4e%2FUntitled.png?id=ae1d61cc-7ca8-4ef5-bc17-89521263ac72&table=block&spaceId=c7917521-72aa-4d0d-9f1e-3a2ebefcf8b9&width=2000&userId=72868a28-6510-4dde-b2d4-798f351924b0&cache=v2)
+![Untitled](./docs/images/flowchart.png)
+
+### Architecture
+
+![Untitled](./docs/images/architecture.png)
 
 ### Implementation of *Proof of Train*
 
@@ -117,63 +116,63 @@ Bahen xDDL Protocol(Bahen Hybrid Distrubuted Deep Learning Protocol)是一个无
 1. 通过实时监控训练的数据，（包括training loss, GPU metrics等），来证明worker是否根据client的规定进行训练。
 2. 通过对每个保存的模型参数，随机选取一定数量的训练数据，并计算出样本数据的training loss，从而与step 1.进行比较，来验证训练的有效性。
 
-阅读更多：[https://www.notion.so/bahen/Proof-of-Train-bd1c1d0aa32a45f7b487ef7cdb8b7584?pvs=4](https://www.notion.so/Proof-of-Train-bd1c1d0aa32a45f7b487ef7cdb8b7584?pvs=21)
+阅读更多：[Proof of Training](./docs/proof_of_training.pdf)
 
 ### Draft Design of ***Privacy and Safety Modules***
 
 在我们的项目中，我们采用了一种策略，即客户将培训任务外包给具有GPU的工人。虽然这种方法利用了计算能力并加速了数据处理，但它也引入了一个新的挑战 - 训练数据和脚本隐私的保护。本文详细介绍了我们的隐私和安全模块的设计，提供全面的措施来应对这些挑战。
 
-阅读更多：
-[https://bahen.notion.site/Draft-Design-of-Privacy-and-Safety-Modules-7f2406e0cea24a9bafd6965b2fcc04c9?pvs=4](https://www.notion.so/Draft-Design-of-Privacy-and-Safety-Modules-7f2406e0cea24a9bafd6965b2fcc04c9?pvs=21)
+阅读更多：[Privacy and Safety](./docs/safety_and_privacy.pdf)
 
 ### Reseach on *Task Sharding*
 
 在我们的项目中，我们尝试迭代order-task-worker三者的关系。我们试图将一个order拆分成多个任务由在不同地理位置的多个worker完成深度学习计算并同步，从一对一关系变为一对多关系。目前我们处于调研阶段。
 
-阅读更多：
-[https://bahen.notion.site/Reseach-on-Task-Sharding-2624d6c8cfb04e39b2428421f0b1f877?pvs=4](https://www.notion.so/Reseach-on-Task-Sharding-2624d6c8cfb04e39b2428421f0b1f877?pvs=21)
+阅读更多：[Task Sharding](./docs/task_sharding.pdf)
 
+&nbsp;
 ## TODOs for Hackathon
 
 ---
 
-**Marketplace Website**
+**Marketplace Front-end Dev**
 
-- [x]  design webpage version 1.0
-- [x]  development of webpages
-    - [x]  creating order
-    - [x]  order details
-    - [x]  order list
-    - [x]  worker list
-- [x]  intergration with Azure
-- [x]  intergrration with ranbow wallet kit
+- [✅]  design webpage version 1.0
+- [✅]  development of webpages
+    - [✅]  creating order
+    - [✅]  order details
+    - [✅]  order list
+    - [✅]  worker list
+- [✅]  intergration with Azure
+- [✅]  intergrration with rainbow wallet kit
 
 **Worker System**
 
-- [x]  worker registration
-- [x]  pytorch fundation package
-- [x]  worker status modification
+- [✅]  worker registration
+- [✅]  pytorch fundation package
+- [✅]  worker status modification
 
 **On-Chain Service**
 
-- [x]  order contract
-    - [x]  order generation
-    - [x]  order status update
-- [x]  task contract
-    - [x]  task generation
-    - [x]  task status update
-- [x]  payment contract
-    - [x]  payment vault
-    - [x]  payment release
-- [x]  intergration with moonbeam
+- [✅]  order contract
+    - [✅]  order generation
+    - [✅]  order status update
+- [✅]  task contract
+    - [✅]  task generation
+    - [✅]  task status update
+- [✅]  payment contract
+    - [✅]  payment vault
+    - [✅]  payment release
+- [✅]  intergration with moonbeam
 
 **Off-Chain Service**
 
-- [x]  cost estimation
-- [x]  intergration with azure
-- [x]  proof of train version 1.0
-- [x]  azure file host service
+- [✅]  cost estimation
+- [✅]  intergration with azure
+- [✅]  proof of train version 1.0
+- [✅]  azure file host service
 
+&nbsp;
 ## How to Run
 
 ---
@@ -190,7 +189,7 @@ npm start
 cd worker
 python worker.py
 ```
-
+&nbsp;
 ## Future Development
 
 ---
@@ -203,21 +202,20 @@ Bahen xDDL Protocol 以及 Bahen Network希望通过打破计算瓶颈和数据�
 
 ### Road Map
 
-![Untitled](notion://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fd72a217d-1402-40d4-a49f-b574341cb879%2FUntitled.png?id=b5e99aeb-bf2a-45ae-a61c-c371d8be9340&table=block&spaceId=c7917521-72aa-4d0d-9f1e-3a2ebefcf8b9&width=2000&userId=72868a28-6510-4dde-b2d4-798f351924b0&cache=v2)
+![Untitled](./docs/images/roadmap.png)
 
+&nbsp;
 ## Team
 
 ---
 
 | Name | Role | Brief  | Contact |
 | --- | --- | --- | --- |
-| Xiaohu | Product Owner | WEB3 Research Analyst, 多年产品经理经验，本科多伦多大学数学、统计学。目前在团队负责产品开发进度管理以及产品功能设计。 | wechat: xiaohusocool
-telegram:
-https://t.me/amazingcarrot666 |
-| Kejie | Chief AI Scientist | 微软软件工程师，研究生伊利诺伊大学香槟分校MSCS（全奖 research based master program)，本科多伦多大学工程科学系。目前在团队负责AI算法开发、分布式深度学习协议研究及开发。 |  |
+| Xiaohu | Product Owner | WEB3 Research Analyst, 多年产品经理经验，本科多伦多大学数学、统计学。目前在团队负责产品开发进度管理以及产品功能设计。 | wechat: xiaohusocool|
+| Kejie | Chief AI Scientist | 微软软件工程师，研究生伊利诺伊大学香槟分校MSCS（全奖 research based master program)，本科多伦多大学工程科学系。目前在团队负责AI算法开发、分布式深度学习协议研究及开发。 | |
 | Xu | Core DEV | 微软软件工程师，本科北京林业大学，ACM亚洲区域赛银牌。目前在团队负责智能合约开发，后端系统开发，数据隐私研究及开发。 |  |
 | Xianchao | Core DEV | 微软软件工程师，毕业于山东理工大学，ACM亚洲区域赛铜牌。目前在团队负责智能合约开发，链上链下通信开发。 |  |
 | Jessie | Business & Partnership Manager | 传统行业二级市场研究员，研究生伦敦政治经济学院，本科多伦多大学金融与经济专业。目前在团队负责项目管理、市场研究及合作对接。 |  |
-| Zijian | AI Advisor | CS Phd at University of Michigan, Ann Arbor. |  |
+| Harrison | AI Advisor | CS Phd at University of Michigan, Ann Arbor. |  |
 | *Bruce | Front-End Engineer | 黑客松组队成员，拥有极其丰富的web3经验 |  |
 | *Hao | UI&UX Designer | 黑客松组队成员，拥有7年+的设计经验 |  |
