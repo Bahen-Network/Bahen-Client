@@ -219,3 +219,7 @@ Bahen xDDL Protocol 以及 Bahen Network希望通过打破计算瓶颈和数据�
 | Harrison | AI Advisor | CS Phd at University of Michigan, Ann Arbor. |  |
 | *Bruce | Front-End Engineer | 黑客松组队成员，拥有极其丰富的web3经验 |  |
 | *Hao | UI&UX Designer | 黑客松组队成员，拥有7年+的设计经验 |  |
+
+&nbsp;
+## Logo
+![Untitled](./docs/images/logo.jpg)
