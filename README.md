@@ -179,4 +179,4 @@ Bahen xDDL Protocol 以及 Bahen Network希望通过打破计算瓶颈和数据�
 
 &nbsp;
 ## Logo
-![Untitled](.docs/images/logo_new.png)
+![Untitled](docs/images/logo_new.png)
