@@ -131,48 +131,6 @@ Bahen xDDL Protocol构建了以下关键的概念及功能（以下为功能介�
 阅读更多：[Task Sharding](./docs/task_sharding.pdf)
 
 &nbsp;
-## TODOs for Hackathon
-
----
-
-**Marketplace Front-end Dev**
-
-- [✅]  design webpage version 1.0
-- [✅]  development of webpages
-    - [✅]  creating order
-    - [✅]  order details
-    - [✅]  order list
-    - [✅]  worker list
-- [✅]  intergration with Azure
-- [✅]  intergrration with rainbow wallet kit
-
-**Worker System**
-
-- [✅]  worker registration
-- [✅]  pytorch fundation package
-- [✅]  worker status modification
-
-**On-Chain Service**
-
-- [✅]  order contract
-    - [✅]  order generation
-    - [✅]  order status update
-- [✅]  task contract
-    - [✅]  task generation
-    - [✅]  task status update
-- [✅]  payment contract
-    - [✅]  payment vault
-    - [✅]  payment release
-- [✅]  intergration with moonbeam
-
-**Off-Chain Service**
-
-- [✅]  cost estimation
-- [✅]  intergration with azure
-- [✅]  proof of train version 1.0
-- [✅]  azure file host service
-
-&nbsp;
 ## How to Run
 
 ---
@@ -213,13 +171,12 @@ Bahen xDDL Protocol 以及 Bahen Network希望通过打破计算瓶颈和数据�
 | --- | --- | --- | --- |
 | Xiaohu | Product Owner | WEB3 Research Analyst, 多年产品经理经验，本科多伦多大学数学、统计学。目前在团队负责产品开发进度管理以及产品功能设计。 | wechat: xiaohusocool|
 | Kejie | Chief AI Scientist | 微软软件工程师，研究生伊利诺伊大学香槟分校MSCS（全奖 research based master program)，本科多伦多大学工程科学系。目前在团队负责AI算法开发、分布式深度学习协议研究及开发。 | |
-| Xu | Core DEV | 微软软件工程师，本科北京林业大学，ACM亚洲区域赛银牌。目前在团队负责智能合约开发，后端系统开发，数据隐私研究及开发。 |  |
+| Xu | Core DEV | 微软软件工程师，本科北京林业大学，ACM亚洲区域赛金牌。目前在团队负责智能合约开发，后端系统开发。 |  |
+| Yongqi | Core DEV | 算法工程师，ACM亚洲区域赛银牌。目前在团队负责数据隐私研究及开发。 |  |
 | Xianchao | Core DEV | 微软软件工程师，毕业于山东理工大学，ACM亚洲区域赛铜牌。目前在团队负责智能合约开发，链上链下通信开发。 |  |
 | Jessie | Business & Partnership Manager | 传统行业二级市场研究员，研究生伦敦政治经济学院，本科多伦多大学金融与经济专业。目前在团队负责项目管理、市场研究及合作对接。 |  |
 | Harrison | AI Advisor | CS Phd at University of Michigan, Ann Arbor. |  |
-| *Bruce | Front-End Engineer | 黑客松组队成员，拥有极其丰富的web3经验 |  |
-| *Hao | UI&UX Designer | 黑客松组队成员，拥有7年+的设计经验 |  |
 
 &nbsp;
 ## Logo
-![Untitled](./docs/images/logo.jpg)
+![Untitled](.docs/images/logo_new.png)
