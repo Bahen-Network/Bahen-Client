@@ -14,11 +14,11 @@ from eth_account import Account
 def main(req: func.HttpRequest) -> func.HttpResponse:
 
     ## Init the cosmos db client and containers
-    db_url = 'https://labapex.documents.azure.com:443/'
-    db_key = 'ZLrVux84ipkVbA9OTMyQ1YswiarrBIswBB7ILAiyLxJkRYoUW3e7M2IjPHjdqbd4AdfPjQ3XPjkSACDbYVf8uw=='
+    db_url = ''
+    db_key = ''
     db_client = CosmosClient(db_url, credential=db_key)
     
-    connection_string = "DefaultEndpointsProtocol=https;AccountName=kejie1;AccountKey=wKggITwQijuI4m+7nNyH9XC1JuYsaY8O3ftrhdgDNXVLKYtgV0mvgdPhN3fw/0slGFUTuGVdnKw9+AStVkOoEw==;EndpointSuffix=core.windows.net"
+    connection_string = ""
     container_name = req.params.get('container')
     blob_service_client = BlobServiceClient.from_connection_string(connection_string)   
 

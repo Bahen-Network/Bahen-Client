@@ -7,9 +7,9 @@ import torchvision.transforms as transforms
 from tqdm import tqdm 
 
 # Set up Azure Logging
-db_url = 'https://labapex.documents.azure.com:443/'
-db_key = 'ZLrVux84ipkVbA9OTMyQ1YswiarrBIswBB7ILAiyLxJkRYoUW3e7M2IjPHjdqbd4AdfPjQ3XPjkSACDbYVf8uw=='
-connection_string = "DefaultEndpointsProtocol=https;AccountName=kejie1;AccountKey=wKggITwQijuI4m+7nNyH9XC1JuYsaY8O3ftrhdgDNXVLKYtgV0mvgdPhN3fw/0slGFUTuGVdnKw9+AStVkOoEw==;EndpointSuffix=core.windows.net"
+db_url = ''
+db_key = ''
+connection_string = ""
 
 # Set up CIFAR10 dataset
 transform = transforms.Compose([
