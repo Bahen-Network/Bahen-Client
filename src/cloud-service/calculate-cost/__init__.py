@@ -15,7 +15,7 @@ from azure.storage.blob import BlobServiceClient
 from torch.profiler import profile, record_function, ProfilerActivity
     
 def download_modules(container_name):
-    connection_string = 'DefaultEndpointsProtocol=https;AccountName=kejie1;AccountKey=wKggITwQijuI4m+7nNyH9XC1JuYsaY8O3ftrhdgDNXVLKYtgV0mvgdPhN3fw/0slGFUTuGVdnKw9+AStVkOoEw==;EndpointSuffix=core.windows.net'
+    connection_string = ''
     blob_service_client = BlobServiceClient.from_connection_string(connection_string)
     container_client = blob_service_client.get_container_client(container_name)
 
