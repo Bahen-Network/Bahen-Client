@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 80
 
 # Run the command to start uWSGI
-CMD ["python", "client.py"]
+CMD ["python", "worker.py"]

@@ -1,9 +1,9 @@
 {
-    "provider": "https://rpc.api.moonbase.moonbeam.network",
-    "contract_address": "0xbcfBC6271E7FE1EbC65a042ED051570C6799EB39",
-    "account_address": "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac",
-    "private_key": "",
-    "chainId": 1287, 
+    "provider": "https://opbnb-testnet-rpc.bnbchain.org",
+    "contract_address": "0xB1d7E94D9eFCDcB593d6f76C21E21822975f058b",
+    "account_address": "0x0ed32eAF1E19a4f9194958D345edEB94476DEE39",
+    "private_key": "b6808d6efcd7a552eeff21153129a6efa3f056da284b55d9769dda16d0b05549",
+    "chainId": 5611,
     "gas": 6721970,
     "gasPrice": 1
 }

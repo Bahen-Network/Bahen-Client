@@ -22,7 +22,7 @@ web3.eth.defaultAccount = account_address
 contract_address = web3.to_checksum_address(config['contract_address'])
 with open('ABI/Marketplace.json', 'r') as f:
     abi = json.load(f)
-marketplace_contract = web3.eth.contract(address=contract_address, abi=abi)
+marketplace_contract = web3.eth.contract(address=contract_address, abi=abi['abi'])
 
 # read config from config.json
 gas = config['gas']

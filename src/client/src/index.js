@@ -33,8 +33,28 @@ const avalancheChain = {
   }
 };
 
+const opBNBChain = {
+  id: 5611,
+  name: 'opBNB',
+  network: 'opBNB',
+  iconUrl: 'https://docs.bnbchain.org/opbnb-docs/img/logo.svg',
+  iconBackground: '#fff',
+  native_currency: {
+    symbol: "tBNB",
+    name: "tBNB",
+    decimals: "18",
+    contractAddress: "",
+    balance: "",
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://opbnb-testnet-rpc.bnbchain.org'],
+    },
+  }
+};
+
 const { chains, publicClient } = configureChains(
-  [avalancheChain,mainnet, polygon, optimism, arbitrum],
+  [opBNBChain, mainnet, polygon, optimism, arbitrum],
   [
     jsonRpcProvider({
       rpc: chain => ({ http: chain.rpcUrls.default.http[0] }),

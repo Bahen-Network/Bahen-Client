@@ -1,2 +1,3 @@
 web3==6.3.0
 gputil==1.4.0
+azure-storage-blob

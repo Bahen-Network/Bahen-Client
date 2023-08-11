@@ -44,7 +44,7 @@
 // require('dotenv').config();
 // const { MNEMONIC, PROJECT_ID } = process.env;
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 module.exports = {
   /**
@@ -80,6 +80,15 @@ module.exports = {
           gas: 4500000,
           gasPrice: 10000000000,
         },
+      },
+      opBNB: {
+        // deployer address: 0x1EDC48e7D9fCc07aa41A6E69Fef8Ee0d5a81Ec41
+        // deployer private key: 9fc1e5d875e638e85aa14fc69f33211984b1f388c612820894da3834d1a7bcd4
+        provider: () => new HDWalletProvider("steel that intact media giggle glue move kiwi caught curtain later mutual", "https://opbnb-testnet-rpc.bnbchain.org"),
+        network_id: 5611,
+        confirmations: 2,    // # of confirmations to wait between deployments. (default: 0)
+        timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+        skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
       },
     // An additional network, but with some advanced options…
     // advanced: {
