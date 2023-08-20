@@ -31,6 +31,7 @@ gasPrice_wei = web3.to_wei(str(gasPrice), 'gwei')
 chainId = config['chainId']
 
 computing_power = int(get_power())
+#computing_power = 1000
 def register_worker():
     print("Registering worker with computing power: ", computing_power)
     nonce = web3.eth.get_transaction_count(account_address)
@@ -42,7 +43,7 @@ def register_worker():
     })
     signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
     web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    print("Registering worker end!") 
+    print("Registering worker done!") 
 
 def remove_worker():
     print("Removing worker...")
@@ -55,7 +56,7 @@ def remove_worker():
     })
     signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
     web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    print("Removing worker end!") 
+    print("Removing worker done!") 
 
 def start_polling():
     print("Start polling...")
@@ -63,28 +64,28 @@ def start_polling():
         worker_info = marketplace_contract.functions.getWorkerInfo(account_address).call()
         if worker_info[4] != 0:  # Access the fifth item in the tuple
             task = marketplace_contract.functions.getTask(worker_info[4]).call()
-            container = task[4].split('/')[-1]
-            #perform_training_task(task)
-            complete_task(worker_info[4], container)
+            bucket = task[4].split('/')[-1]
+            perform_training_task(task)
+            complete_task(worker_info[4], bucket)
         else:
             print("No task now!")
         time.sleep(10)  # Poll every 10 seconds
 
-def complete_task(task_id, container):
-    print("Completing task start...") 
+def complete_task(task_id, bucket):
+    print("Validating the training task ...") 
     # Call Azure function to validate task
     function_app_url = "https://proof-of-train.azurewebsites.net/api/HttpTrigger1?"
     headers = {"x-functions-key": '0Mc51OFbjT1J8PFJeoiuG55iM1Xg_PR6GPPXhlU8iVSCAzFuAAgrIw=='}
-    body = {'task_id': task_id, 'container': container}
+    body = {'task_id': task_id, 'bucket': bucket}
     try:
         response = requests.post(function_app_url, headers=headers, params=body)
+        print(response)
         if response.text == 'True':
-            print("Task completed")
+            print("Task completed!")
         else:
-            print("Task failed")
+            print("Task failed!")
     except Exception as e:
         print(f"An unexpected error occurred: {e} for task validation")
-    print("Completing task end!") 
 
 if __name__ == "__main__":
     print("Commands: register, remove, start, getPower, quit")

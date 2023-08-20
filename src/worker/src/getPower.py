@@ -1,4 +1,3 @@
-# power.py
 import GPUtil
 
 flops_dict = {
