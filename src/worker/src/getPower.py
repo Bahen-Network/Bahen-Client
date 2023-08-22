@@ -12,7 +12,7 @@ flops_dict = {
     'A40': 149.7e12,  # 112 TFLOPS for Tensor Cores
 }
 
-RTX3090_FLOPs = 71e12
+RTX3090_FLOPs = 71e10
 
 def get_gpu_power():
     total_gpu_flops = 0

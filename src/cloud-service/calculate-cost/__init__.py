@@ -7,46 +7,31 @@ import tempfile
 import importlib
 import json
 import shutil
-from sys import executable as se
-from subprocess import check_call
-import uuid
+import requests
 
-from azure.storage.blob import BlobServiceClient
+import torch
 from torch.profiler import profile, record_function, ProfilerActivity
     
-def download_modules(container_name):
-    connection_string = ''
-    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-    container_client = blob_service_client.get_container_client(container_name)
-
+def download_modules(bucket_name):
     temp_dir = tempfile.mkdtemp()
     sys.path.append(temp_dir)
 
+    # Send a request to download files
     logging.info('Downloading data...')
-    for blob in container_client.list_blobs():
-
-        if blob.size == 0:
-            print(f"Skipping directory {blob.name}")
-            continue
-
-        #blob_client = container_client.get_blob_client(blob)
-        download_path = os.path.join(temp_dir, blob.name)
-
-        # Create the local directory if it doesn't exist
-        local_directory = os.path.dirname(download_path)
-        os.makedirs(local_directory, exist_ok=True)
-
-        with open(download_path, "wb") as local_file:
-            blob_client = container_client.get_blob_client(blob.name)
-            download_stream = blob_client.download_blob()
-            local_file.write(download_stream.readall())
-    logging.info('Download finished')
+    file_service_url = 'http://bahenfileservice.azurewebsites.net/api/v1/objects'
+    params = {'bucketName': bucket_name, 'objectName': 'train.py'}
+    response = requests.get(file_service_url, params=params)
+    response.raise_for_status()
+    data = response.content
+    download_path = os.path.join(temp_dir, 'train.py')
+    with open(download_path, 'wb') as f:
+        f.write(data)
     sys.path = sys.path[:-1]
     return temp_dir
 
 def get_flops(temp_dir):
     # Import the modules and variables
-    sys.path.append(f'{temp_dir}/script')
+    sys.path.append(f'{temp_dir}')
     logging.info('sys.path: %s', sys.path)
     train = importlib.import_module('train')
     importlib.reload(train)
@@ -67,7 +52,7 @@ def get_flops(temp_dir):
     forward_flops = sum([int(evt.flops) for evt in events]) 
     total_flops = forward_flops * num_batches * 3 * epoches
 
-    RTX3090_FLOPs = 71 * 10**12
+    RTX3090_FLOPs = 71 * 10**10
     sys.path = sys.path[:-1]
     return {'result_unit': round(total_flops / RTX3090_FLOPs)}
     

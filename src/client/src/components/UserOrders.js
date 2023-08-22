@@ -7,12 +7,12 @@ import {
   getUserAddress,
 } from '../services/marketplaceService';
 import styles from '../styles/UserOrders.module.css';
-import { downloadFromAzure } from '../services/azureUpload';
+import { downloadFromGreenField } from '../services/filesUploadAndDownload';
 
 const { Title, Paragraph } = Typography;
-const handleDownload = async (orderId) => {
+const handleDownload = async (bucketName) => {
   try {
-      await downloadFromAzure(orderId);
+      await downloadFromGreenField(bucketName);
   } catch (error) {
       console.error('Download failed:', error);
   }

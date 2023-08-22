@@ -3,29 +3,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 import io
 import os
+import requests
 
 import json
 import azure.functions as func
 from azure.cosmos import CosmosClient
-from azure.storage.blob import BlobServiceClient
 from web3 import Web3
-from eth_account import Account
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
 
-    ## Init the cosmos db client and containers
+    ## Init the cosmos db client and bucket
     db_url = ''
     db_key = ''
     db_client = CosmosClient(db_url, credential=db_key)
-    
-    connection_string = ""
-    container_name = req.params.get('container')
-    blob_service_client = BlobServiceClient.from_connection_string(connection_string)   
 
     ## Get the task id
+    bucket_name = req.params.get('bucket')
     task_id = int(req.params.get('task_id'))
 
-    database = db_client.get_database_client(container_name)
+    database = db_client.get_database_client(bucket_name)
     gpu_container = database.get_container_client('gpu_metrics')
     loss_container = database.get_container_client('loss_metrics')
     ckpt_container = database.get_container_client('ckpt_metrics')
@@ -46,8 +42,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     except:
         print('No data in the containers')
     
-    ## Generate the visulizations and upload to azure blob
-    generate_visulizations(gpu_metrics, loss_metrics, ckpt_metrics, blob_service_client, container_name)
+    ## Generate the visulizations and upload to greenfield
+    generate_visulizations(loss_metrics, gpu_metrics, bucket_name)
 
     ## Return the result
     training_result = validate_training(gpu_metrics, loss_metrics, ckpt_metrics)
@@ -101,16 +97,15 @@ def validate_training(gpu_metrics, loss_metrics, ckpt_metrics):
 
     return VALID_TRAINING
 
-
 def complete_task(task_id):
     ## Connect to the blockchain
-    url = 'https://rpc.api.moonbase.moonbeam.network'
+    url = 'https://opbnb-testnet-rpc.bnbchain.org'
     web3 = Web3(Web3.HTTPProvider(url))
 
-    contract_address = '0xc6d1Fce91f96480AfF34bfCfFAd57C427C954010'
-    account_address = '0x3Cd0A705a2DC65e5b1E1205896BaA2be8A07c6e0'
-    private_key = '8075991ce870b93a8870eca0c0f91913d12f47948ca0fd25b49c6fa7cdbeee8b'
-    chain_id = 1287
+    contract_address = '0xB1d7E94D9eFCDcB593d6f76C21E21822975f058b'
+    account_address = '0x08a1D7CA0AAE5da4597a7f1c46cB9dd099443AbA'
+    private_key = '86c6252d772b7a85fd566e19d1dab0a7f6b246348bc133689633db4c0322cb14'
+    chain_id = 5611
     gas = 6721970
     gasPrice = 1
     gasPrice_wei = web3.to_wei(str(gasPrice), 'gwei')
@@ -119,7 +114,7 @@ def complete_task(task_id):
         abi = json.load(f)
     
     ## Send a transaction to the blockchain
-    marketplace_contract = web3.eth.contract(address=contract_address, abi=abi)
+    marketplace_contract = web3.eth.contract(address=contract_address, abi=abi['abi'])
     nonce = web3.eth.get_transaction_count(account_address)
     txn = marketplace_contract.functions.CompleteTask(account_address, task_id).build_transaction({
         'chainId': chain_id,
@@ -130,8 +125,8 @@ def complete_task(task_id):
     signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
     web3.eth.send_raw_transaction(signed_txn.rawTransaction)
 
-def generate_visulizations(loss_metrics, gpu_metrics, blob_service_client, container_name):
-     ## Generate training loss metrics visulizations and upload it to azure blob
+def generate_visulizations(loss_metrics, gpu_metrics, bucket_name):
+    ## Generate training loss metrics visulizations and upload it to greenfield
     try:
         loss_metric_arr = loss_metrics.loss.values
     except:
@@ -145,12 +140,11 @@ def generate_visulizations(loss_metrics, gpu_metrics, blob_service_client, conta
     buf = io.BytesIO()
     plt.savefig(buf, format='png', dpi=100)  # Save the figure to the buffer at 300 DPI
     buf.seek(0)
-    blob_name = 'training_result_visulization/training_loss.png'
-    blob_client = blob_service_client.get_blob_client(container_name, blob_name)
-    blob_client.upload_blob(buf.read(), overwrite=True)
+    file_name = 'training_loss.png'
+    upload_file_to_stroage(bucket_name, file_name, buf)
     buf.close()
 
-    ## Generate training gpu metrics visulizations and upload them to azure blob
+    ## Generate training gpu metrics visulizations and upload them to greenfield
     try:
         timestamp = gpu_metrics.timestamp.values
         timestamp = timestamp - timestamp[0]
@@ -168,12 +162,11 @@ def generate_visulizations(loss_metrics, gpu_metrics, blob_service_client, conta
     buf = io.BytesIO()
     plt.savefig(buf, format='png', dpi=100)  # Save the figure to the buffer at 300 DPI
     buf.seek(0)
-    blob_name = 'training_result_visulization/gpu_memory.png'
-    blob_client = blob_service_client.get_blob_client(container_name, blob_name)
-    blob_client.upload_blob(buf.read(), overwrite=True)
+    file_name = 'gpu_memory.png'
+    upload_file_to_stroage(bucket_name, file_name, buf)
     buf.close()
 
-    ## Generate training gpu metrics visulizations and upload them to azure blob
+    ## Generate training gpu metrics visulizations and upload them to greenfield
     try:
         gpu_util_arr = gpu_metrics.gpu_utilization.values
     except:
@@ -187,14 +180,15 @@ def generate_visulizations(loss_metrics, gpu_metrics, blob_service_client, conta
     buf = io.BytesIO()
     plt.savefig(buf, format='png', dpi=100)  # Save the figure to the buffer at 300 DPI
     buf.seek(0)
-    blob_name = 'training_result_visulization/gpu_utilization.png'
-    blob_client = blob_service_client.get_blob_client(container_name, blob_name)
-    blob_client.upload_blob(buf.read(), overwrite=True)
+    file_name = 'gpu_utilization.png'
+    upload_file_to_stroage(bucket_name, file_name, buf)
     buf.close()
+
+def upload_file_to_stroage(bucket_name, file_name, file_content):
+    file_service_url = 'http://bahenfileservice.azurewebsites.net/api/v1/objects'
+
+    # send the response with to upload the file
+    files = {'folder': file_content, 'bucketName':('', bucket_name), 'objectName':('', file_name)}
+    response = requests.post(file_service_url, files=files)
+    return response
     
-    
-    
-
-
-
-

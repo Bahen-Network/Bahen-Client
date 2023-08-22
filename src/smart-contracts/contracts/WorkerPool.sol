@@ -104,7 +104,6 @@ contract WorkerPool
         return workerId;
     }
 
-
     function assignTask(uint256 _requiredComputingPower, uint256 taskId, uint256 _orderLevel) public returns (uint256) 
     {
         return assignTask(_requiredComputingPower, taskId, 0, _orderLevel);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../styles/OrderPreview.css'; // Import a CSS file
-import {Button, Tabs, Typography, ConfigProvider } from 'antd';
+import { Button, Tabs, Typography, ConfigProvider } from 'antd';
 import { confirmOrder, getOrderInfo } from '../services/marketplaceService';
 import Section from './Section';
 const { TabPane } = Tabs;
@@ -30,7 +30,6 @@ const OrderPreview = () => {
     const fetchOrderDetails = async () => {
       setLoading(true);
       const order = await getOrderInfo(orderId);
-      console.log(`---------------------fdsafdsagsdagdfs-----${orderId}`)
       setOrderDetails(order);
       setLoading(false);
     };

@@ -8,7 +8,7 @@ import CreateOrder from './components/CreateOrder';
 import OrderPreview from './components/OrderPreview';
 import Home from './components/Home';
 import UserOrders from './components/UserOrders';
-import { uploadToAzure } from './services/azureUpload';
+import { uploadToGreenField } from './services/filesUploadAndDownload';
 import WorkerList from './components/WorkerList';
 
 const { Header, Content, Footer } = Layout;
@@ -32,9 +32,9 @@ function MenuLink({ href, children }) {
 }
 
 function App() {
-  const handleUpload = async (files, orderID) => {
+  const handleUpload = async (files, objectId) => {
     try {
-      const path = await uploadToAzure(files, orderID);
+      const path = await uploadToGreenField(files, objectId);
       alert('Files uploaded successfully');
       return path;
     } catch (error) {
@@ -117,7 +117,7 @@ function App() {
             borderTop: '2px solid #1F1F1F',
           }}
         >
-          © 2023 All Rights Reserved by Lab Apex
+          © 2023 All Rights Reserved by Bahen
         </Footer>
       </Layout>
     </ConfigProvider>
