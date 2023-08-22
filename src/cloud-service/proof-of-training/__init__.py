@@ -104,7 +104,7 @@ def complete_task(task_id):
 
     contract_address = '0xB1d7E94D9eFCDcB593d6f76C21E21822975f058b'
     account_address = '0x08a1D7CA0AAE5da4597a7f1c46cB9dd099443AbA'
-    private_key = '86c6252d772b7a85fd566e19d1dab0a7f6b246348bc133689633db4c0322cb14'
+    private_key = ''
     chain_id = 5611
     gas = 6721970
     gasPrice = 1
