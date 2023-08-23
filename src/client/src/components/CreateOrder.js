@@ -18,7 +18,7 @@ const { Title, Paragraph } = Typography;
 const CreateOrder = ({ onUpload }) => {
   const scriptInputRef = useRef();
   const dataInputRef = useRef();
-  const [folderUrl, setFolderUrl] = useState('');
+  const [bucket, setBucket] = useState('');
   const [requiredPower, setRequiredPower] = useState(null);
   const navigate = useNavigate();
   const [orderLevel, setOrderLevel] = useState(1);
@@ -29,7 +29,7 @@ const CreateOrder = ({ onUpload }) => {
     if (requiredPower !== null) {
       setOrderLevel(orderLevel);
       const orderId = await createOrderPreview(
-        folderUrl,
+        bucket,
         requiredPower,
         requiredPower * 1,
         orderLevel
@@ -44,12 +44,12 @@ const CreateOrder = ({ onUpload }) => {
   function handleUploadChange(inputRef) {
     return async (e) => {
       if (e.target.files.length > 0) {
-        if (folderUrl.length > 0) {
-          await onUpload(Array.from(e.target.files), folderUrl);
+        if (bucket.length > 0) {
+          await onUpload(Array.from(e.target.files), bucket);
         }
         else{
-          const folderUrl = await onUpload(Array.from(e.target.files), "");
-          setFolderUrl(folderUrl);
+          const bucket = await onUpload(Array.from(e.target.files), "");
+          setBucket(bucket);
         }
       }
     };
@@ -64,16 +64,16 @@ const CreateOrder = ({ onUpload }) => {
     try {
       const azureFunctionUrl =
         'https://calc-cost.azurewebsites.net/api/HttpTrigger2?code=hTRlWthKKGKDAZ2F4NbpRIOXF688VIEa7ulSV8uWIeGGAzFuA14rkQ==';
-      const container = folderUrl.split('/').pop();
       const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ container: container }),
+        body: JSON.stringify({ container: bucket }),
       };
       const response = await fetch(azureFunctionUrl, requestOptions);
       const data = await response.json();
       setRequiredPower(data.result_unit);
     } catch (error) {
+      console.log(error)
       setRequiredPower(999);
     } finally {
       setLoading(false);
@@ -137,13 +137,13 @@ const CreateOrder = ({ onUpload }) => {
             </div>
           </div>
           <div style={{ display: 'flex', fontStyle: 'italic' }}>
-          <div style={{ fontSize: 14 }}> Folder Url</div>
+          <div style={{ fontSize: 14 }}> Greenfield link</div>
           <input
               type="text"
               className="form-control"
-              id="folderUrl"
-              value={folderUrl}
-              onChange={(e) => setFolderUrl(e.target.value)}
+              id="bucket"
+              value={`https://dcellar.io/buckets/${bucket}`}
+              onChange={(e) => setBucket(e.target.value)}
             />
           </div>
         </Section>
