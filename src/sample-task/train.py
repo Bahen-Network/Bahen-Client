@@ -66,7 +66,6 @@ class LoggingCallback:
         with open(file_path, 'rb') as f:
             files = {'folder': f, 'bucketName':('', self.bucket_name), 'objectName':('', file_path.split('/')[-1])}
             response = requests.post(self.file_service_url, files=files)
-        print(response)
         return response
 
     def create_db_resources(self, db_name):
