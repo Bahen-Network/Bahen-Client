@@ -1,8 +1,10 @@
 import json
 from web3 import Web3
 import time
-from src.getPower import get_power
 import requests
+
+from src.getPower import get_power
+from src.utils import perform_training_task
 
 # Load Config file
 with open('src/config.json', 'r') as f:
@@ -41,7 +43,6 @@ def register_worker():
     })
     signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
     web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    print("Registering worker end!") 
 
 def remove_worker():
     print("Removing worker...")
@@ -54,7 +55,6 @@ def remove_worker():
     })
     signed_txn = web3.eth.account.sign_transaction(txn, private_key=private_key)
     web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    print("Removing worker end!") 
 
 def start_polling():
     print("Start polling...")
@@ -63,28 +63,26 @@ def start_polling():
         if worker_info[4] != 0:  # Access the fifth item in the tuple
             task = marketplace_contract.functions.getTask(worker_info[4]).call()
             bucket = task[4].split('/')[-1]
-            #perform_training_task(task)
+            perform_training_task(task)
             complete_task(worker_info[4], bucket)
         else:
             print("No task now!")
-        time.sleep(10)  # Poll every 10 seconds
+        time.sleep(30)  # Poll every 10 seconds
 
 def complete_task(task_id, bucket):
     print("Completing task start...") 
     # Call Azure function to validate task
     function_app_url = "https://proof-of-train.azurewebsites.net/api/HttpTrigger1?"
     headers = {"x-functions-key": '0Mc51OFbjT1J8PFJeoiuG55iM1Xg_PR6GPPXhlU8iVSCAzFuAAgrIw=='}
-    body = {'task_id': task_id, 'bucket': bucket}
+    body = {'task_id': task_id, 'bucket': bucket , 'account_address':account_address, 'private_key':private_key}
     try:
         response = requests.post(function_app_url, headers=headers, params=body)
-        print(response)
         if response.text == 'True':
-            print("Task completed")
+            print("Congrats! Task completed!")
         else:
-            print("Task failed")
+            print("Sorry, the task failed and please re-run the task in a correct manner")
     except Exception as e:
         print(f"An unexpected error occurred: {e} for task validation")
-    print("Completing task end!") 
 
 if __name__ == "__main__":
     print("Commands: register, remove, start, getPower, quit")
