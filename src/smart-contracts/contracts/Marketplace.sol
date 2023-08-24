@@ -49,7 +49,7 @@ contract Marketplace {
         TriggerTaskPool();
     }
     
-    function removeWorker(address worker) public onlyAdmin 
+    function removeWorker(address worker) public
     {
         workerPoolContract.removeWorker(worker);
     }
