@@ -10,9 +10,9 @@ import styles from '../styles/UserOrders.module.css';
 import { downloadFromGreenField } from '../services/filesUploadAndDownload';
 
 const { Title, Paragraph } = Typography;
-const handleDownload = async (bucketName) => {
+const handleDownload = async (bucketName, progress, setProgress) => {
   try {
-      await downloadFromGreenField(bucketName);
+      await downloadFromGreenField(bucketName, progress, setProgress);
   } catch (error) {
       console.error('Download failed:', error);
   }
@@ -20,6 +20,7 @@ const handleDownload = async (bucketName) => {
 const UserOrders = () => {
   const [orders, setOrders] = useState([]);
   const [userAddress, setUserAddress] = useState('');
+  const [progress, setProgress] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -90,7 +91,16 @@ const UserOrders = () => {
           {
             title: 'Operation',
             render: (text, record, index) => {
-              return <Button onClick={() => handleDownload(record.folderUrl)}> Download Model</Button>;
+              const pg = (record.folderUrl !== '' && record.folderUrl !== null && record.folderUrl !== undefined
+                && progress.hasOwnProperty(record.folderUrl)) ? progress[record.folderUrl] : 0;
+              return (
+                  <div>
+                    <Button onClick={() => handleDownload(record.folderUrl, progress, setProgress)}> Download Model</Button>
+                     <div className="progress-bar">
+                       <div className="progress" style={{ width: `${pg}%` }}>{pg}%</div>
+                     </div>
+                  </div>
+              )
             },
           },
         ]}

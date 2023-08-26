@@ -25,24 +25,35 @@ export const uploadToGreenField = async (files, container) => {
 };
 
 // Make an http call to download files from Greenfield
-export const downloadFromGreenField = async ( bucketName ) => {
+export const downloadFromGreenField = async ( bucketName, progress, setProgress ) => {
   const params = {
     bucketName: bucketName
   };
   const queryString = new URLSearchParams(params).toString();
-
-  const response = await fetch(`http://bahenfileservice.azurewebsites.net/api/v1/buckets/objects?${queryString}`);
-  console.log(response)
-  if (!response.ok) {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', `http://bahenfileservice.azurewebsites.net/api/v1/buckets/objects?${queryString}`, true);
+  xhr.responseType = 'blob';
+  xhr.onprogress = (event) => {
+    if (event.lengthComputable) {
+      const percentComplete = (event.loaded / event.total) * 100;
+      const tempProgress = {...progress};
+      tempProgress[bucketName] = parseFloat(percentComplete.toFixed(2));
+      setProgress(tempProgress);
+    }
+  };
+  xhr.onload = () => {
+    console.log(xhr)
+    if (xhr.status !== 200) {
       throw new Error("Network response was not ok");
-  }
+    }
+    const blob = xhr.response;
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'training_result.zip';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
-  const blob = await response.blob();
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'training_result.zip';
-  a.click();
-  window.URL.revokeObjectURL(url);
-  
+  xhr.send();
 };
