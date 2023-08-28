@@ -109,3 +109,9 @@ We believe that AGI (Artificial General Intelligence) is not a monopoly or oligo
 | Xianchao | Backend Engineer | Microsoft software engineer; Used to intern @Alibaba; Bronze medal in the ACM Asia-Pacific |  |
 | Jessie | Business & Partnership Manager | Traditional industry research analyst; Used to work @KPMG; Graduate of the LSE; Undergraduate in finance and economics at the University of Toronto |  |
 | Zijian | AI Advisor | CS Phd at University of Michigan, Ann Arbor. |  |
+
+
+## License
+---
+This project is licensed under the Creative Commons Attribution-NonCommercial (CC BY-NC) license. This means you are free to use, modify, and distribute this software, but not for commercial purposes. For full details, please see the [LICENSE](LICENSE) file in this repository.
+
