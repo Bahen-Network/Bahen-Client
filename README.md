@@ -102,9 +102,9 @@ We believe that AGI (Artificial General Intelligence) is not a monopoly or oligo
 
 | Name | Role | Brief  | Contact |
 | --- | --- | --- | --- |
-| Xiaohu | Product Owner | Web3 research analyst; Years of product management experience; Undergraduate in Mathematics and Statistics from the University of Toronto | telegram: https://t.me/amazingcarrot666 |
+| Xiaohu | Product Owner | Web3 research analyst; Years of product management experience; Undergraduate in Mathematics and Statistics from the University of Toronto | telegram: @kkbst88 |
 | Kejie | Chief AI Scientist | Microsoft software engineer; AI researcher in UIUC lab; Graduate student in MSCS at UIUC; Undergraduate in Engineering Science from University of Toronto |  |
-| Xu | Fullstack Engineer | Microsoft software engineer; Used to intern @ByteDance; Silver medal in the ACM Asia-Pacific |  |
+| Xu | Fullstack Engineer | Microsoft software engineer; Used to intern @ByteDance; Gold medal in the ACM Asia-Pacific |  |
 | Yongqi | Algorithm Engineer | AI software engineer; Used to intern @ByteDance; Silver medal in the ACM Asia-Pacific |  |
 | Xianchao | Backend Engineer | Microsoft software engineer; Used to intern @Alibaba; Bronze medal in the ACM Asia-Pacific |  |
 | Jessie | Business & Partnership Manager | Traditional industry research analyst; Used to work @KPMG; Graduate of the LSE; Undergraduate in finance and economics at the University of Toronto |  |
