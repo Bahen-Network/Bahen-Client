@@ -25,16 +25,16 @@ Bahen Network is a decentralized AI training platform with distributed machine l
 There are four key roles in our network:
 
 1. **Client**
-    1.     The clients are users with needs to submit deep learning data and models, pay for the job, and have their training tasks securely executed under the protocol's protection.
+   - The clients are users with needs to submit deep learning data and models, pay for the job, and have their training tasks securely executed under the protocol's protection.
 2. **Worker (GPU Owners)**
-    1.     The workers execute actual deep learning computation tasks with their GPU machines connected to the Worker Pool, performing model training and generating Proof of Train (PoT) to submit to Wasp.
-    2.     When joining the Worker Pool, workers need to deposit a stake proportional to their computing power, ensuring no malicious behavior during task execution.
+   - The workers execute actual deep learning computation tasks with their GPU machines connected to the Worker Pool, performing model training and generating Proof of Train (PoT) to submit to Wasp.
+   - When joining the Worker Pool, workers need to deposit a stake proportional to their computing power, ensuring no malicious behavior during task execution.
 3. **Validator (GPU Owners)**
-    1.     The validators verify the models produced by workers and generate corresponding Performance Reports, which are finally submitted to Wasp for processing.
-    2.     When joining the Worker Pool, validators also need to deposit a stake proportional to their compute power to prevent any malicious acts during validation.
+   - The validators verify the models produced by workers and generate corresponding Performance Reports, which are finally submitted to Wasp for processing.
+   - When joining the Worker Pool, validators also need to deposit a stake proportional to their compute power to prevent any malicious acts during validation.
 4. **Wasp (AI-Enhanced)**
-    1.     Wasp is responsible for checking the PoT from workers and Performance Reports from validators, recording task results on-chain.
-    2.     The design rationale of Wasp is to learn about legitimate deep learning processes and result verification, gradually enhancing protection within the protocol.
+   - Wasp is responsible for checking the PoT from workers and Performance Reports from validators, recording task results on-chain.
+   - The design rationale of Wasp is to learn about legitimate deep learning processes and result verification, gradually enhancing protection within the protocol.
 
 ## How it Works?
 
