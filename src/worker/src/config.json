@@ -2,7 +2,7 @@
     "provider": "https://opbnb-testnet-rpc.bnbchain.org",
     "contract_address": "0xE9b1b2e72153df88AE7c89b95cE6b27Fa031b931",
     "account_address": "0x0ed32eAF1E19a4f9194958D345edEB94476DEE39",
-    "private_key": "b6808d6efcd7a552eeff21153129a6efa3f056da284b55d9769dda16d0b05549",
+    "private_key": "",
     "chainId": 5611,
     "gas": 6721970,
     "gasPrice": 1
