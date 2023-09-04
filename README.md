@@ -58,6 +58,18 @@ There are four key roles in our network:
 
 ---
 
+### File Service Interacting with Greenfield
+
+Bahen FileService is a Go-based Web 2.0 service integral to the Bahen project. It serves as a dedicated storage solution for user-uploaded training data, pre-trained models, and the models processed by workers. Our service offers an unparalleled combination of efficiency, security, and transparency. Here are the key features of our file service below.
+
+1. Integration with Greenfield: seamlessly upload and download files with complete compatibility and integration for BNB Greenfield.
+2. Safety First with AES Encryption: all files processed through our service are secured using state-of-the-art AES encryption, ensuring that the data remains confidential and protected against unwanted access.
+3. Resumable Downloads: no need to worry about interrupted transfers. Our service supports resumable downloads, meaning if the download gets interrupted for any reason, it can pick up right where it is left off.
+4. Fully Open Source Processing: to ensure maximum transparency and decentralization, our entire processing workflow is open source. Dive into the code, make improvements, or simply verify the processes – the choice is yours!
+
+Please refer to our Github Repo for more details:
+[Bahen-FilesSerivce](https://github.com/Bahen-Network/Bahen-FileService)
+
 ### Implementation of *Proof of Train*
 
 During the hackathon phase, we have implemented two parts of the Proof of Train:
