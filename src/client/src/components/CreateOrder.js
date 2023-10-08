@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { createOrderPreview, calculateCostPay } from '../services/marketplaceService';
+import { createOrderPreview, calculateCostPay, approve, getUsdtContractDecimal } from '../services/marketplaceService';
 import { useNavigate } from 'react-router-dom';
 import { UploadOutlined } from '@ant-design/icons';
 import {
@@ -15,6 +15,12 @@ import Section from './Section';
 
 const { Title, Paragraph } = Typography;
 
+const feeTflopsHour = {
+  'Economy': 0.01,
+  'Flat': 0.016,
+  'Business': 0.05,
+};
+
 const CreateOrder = ({ onUpload }) => {
   const scriptInputRef = useRef();
   const dataInputRef = useRef();
@@ -23,15 +29,21 @@ const CreateOrder = ({ onUpload }) => {
   const navigate = useNavigate();
   const [orderLevel, setOrderLevel] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [feeLevel, setFeeLevel] = useState('Flat');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (requiredPower !== null) {
       setOrderLevel(orderLevel);
+      const estimateTrainCost = requiredPower / 1e12 * feeTflopsHour[feeLevel] / 3600;
+      const decimals = await getUsdtContractDecimal();
+      const fee = Math.round(estimateTrainCost * Math.pow(10, decimals));
+      console.log("debug log:", feeLevel, feeTflopsHour[feeLevel], requiredPower, estimateTrainCost, decimals, fee);
+      await approve(fee);
       const orderId = await createOrderPreview(
         bucket,
         requiredPower,
-        requiredPower * 1,
+        fee,
         orderLevel
       );
       navigate(`/order-preview/${orderId}`, { state: { requiredPower } });
@@ -186,6 +198,7 @@ const CreateOrder = ({ onUpload }) => {
                 defaultValue="Flat"
                 style={{ width: 210 }}
                 onChange={(value) => {
+                  setFeeLevel(value);
                   console.log(`selected ${value}`);
                 }}
                 options={[

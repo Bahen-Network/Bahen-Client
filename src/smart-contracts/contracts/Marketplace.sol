@@ -6,11 +6,13 @@ import "./TaskPool.sol";
 import "./Order.sol";
 import "./SharedStructs.sol";
 import "./WorkerPool.sol";
+import "./IERC20.sol";
 
 contract Marketplace {
     Payment private paymentContract;
     TaskPool private taskPoolContract;
     WorkerPool private workerPoolContract;
+    IERC20 private immutable usdtContract;
     address private admin;
     address private marketplace;
     mapping(address => uint256) public workerLoad;
@@ -35,11 +37,13 @@ contract Marketplace {
     constructor(
         address payable paymentAddress,
         address taskPoolAddress,
-        address workerPoolAddress
+        address workerPoolAddress,
+        address usdtAddr
     ) {
         paymentContract = Payment(paymentAddress);
         taskPoolContract = TaskPool(taskPoolAddress);
         workerPoolContract = WorkerPool(workerPoolAddress);
+        usdtContract = IERC20(usdtAddr);
         admin = msg.sender;
         nextOrderId = 0;
     }
@@ -77,7 +81,9 @@ contract Marketplace {
         uint256 orderLevel
     ) public payable returns (uint256) {
 
-        require(msg.value >= paymentAmount, "Not enough funds provided.");
+        //require(msg.value >= paymentAmount, "Not enough funds provided.");
+        bool ok = usdtContract.transferFrom(msg.sender, address(this), paymentAmount);
+        require(ok, "Not enough funds provided.");
         uint256 orderId = nextOrderId++;
 
         Order order = new Order(
@@ -90,7 +96,7 @@ contract Marketplace {
         userOrders[msg.sender].push(orderId);
         emit OrderCreated("Cread order success!", orderId);
 
-        Payment(paymentContract).deposit{value: msg.value}(msg.sender);
+        //Payment(paymentContract).deposit{value: msg.value}(msg.sender);
 
         uint256 taskId = taskPoolContract.createTask(
             SharedStructs.TaskType.Training,
@@ -149,10 +155,11 @@ contract Marketplace {
         _folderUrl = order.folderUrl();
     }
 
-    function transferFunds(address recipient, uint256 amount) public {
-        require(address(this).balance >= amount, "Insufficient contract balance.");
-
-        payable(recipient).transfer(amount);
+    function transferFunds(address recipient, uint256 amount) public onlyAdmin {
+        //require(address(this).balance >= amount, "Insufficient contract balance.");
+        //payable(recipient).transfer(amount);
+        bool ok = usdtContract.transfer(recipient, amount);
+        require(ok);
     }
 
     function CompleteTask(address workerAddress, uint256 taskId) external {
@@ -162,9 +169,9 @@ contract Marketplace {
         workerPoolContract.finishTask(workerAddress);
         order.SetOrderStatus(SharedStructs.OrderStatus.Completed);
 
-        uint256 paymentWorker = order.paymentAmount() * 9 / 10;  
-
-        Payment(paymentContract).payWorker(workerAddress, paymentWorker);
+        uint256 paymentWorker = order.paymentAmount() * 8 / 10;
+        usdtContract.transfer(workerAddress, paymentWorker);
+        //Payment(paymentContract).payWorker(workerAddress, paymentWorker);
 
         TriggerTaskPool();
     }
