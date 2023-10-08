@@ -23,7 +23,7 @@
 ```powershell
 {
     "provider": "https://opbnb-testnet-rpc.bnbchain.org",
-    "contract_address": "0xE9b1b2e72153df88AE7c89b95cE6b27Fa031b931",
+    "contract_address": "0x3aAFa0B715F358c5f4a359e1351e986b385795bf",
     "account_address": "",
     "private_key": "",
     "chainId": 5611,

@@ -54,7 +54,8 @@ def get_flops(temp_dir):
 
     RTX3090_FLOPs = 71 * 10**10
     sys.path = sys.path[:-1]
-    return {'result_unit': round(total_flops / RTX3090_FLOPs)}
+    # return {'result_unit': round(total_flops / RTX3090_FLOPs)}
+    return {'result_unit': total_flops}
     
 def main(req: func.HttpRequest) -> func.HttpResponse:
     

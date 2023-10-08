@@ -32,6 +32,8 @@ export const configureMoonbaseAlpha = async () => {
 
 let web3;
 let contract;
+let usdtContract;
+let usdtDecimals;
 
 const getWeb3 = async () => {
   if (!web3) {
@@ -69,6 +71,79 @@ const getMarketplaceContractInstance = async () => {
   return contract;
 };
 
+const getUsdtContractInstance = async () => {
+  if (!usdtContract) {
+    const web3Instance = await getWeb3();
+    const networkId = await web3Instance.eth.net.getId();
+    const usdtAddress = UsdtContractAddress[networkId];
+    usdtContract = new web3Instance.eth.Contract(erc20ABI, usdtAddress);
+  }
+  return usdtContract;
+};
+
+export async function getUsdtContractDecimal() {
+  if (!usdtDecimals) {
+    const contractUsdt = await getUsdtContractInstance();
+    usdtDecimals = await contractUsdt.methods.decimals().call();
+  }
+  return usdtDecimals;
+}
+
+const UsdtContractAddress = {
+  '5611': '0xCF712f20c85421d00EAa1B6F6545AaEEb4492B75', //opBNB
+}
+
+const erc20ABI = [
+  {
+    "constant": true,
+    "inputs": [{"name": "owner", "type": "address"}, {"name": "spender", "type": "address"}],
+    "name": "allowance",
+    "outputs": [{"name": "", "type": "uint256"}],
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [{"name": "spender", "type": "address"}, {"name": "value", "type": "uint256"}],
+    "name": "approve",
+    "outputs": [{"name": "", "type": "bool"}],
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{"name": "account", "type": "address"}],
+    "name": "balanceOf",
+    "outputs": [{"name": "", "type": "uint256"}],
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [{"name": "", "type": "uint8"}],
+    "type": "function"
+  }
+];
+
+export const approve = async (estimateTrainCost) => {
+  const contractUsdt = await getUsdtContractInstance();
+  const web3Instance = await getWeb3();
+  const accounts = await web3Instance.eth.getAccounts();
+  const address = await getUserAddress();
+  const balance = await contractUsdt.methods.balanceOf(address).call();
+  if(balance < estimateTrainCost) {
+    throw new Error('balance insufficient');
+  }
+  const marketplaceAddr = (await getMarketplaceContractInstance()).options.address;
+  const allowance = await contractUsdt.methods.allowance(address, marketplaceAddr).call();
+  console.log(allowance, estimateTrainCost);
+  if(allowance<estimateTrainCost) {
+    await usdtContract.methods.approve(marketplaceAddr, estimateTrainCost).send({
+      from: address,
+      gas: 200000,
+    });
+  }
+};
+
 export const createOrderPreview = async (folderUrl, requiredPower, paymentAmount, orderLevel) => {
   const contractInstance = await getMarketplaceContractInstance();
   const web3Instance = await getWeb3();
@@ -78,7 +153,7 @@ export const createOrderPreview = async (folderUrl, requiredPower, paymentAmount
   try {
     const result = await contractInstance.methods
       .createOrderPreview(folderUrl, requiredPower, paymentAmount, orderLevel)
-      .send({ from: accounts[0], value: paymentAmount });
+      .send({ from: accounts[0] });
 
     const orderId = result.events.OrderCreated.returnValues.orderId;
     console.log(`Order Preview Created: ${orderId}`);

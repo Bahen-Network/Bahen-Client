@@ -16,6 +16,9 @@ module.exports = async function (deployer) {
   await deployer.deploy(WorkerPool);
   const workerPoolInstance = await WorkerPool.deployed();
 
+  // 部署网络的usdt合约
+  const usdtAddress = '0xCF712f20c85421d00EAa1B6F6545AaEEb4492B75';
+
   // 使用已部署的Payment和Task合约的地址，部署Marketplace合约
-  await deployer.deploy(Marketplace, paymentInstance.address, taskPoolInstance.address, workerPoolInstance.address);
+  await deployer.deploy(Marketplace, paymentInstance.address, taskPoolInstance.address, workerPoolInstance.address, usdtAddress);
 };
